@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;pms-web/WebContent/WEB-INF/login/images/third-i-logo-color.jpg&apos; to &apos;third-i-logo-color.png&apos;" description="Rename resource &apos;third-i-logo-color.jpg&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="WebContent/WEB-INF/login/images/third-i-logo-color.jpg" name="third-i-logo-color.png" stamp="1542352254033" updateReferences="true"/>
+</session>

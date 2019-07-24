@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<style>
+</style>
+<body>
+   <p> Hi ${selfName},</p>
+   <p> Thank you!</p>
+   <p> You have successfully submitted your self-assessment form on ${selfCompletionDate}.</p>
+   <p> Your Form  has been shared with your Appraiser ${apprName}.</p>
+   <br>
+    Best Regards,<br>
+    pms.support@the3i.com<br>
+    Analytics | Data Management | Visualizations | Custom Apps | Big Data<br>
+    www.the3i.com<br>
+    
+</body>
+</html>

@@ -1,0 +1,16 @@
+<html>
+<head></head>
+<style>
+</style>
+<body>
+   <p> Hi ${selfName},</p>
+   <p> You need to give reviewer assessment for your sub-ordinates 
+       Please complete your reviewer assessment process by ${reviewerAssessmentDuration}</p>
+   <br>   
+    Best Regards,<br>
+    pms.support@the3i.com<br>
+    Analytics | Data Management | Visualizations | Custom Apps | Big Data<br>
+    www.the3i.com<br>
+    
+</body>
+</html>

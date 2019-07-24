@@ -1,0 +1,2521 @@
+/**
+ *  
+ */
+
+var currentPhase = null;
+var qIdForModal = null;
+var sectionForModal = null;
+var empIdForModal = null;
+var totalScoreContainer = [];
+var isDashboardActive = false;
+var isFinalized = false;
+var viewFlag = true;  // show and hide PI.
+var hasBackAndForth = false;
+var teamMemberId = null;
+var empRole = null;
+//var isFilledAllScore;
+
+function prepareCompetencyCache(){
+	debugger
+	var cache = {
+		appraisalList : [],
+		questionMap : {},
+		sectionMap :  {},
+		finalScoreMap : {},
+		dataStorageMap : null,
+		phaseScoreContainer : [],
+		piIndicatorsMap : {},
+		sequentialQuestionsMap : {},
+		questionRatingStatusMap : {},
+		strengthAndWeaknessServerDataMap : {},
+		questionSectionStorageMap : null,
+		strengthAnsWeaknessMap : null,
+		overviewCustomizedMap : {"33":"Achievements","34":"Values","35":"Feedback","36":"Objectives"},
+		getSectionAndQuestions : function(){
+			var dataMap = cache.sectionMap;
+			if(dataMap != undefined && dataMap != null && !jQuery.isEmptyObject(dataMap)){
+				return dataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.sectionMap;
+			}
+		},
+		getQuestionFromId : function(){
+			var dataMap = eval(cache.questionMap);
+			if(dataMap != undefined && dataMap != null && !jQuery.isEmptyObject(dataMap)){
+				return dataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.questionMap;
+			}
+		},
+		getFinalScoreMap : function(){
+			var dataMap = cache.finalScoreMap;
+			if(dataMap != undefined && dataMap != null && !jQuery.isEmptyObject(dataMap)){
+				return dataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.finalScoreMap; 
+			}
+		},
+		getDataStorageMap : function(){
+			var cachedDataMap = cache.dataStorageMap;
+			if(cachedDataMap == undefined && cachedDataMap == null){
+				cache.dataStorageMap = new Map();
+				return cache.dataStorageMap;
+			}
+			return cachedDataMap;
+		},
+		getEachPhaseFinalScore : function(){
+			var cachedDataArray = cache.phaseScoreContainer;
+			if(cachedDataArray != undefined && cachedDataArray != null && !jQuery.isEmptyObject(cachedDataArray)){
+				return cachedDataArray;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.phaseScoreContainer; 
+			}
+		},
+		getPerformanceIndicatorsMap : function(){
+			var cachedDataMap = cache.piIndicatorsMap;
+			if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
+				return cachedDataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.piIndicatorsMap; 
+			}
+		},
+		emptyAllExistedValue : function(){
+			cache.sectionMap = {},cache.questionMap = {},cache.finalScoreMap={},cache.piIndicatorsMap={},
+			cache.phaseScoreContainer={};
+		},
+		getMapOfQuestionIsRatedOrNot : function(){
+			var cachedDataMap = cache.questionRatingStatusMap;
+			if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
+				return cachedDataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.questionRatingStatusMap; 
+			}
+		},
+		getStrengthAndWeaknessMap : function(){
+			var cachedDataMap = cache.strengthAnsWeaknessMap;
+			if(cachedDataMap == undefined && cachedDataMap == null){
+				cache.strengthAnsWeaknessMap = new Map();
+				return cache.strengthAnsWeaknessMap;
+			}
+			return cachedDataMap;
+		},
+		getStrengthAndWeaknessServerDataMap : function(){
+			var cachedDataMap = cache.strengthAndWeaknessServerDataMap;
+			if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
+				return cachedDataMap;
+			}else{
+				getCompetencyDataFromServer();
+				return cache.strengthAndWeaknessServerDataMap; 
+			}
+		},
+		getSectionDataStorageMap : function(){
+			var cachedDataMap = cache.questionSectionStorageMap;
+			if(cachedDataMap == undefined && cachedDataMap == null){
+				cache.questionSectionStorageMap = new Map();
+				return cache.questionSectionStorageMap;
+			}
+			return cachedDataMap;
+		}
+	}
+	return cache;
+}
+
+
+function showDashboard(){
+debugger
+	$('#headerOfFullContentDiv').html('');
+	$('#fullContentDiv').html('');
+	changeLogoStyleForDashboard();
+	var userrole= user.role;
+	var dashboardDiv = $('<div id="dashboardDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important ;"></div>');
+	var errorDiv = $('<div id="errorDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var reviewCycleName = apprCycle.cycleName;
+	var titleDiv = $('<div class="col-sm-12" style="border-top:2px solid #3a97d3; width:17s%"></div>');
+	var titleDivLabel = $('<label class="pull-left" style="margin-top:1%;font-size:16px;font-weight:800;" ></label>').html("Summary Cycle "+"<br>"+reviewCycleName);
+	titleDiv.append(titleDivLabel);
+	var headerDiv = $('<div class="col-sm-12" style="height:40px;margin-top:1%;background:#E0E0E0;padding-top:1%;">');
+	var header1 = $('<div class="col-sm-4 header" style="height:40px;float:left;text-align:left;font-weight:700;color:#4a4a4a;">').html("Associate");
+	var header2 = $('<div class="col-sm-2" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;padding-right:2%;">').html("Appraiser");
+	//var header3 = $('<div class="col-sm-1" style="height:40px;float:left;text-align:center;font-weight:500;">').html("Goals");
+	var header4 = $('<div class="col-sm-3" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;">').html("Status");
+	var header5 = $('<div class="col-sm-2" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;">').html("Completion Date");
+	var employeeName = userGeneralInfo["employeeName"];
+	var appraiserName = userGeneralInfo["appraiserName"];
+	var status = userGeneralInfo["status"];
+	var completionDate = userGeneralInfo["completionDate"];
+	var contentDiv = $('<div class="col-sm-12" style="height:40px;padding-top:1%;">');
+	var empNameContainer = $('<div class="col-sm-2" style="height:40px;text-align:left;vertical-align:middle;float:left;">');
+	var empNameLabel = $('<label onclick="showCompetencies()" style="width:100%;height:40px;text-align:left;font-weight:400;">'+employeeName+'<label>');
+	//var editLabel = $('<label onclick="showCompetencies()" style="width:100%;height:40px;text-align:left;font-weight:400;"><label>');
+	empNameContainer.append(empNameLabel);
+	var editLableContainer = $('<div class="col-sm-1" onclick="showCompetencies()" style="height:40px;text-align:right;vertical-align:left;float:left;padding-right:1%;"><img src="images/edit.png" style="width:20%;margin-right:0.5%;"></img>');
+	var apprNameContainer = $('<div class="col-sm-3" style="height:40px;text-align:right;vertical-align:middle;float:left;padding-right:1%;">').html(appraiserName);
+	var goalStatusContainer = $('<div class="col-sm-1" style="height:40px;text-align:center;vertical-align:middle;float:left;">').html("-");
+	var reviewStatusContainer = $('<div class="col-sm-3" style="height:40px;text-align:center;vertical-align:middle;float:left;">').html(status);
+	var completionDateContainer = $('<div class="col-sm-2" style="height:40px;text-align:center;vertical-align:middle;float:left;">').html(completionDate);
+	var label = $('<label style="width:100%;font-weight:400;">').html(status);
+	var statusLabel 
+	/*if(status == "Self Assessment - pending"){
+		label.append('<i class="fa fa-level-down" style="color:red;margin-left:3%;"></i>'
+	}else if(status == "Appraiser Assessment - pending"){
+		label.append('<i class="fa fa-level-up" style="color:blue;margin-left:3%;"></i>');
+	}else if(status == "Reviewer Assessment - pending"){
+		label.append('<i class="fa fa-level-up" style="color:green;margin-left:3%;"></i>');
+	}*/
+	reviewStatusContainer.html(label);
+	headerDiv.append(header1);
+	headerDiv.append(header2);
+	//headerDiv.append(header3);
+	headerDiv.append(header4);
+	headerDiv.append(header5);
+	if(userGeneralInfo == undefined || userGeneralInfo == null || jQuery.isEmptyObject(userGeneralInfo)){
+		var noDataLabel = $('<label style="width:100%;text-align:center;">').html("No data available");
+		contentDiv.append(noDataLabel)
+	}else{
+		contentDiv.append(empNameContainer);
+		contentDiv.append(editLableContainer);
+		contentDiv.append(apprNameContainer);
+		//contentDiv.append(goalStatusContainer);
+		contentDiv.append(reviewStatusContainer);
+		contentDiv.append(completionDateContainer);
+	}
+	dashboardDiv.append(titleDiv);
+	dashboardDiv.append(headerDiv);
+	dashboardDiv.append(contentDiv);
+	$('#headerOfFullContentDiv').append(dashboardDiv);
+	var numberOfTeamMembers = Object.keys(myTeamDataMap).length;
+	if((numberOfTeamMembers!=null && numberOfTeamMembers!="")){
+		previewMyTeamDetails();
+	}
+}
+
+function previewMyTeamDetails(){	
+	debugger
+	$('#fullContentDiv').html('');
+	var dashboardDiv = $('<div id="teamDetailsDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var errorDiv = $('<div class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var titleDiv = $('<div class="col-sm-12" style="border-top:2px solid #3a97d3;"></div>');
+	var numberOfTeamMembers = Object.keys(myTeamDataMap).length;
+	var titleDivLabel = $('<label class="pull-left" style="margin-top:1%;font-size:16px;font-weight:500;" ></label>').html("My Team's Appraisal in ("+ numberOfTeamMembers+" Total )");
+	titleDiv.append(titleDivLabel);
+	var headerDiv = $('<div class="col-sm-12" style="height:40px;margin-top:1%;background:#E0E0E0;padding-top:1%;">');
+	var header1 = $('<div class="col-sm-3" style="height:40px;float:left;font-weight:700;color:#4a4a4a;">').html("Associate");
+	var header2 = $('<div class="col-sm-2" style="height:40px;float:left;font-weight:700;color:#4a4a4a;">').html("Appraiser");
+	var header3 = $('<div class="col-sm-1" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;">').html("My Role");
+	//var header4 = $('<div class="col-sm-1" style="height:40px;float:left;text-align:center;font-weight:500;">').html("Goals");
+	var header5 = $('<div class="col-sm-3" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;">').html("Status");
+	var header6 = $('<div class="col-sm-2" style="height:40px;float:left;text-align:center;font-weight:700;color:#4a4a4a;">').html("Completion Date");
+	headerDiv.append(header1);
+	headerDiv.append(header2);
+	headerDiv.append(header3);
+	//headerDiv.append(header4);
+	headerDiv.append(header5);
+	headerDiv.append(header6);
+	dashboardDiv.append(titleDiv);
+	dashboardDiv.append(headerDiv);
+	var contentDiv = renderMyTeamData();
+	if(myTeamDataMap == undefined || myTeamDataMap == null || jQuery.isEmptyObject(myTeamDataMap)){
+		var noDataLabel = $('<label style="width:100%;text-align:center;padding-top:1%;">').html("No data available");
+		errorDiv.append(noDataLabel);
+		dashboardDiv.append(errorDiv);
+	}else{
+		dashboardDiv.append(contentDiv);
+	}
+	$('#fullContentDiv').append(dashboardDiv);
+}
+
+function renderMyTeamData(){
+	debugger;
+	var dashboardDiv = $('<div id="teamDetailsContentDiv" class="col-sm-12" style="background:white;padding-left:0px !important;padding-right:0px !important;height:400px;overflow-y:auto;">');
+	if(myTeamDataMap != undefined && myTeamDataMap != null && !jQuery.isEmptyObject(myTeamDataMap)){
+		for(var empId in myTeamDataMap){
+			var contentDiv = $('<div class="col-sm-12" style="height:40px;padding-top:1%;">');
+			var teamDataJson = myTeamDataMap[empId];
+			var employeeName = teamDataJson["employeeName"];
+			var appraiserName = teamDataJson["appraiserName"];
+			var status = teamDataJson["status"];
+			var myrole = teamDataJson["role"];
+			var completionDate = teamDataJson["completionDate"];
+			var empNameContainer = $('<div class="col-sm-2" style="height:40px;vertical-align:middle;float:left;word-wrap: break-word;">');
+			var empNameLabel = $('<label onclick="showCompetencies(\''+empId+'\',\''+myrole+'\')" style="width:100%;height:40px;font-weight:400;cursor:pointer;">'+employeeName+'<label>');
+			empNameContainer.append(empNameLabel);
+			var editLableContainer = $('<div class="col-sm-1"onclick="showCompetencies(\''+empId+'\',\''+myrole+'\')" style="height:40px;text-align:right;vertical-align:left;float:left;padding-right:1%;"><img src="images/edit.png" style="width:20%;margin-right:0.5%;"></img>');
+			var apprNameContainer = $('<div class="col-sm-2"  style="height:40px;vertical-align:middle;float:left;word-wrap: break-word;">').html(appraiserName);
+			//var goalStatusContainer = $('<div class="col-sm-1" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">').html("-");
+			var reviewStatusContainer = $('<div class="col-sm-3" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">');
+			var label = $('<label style="width:100%;font-weight:400;">').html(status);
+			/*if(status == "Self Assessment - pending"){
+				label.append('<i class="custom-icon icon-warning fa fa-level-down" style="color:#fff;margin-left:3%;"></i>');
+			}else if(status == "Appraiser Assessment - pending"){
+				label.append('<i class="custom-icon icon-primary fa fa-level-up" style="color:#fff;margin-left:3%;"></i>');
+			}else if(status == "Reviewer Assessment - pending"){
+				label.append('<i class="custom-icon label-deafult fa fa-level-up" style="color:#fff;margin-left:3%;"></i>');
+			}*/
+			reviewStatusContainer.html(label);
+			var completionDateContainer = $('<div class="col-sm-2" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">').html(completionDate);
+			var myRoleContainer = $('<div class="col-sm-1" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">').html(myrole);
+			contentDiv.append(empNameContainer);
+			contentDiv.append(editLableContainer);
+			contentDiv.append(apprNameContainer);
+			contentDiv.append(myRoleContainer);
+			//contentDiv.append(goalStatusContainer);
+			contentDiv.append(reviewStatusContainer);
+			contentDiv.append(completionDateContainer);
+		    dashboardDiv.append(contentDiv);
+		}
+	}
+	return dashboardDiv;
+}
+
+function changeLogoStyleForDashboard(){
+	$('#myformImage').attr("src","images/my-form.png");
+	$('#dashboardImage').attr("src","images/introduction-color.png");
+	$('#goalImage').attr("src","images/goal.png");
+	$('#historyImage').attr("src","images/history.png");
+	$('#feedbackImage').attr("src","images/feedback.png");
+}
+
+function changeLogoStyleForCompetency(){
+	$('#myformImage').attr("src","images/my-form-color.png");
+	$('#dashboardImage').attr("src","images/introduction.png");
+	$('#goalImage').attr("src","images/goal.png");
+	$('#historyImage').attr("src","images/history.png");
+	$('#feedbackImage').attr("src","images/feedback.png");
+	//$('#competency').addClass("active");
+	$('#dashboard').removeClass("active");
+	$('#goal').removeClass("active");
+	$('#history').removeClass("active");
+	$('#logbook').removeClass("active");
+}
+
+
+function changeLogoStyleForGoal(){
+	$('#myformImage').attr("src","images/my-form.png");
+	$('#dashboardImage').attr("src","images/introduction.png");
+	$('#goalImage').attr("src","images/goal-color.png");
+	$('#historyImage').attr("src","images/history.png");
+	$('#feedbackImage').attr("src","images/feedback.png");
+	$('#goal').addClass("active");
+	$('#competency').removeClass("active");
+	$('#dashboard').removeClass("active");
+	$('#history').removeClass("active");
+	$('#logbook').removeClass("active");
+}
+function changeLogoStyleForHistory(){
+	$('#myformImage').attr("src","images/my-form.png");
+	$('#dashboardImage').attr("src","images/introduction.png");
+	$('#goalImage').attr("src","images/goal.png");
+	$('#historyImage').attr("src","images/history-color.png");
+	$('#feedbackImage').attr("src","images/feedback.png");
+	$('#history').addClass("active");
+	$('#competency').removeClass("active");
+	$('#goal').removeClass("active");
+	$('#dashboard').removeClass("active");
+	$('#logbook').removeClass("active");
+}
+
+
+function changeLogoStyleForLogbook(){
+	$('#myformImage').attr("src","images/my-form.png");
+	$('#dashboardImage').attr("src","images/introduction.png");
+	$('#goalImage').attr("src","images/goal.png");
+	$('#historyImage').attr("src","images/history.png");
+	$('#feedbackImage').attr("src","images/feedback-color.png");
+	$('#logbook').addClass("active");
+	$('#history').removeClass("active");
+	$('#competency').removeClass("active");
+	$('#goal').removeClass("active");
+	$('#dashboard').removeClass("active");
+	
+	
+}
+
+
+function showGoal(){
+changeLogoStyleForGoal();
+}
+
+function showHistory(){
+changeLogoStyleForHistory();
+}
+
+
+function showLogbook(){
+changeLogoStyleForLogbook();	
+}
+var userName;
+function showCompetencies(employeeId,roleFromDashboard){
+	debugger
+	$('#headerOfFullContentDiv').html('');
+	$('#fullContentDiv').html('');
+	appendSubmitButtonOnTop();
+	highlightCompetencyLabel();
+	changeLogoStyleForCompetency();
+	checkSelfFormOrAppraiserForm(employeeId);
+	if(roleFromDashboard != null && roleFromDashboard != ""){
+		empRole = roleFromDashboard;
+	}
+	userName = userGeneralInfo["employeeName"];
+	if((employeeId != null) && (employeeId !=""))
+	{
+		var teamDataJson = myTeamDataMap[employeeId];
+		var employeeName = teamDataJson["employeeName"];
+		var userName = $('<div class="col-sm-6" style="height:40px;"><label class="pull-left" style="margin-top:2%;font-size:14px;font-weight:500;cursor:pointer;">'+userName+' | ' +employeeName+' </label> </div>');
+		   
+	}
+	else
+		{
+		employeeName = userName;
+		var userName = $('<div class="col-sm-6" style="height:40px;"><label class="pull-left" style="margin-top:2%;font-size:14px;font-weight:500;cursor:pointer;">'+employeeName+' </label> </div>');
+		
+		}
+	navigationIndex = null;
+	var competencyDiv = $('<div id="competencyDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	//var title = $('<div class="col-sm-6" style="height:40px;"><label class="pull-left" style="margin-top:2%;font-size:16px;font-weight:500;">'+userName+'</label> </div>');
+	// var teamMemeberName= $('<div style="height:40px;"> </div>');
+	
+	var fullScore =  $('<div class="col-sm-6" style="height:40px;text-align:right;"></div>');
+	var totalScoreLabel = $('<label style="margin-right:2%;font-weight:500;margin-top:0.5%;">Total Score</label>');
+	var smallLabelDiv = $('<div class="col-sm-12" style="margin-top:1%;">');
+    var span1=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:1%">');
+    var span2=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:6%">');
+    var span3=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:6%">');
+    span1.html("R");
+    span2.html("A");
+    span3.html("S");
+    smallLabelDiv.append(span1);
+    smallLabelDiv.append(span2);
+    smallLabelDiv.append(span3);
+	var phase1Rating = $('<label class="label label-default pull-right" style="color:black;background:white;border-radius:0px;float:left;border:1px solid #d3d5d3;padding:1.5%;width:7%;">').html("0");
+	var phase2Rating = $('<label class="label label-default pull-right" style="color:black;background:white;border-radius:0px;float:left;border:1px solid #d3d5d3;padding:1.5%;width:7%;">').html("0");
+	var phase3Rating = $('<label class="label label-default pull-right" style="color:black;background:white;border-radius:0px;float:left;border:1px solid #d3d5d3;padding:1.5%;width:7%;">').html("0");
+	var dataCompetencyDiv = $('<div id="dataCompetencyDiv" class="col-sm-12" style="margin-top:3%;margin-bottom:3%;"></div>');
+    var header1 = $('<div class="col-sm-3" style="border-bottom:1px solid #d3d5d3;height: 40px;background:#ffffff;font-weight:600;">');
+    var label1 = $('<label style="margin-left:3%;"></label>');
+    header1.append(label1);
+    var header2 = $('<div class="col-sm-3" style="border-bottom:1px solid #d3d5d3;text-align:center;height:40px;border-left:none !important;border-right:none !important;font-weight:600;">').html('Self Rating [S]');
+    var header3 = $('<div class="col-sm-3" style="border-bottom:1px solid #d3d5d3;text-align:center;height:40px;border-left:none !important;border-right:none !important;font-weight:600;">').html('Appraiser Rating [A]');
+    var header4 = $('<div class="col-sm-3" style="border-bottom:1px solid #d3d5d3;text-align:center;height:40px;border-left:none !important;font-weight:600;">').html('Reviewer Rating [R]');
+    var competencyBody = prepareBodyForCompetency();
+    var phaseScoreArray = competencyCache.getEachPhaseFinalScore();
+    var CurrentDate = new Date();
+    var userrole = getUserRole();
+    var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+    if(phaseScoreArray != undefined && phaseScoreArray != null && phaseScoreArray.length > 0){
+    	if(phaseScoreArray[0] != null){
+    		phase1Rating.html(phaseScoreArray[0].toFixed(2));
+    	}
+    	if(phaseScoreArray[1] != null)
+    	{
+    		if((teamMemberId != null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer"))
+		    {
+		    	phase2Rating.html(phaseScoreArray[1].toFixed(2));  //Appraiser score to ESS
+		    }
+		else if(teamMemberId == null&&CurrentDate>RevApprEndDate)
+			{
+			    phase2Rating.html(phaseScoreArray[1].toFixed(2));
+			}
+		else
+			{
+			phase2Rating.html("-");
+			}
+    	}
+    	if(phaseScoreArray[2] != null)
+    	{
+    		if((teamMemberId != null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer"))
+    			    {
+    	    			phase3Rating.html(phaseScoreArray[2].toFixed(2));
+    			    }
+    			else if(teamMemberId == null&&CurrentDate>RevApprEndDate)
+    				{
+    				    phase3Rating.html(phaseScoreArray[2].toFixed(2));
+    				}
+    			else
+    				{
+    				 phase3Rating.html("-");
+    				}
+    	}
+    }
+    dataCompetencyDiv.append(header1);
+    dataCompetencyDiv.append(header2);
+    dataCompetencyDiv.append(header3);
+    dataCompetencyDiv.append(header4);
+    dataCompetencyDiv.append(competencyBody);
+    fullScore.append(smallLabelDiv);
+    fullScore.append(totalScoreLabel);
+    fullScore.append(phase3Rating);
+    fullScore.append(phase2Rating);
+    fullScore.append(phase1Rating);
+    competencyDiv.append(userName);
+    //competencyDiv.append(title);
+    // competencyDiv.append(teamMemeberName);
+     competencyDiv.append(fullScore);
+    competencyDiv.append(dataCompetencyDiv);
+    $('#fullContentDiv').append(competencyDiv);
+    validationsOnSubmit();
+    }
+
+
+function getUserRole(){
+	var userRole = "";
+	if(empRole != null){
+		userRole = empRole;
+	}else{
+		userRole = user.role
+	}
+	return userRole;
+}
+
+function getUserId(){
+	var empId = "";
+	if(teamMemberId != null && teamMemberId != ""){
+		empId = teamMemberId;
+	}else{
+		empId = user.apprempid;
+	}
+	return empId;
+}
+
+
+function checkFiller(section){
+	$("#fullContentDiv").ready(function() {
+	    var CurrentDate = new Date();
+	    var userrole = user.role//getUserRole();
+	    var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+	    var empId = getUserId();
+	    var sectionMap =  competencyCache.getSectionAndQuestions();
+	    var subMap = sectionMap[section];
+	    
+	   if(((teamMemberId == null||teamMemberId=="")&&CurrentDate<RevApprEndDate)||(teamMemberId == null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer"))
+	    { 
+		   for(var qId in subMap)
+           {
+                mngRating = "mngRatingLabel_"+empId+"_"+qId;
+                revRating = "revRatingLabel_"+empId+"_"+qId;
+                //RemarksLabel = "questionRemarkLabel_"+empId+"_"+qId; 
+               
+               $("#"+mngRating).html("-");
+               $("#"+revRating).html("-");
+               //$("#"+RemarksLabel).html("");
+           }   
+	    } 
+	});
+
+}
+
+function hideDropDownScore()
+{debugger
+    var CurrentDate = new Date();
+    var userrole = user.role//getUserRole();
+    var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+    $("#commentBoxDiv").ready(function() {
+        if(((teamMemberId == null||teamMemberId=="")&&CurrentDate<RevApprEndDate)||(teamMemberId == null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer"))
+            {
+                $("#appr_dropdown").val("");
+                $("#rev_dropdown").val("");
+                $("#appr_remarks").val("");
+                $("#rev_remarks").val("");
+            }
+        
+    });
+}
+
+
+function checkSelfFormOrAppraiserForm(employeeId){
+	debugger
+	$("#fullContentDiv").show();
+	var userRole = getUserRole();
+	if(employeeId != "" && teamMemberId == null){
+		//competencyCache.dataStorageMap = null;
+		competencyCache.emptyAllExistedValue();
+		teamMemberId = employeeId;
+	} 
+	if(teamMemberId != null && teamMemberId != "" && employeeId != teamMemberId){
+		//competencyCache.dataStorageMap = null;
+		competencyCache.emptyAllExistedValue();
+		teamMemberId = employeeId;
+	}
+	if(employeeId == "" && (userRole == "Appraiser" || userRole == "Reviewer")){
+		teamMemberId = null;
+		//competencyCache.dataStorageMap = null;
+		competencyCache.emptyAllExistedValue();
+	}else{
+		teamMemberId = employeeId;
+	}
+	/*if(userRole == "Appraiser" && teamMemberId != null){
+		teamMemberId = null;
+		competencyCache.dataStorageMap = null;
+		competencyCache.emptyAllExistedValue();
+	}*/
+}
+
+function getQuestionPerSection(section){
+	debugger
+	var sectionMap =  competencyCache.getSectionAndQuestions();
+	var subMap = sectionMap[section];
+	return Object.keys(subMap).length;
+}
+//
+function getQuestionAnsweredPerSection(section){
+	
+	debugger
+	var count = 0;
+	var answeredSectionMap = competencyCache.questionSectionStorageMap ;
+	if(answeredSectionMap != undefined && answeredSectionMap != null && answeredSectionMap.size > 0){
+		var mapIter = answeredSectionMap.values();
+		for(var i=0;i<answeredSectionMap.size ;i++)
+		{
+		  if(mapIter.next().value == section)
+			 count++;
+		}
+	}
+ return count;	
+}
+
+
+function prepareBodyForCompetency(){
+	var bodyContainer = $('<div class="col-sm-12" id="competencyBodyDiv" style="padding-left:0px !important;padding-right:0px !important;">');
+    var finalScoreMap = competencyCache.getFinalScoreMap();
+    if(finalScoreMap != undefined && finalScoreMap != null && !jQuery.isEmptyObject(finalScoreMap)){
+    	for(var section in finalScoreMap){
+    		if(section != "Overview"){
+    			var count2=getQuestionPerSection(section);
+    			var count1= getQuestionAnsweredPerSection(section);
+    			var nameOfCompetency = $('<div class="col-sm-3" style="border-bottom:1px solid #d3d5d3;height: 40px;font-weight:500;">');
+    			var label1 = $('<label class="col-sm-12" style="margin-left:20%;cursor:pointer;margin-top:3%;font-weight:500;" onclick="renderCompetencyQuestions(\''+ section +'\')"> <i class="fa fa-external-link" style="color:#66BEA5;margin-right:5%;"></i>'+section+'</label>');
+    			nameOfCompetency.append(label1);
+    			var countOfAnsweredQuestionPerSection = $('<label id="countOfAnsweredQuestionPerSection" class="col-sm-12" style="margin-left:80%;cursor:pointer;margin-top:-10%;font-weight:500;"s>'+count1+'/'+count2+'</label>');
+    			nameOfCompetency.append(countOfAnsweredQuestionPerSection);
+    			var ratingContainer = finalScoreMap[section];
+    			var employeeRating = $('<div class="col-sm-3" style="text-align:center;border-bottom:1px solid #d3d5d3;height: 40px;padding-top:1%;font-weight:500;padding-left:5%;">');
+    			var managerRating = $('<div class="col-sm-3" style="text-align:center;border-bottom:1px solid #d3d5d3;height: 40px;padding-top:1%;font-weight:500;padding-left:6%;">');
+    			var reviwerRating = $('<div class="col-sm-3" style="text-align:center;border-bottom:1px solid #d3d5d3;height: 40px;padding-top:1%;font-weight:500;padding-left:6%;">');
+    			var CurrentDate = new Date();
+    			var userrole = getUserRole();
+    			var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+    			debugger;
+    			if(ratingContainer != null && !jQuery.isEmptyObject(ratingContainer))
+    			{
+    				employeeRating.html(ratingContainer["e"].toFixed(2));
+    				if(((teamMemberId == null||teamMemberId=="")&&CurrentDate>RevApprEndDate)||((teamMemberId != null)&&(userrole=="Appraiser"||userrole=="Reviewer")))
+    			    {
+        				managerRating.html(ratingContainer["m"].toFixed(2));
+        				reviwerRating.html(ratingContainer["r"].toFixed(2));
+    			    }
+    				else
+    					{
+        				managerRating.html("-");
+        				reviwerRating.html("-");
+    					}
+    				
+    			}
+    			else
+    			{
+    				employeeRating.html("-");
+    				managerRating.html("-");
+    				reviwerRating.html("-");
+    			}
+    			bodyContainer.append(nameOfCompetency);
+    			bodyContainer.append(employeeRating);
+    			bodyContainer.append(managerRating);
+    			bodyContainer.append(reviwerRating);
+    		}
+    	}
+    }else{
+    	var errorDiv = $('<div class="col-sm-12" id="errorDiv">').html("No data available");
+    	bodyContainer.append(errorDiv);
+    }
+    return bodyContainer;
+}
+
+function renderCompetencyQuestions(section){
+	debugger
+	$('#fullContentDiv').html('');
+	navigationIndex = null;
+	var competencyDiv = $('<div id="competencyQuestionsDiv" class="col-sm-12" style="border:1px solid #ffffff;background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var leftHeaderDiv = $('<div class="col-sm-7" style="float:left;padding-top:1%;padding-bottom:1%;">');
+	var empId = "";
+	if(teamMemberId != null && teamMemberId != ""){
+		empId = teamMemberId;
+	}
+	var titleLable = $('<label onclick ="showCompetencies(\''+empId+'\',\''+empRole+'\')" style="cursor:pointer;width:40%; "> <i class="fa fa-mail-reply-all" style="margin-right:1%;font-size:11px;"></i><label style="padding-left:0%;text-decoration:underline;">'+section+'</label>');
+	var rightHeaderDiv = $('<div class="col-sm-5 pull-right" style="padding-right:6.5%;padding-top:0%;">');
+	var smallLabelDiv = $('<div class="col-sm-12" style="margin-top:0%;">');
+    var span1=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:1%">');
+    var span2=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:7%">');
+    var span3=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:9%">');
+    span1.html("R");
+    span2.html("A");
+    span3.html("S");
+    smallLabelDiv.append(span1);
+    smallLabelDiv.append(span2);
+    smallLabelDiv.append(span3);
+	var selfRatingLabel = $('<label id="totalEmpScoreLabel" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:1.5%;width:9%;">');
+    var managerRatingLabel = $('<label id="totalManScoreLabel" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:1.5%;width:9%;">');
+    var reviewerRatingLabel = $('<label id="totalRevScoreLabel" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:1.5%;width:9%;">');
+    var headerdiv = $('<div class="col-sm-12" style="background:#D6D7D9;height:40px;">');
+    var leftLabel = $('<label class="pull-left" style="margin-left:5%;margin-top:1%;">').html("Indicators");
+    var rightLabel = $('<label class="pull-right" style="margin-right:9%;margin-top:1%;">').html("Score");
+    //var bodyContainer = prepareBodyForQuestions(section);
+    leftHeaderDiv.append(titleLable);
+    rightHeaderDiv.append(smallLabelDiv);
+    rightHeaderDiv.append(reviewerRatingLabel);
+    rightHeaderDiv.append(managerRatingLabel);
+    rightHeaderDiv.append(selfRatingLabel);
+    headerdiv.append(leftLabel);
+    headerdiv.append(rightLabel);
+    competencyDiv.append(leftHeaderDiv);
+    competencyDiv.append(rightHeaderDiv);
+    competencyDiv.append(headerdiv);
+    competencyDiv.append(bodyContainer);
+    $('#fullContentDiv').append(competencyDiv);
+    fillTotalScore(section);
+    checkFiller(section);
+    $("#fullContentDiv").hide();
+    var bodyContainer = prepareBodyForQuestions(section);
+}
+
+/*function renderCompetencyQuestions(section){
+	debugger
+		prepareBodyForQuestions(section);
+}
+*/
+function fillTotalScore(section){
+	var finalScoreMap = competencyCache.getFinalScoreMap();
+	var ratingContainer = finalScoreMap[section];
+	var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+    var userrole = getUserRole();
+    var CurrentDate = new Date();
+	if(ratingContainer != undefined && ratingContainer != null && !jQuery.isEmptyObject(ratingContainer))
+	{
+		$('#totalEmpScoreLabel').html(ratingContainer["e"].toFixed(2));
+		  if((teamMemberId == null&&CurrentDate>RevApprEndDate)||(teamMemberId != null)&&(userrole=="Appraiser"||userrole=="Reviewer"))
+			  {
+			     $('#totalManScoreLabel').html(ratingContainer["m"].toFixed(2));
+			  }
+		  else
+			  {
+			      $('#totalManScoreLabel').html("-");
+			  }
+		  
+		   if((teamMemberId == null&&CurrentDate>RevApprEndDate)||(teamMemberId != null)&&(userrole=="Appraiser"||userrole=="Reviewer"))
+			  {
+			    $('#totalRevScoreLabel').html(ratingContainer["r"].toFixed(2)); 
+			  }
+		  else
+			  {
+			      $('#totalRevScoreLabel').html("-");
+			  }
+   }
+}
+
+function appendSubmitButtonOnTop(){
+	$('#headerOfFullContentDiv').html('');
+	var leftDiv = $('<div class="col-sm-6">');
+	var empId = ""; 
+	if(teamMemberId != null && teamMemberId != ""){
+		empId = teamMemberId;
+	}
+	var label = $('<label id="showInformationLabel" style="font-weight:100;font-size:16px;cursor:pointer;" onclick="showInformation()">Information</label><label style="font-weight:500;font-size:16px;margin-left:2%;"> | </label><label id="showCompetenceLabel" style="font-weight:500;font-size:16px;text-decoration:underline;margin-left:2%;cursor:pointer;" onclick="showCompetencies(\''+empId+'\')"> Competencies</label>');
+	var rightDiv = $('<div class="col-sm-6">');
+	var submitButton = $('<button id="submitCompetenciesBtn" class="btn btn-outline-green btn-success pull-right" style="margin-right:2%;border-radius:0px !important;padding:3px 25px !important;" onclick="submitCompetencies()">Submit</button>');
+	leftDiv.append(label);
+	rightDiv.append(submitButton);
+	$('#headerOfFullContentDiv').append(leftDiv);
+	$('#headerOfFullContentDiv').append(rightDiv);
+}
+
+function highlightCompetencyLabel(){
+	$('#showCompetenceLabel').css({"text-decoration":"underline","font-weight":"500","font-size":"16px"});
+	$('#showInformationLabel').css({"text-decoration":"none","font-weight":"100","font-size":"16px"});
+}
+
+function highlightInformationLabel(){
+	$('#showInformationLabel').css({"text-decoration":"underline","font-weight":"500","font-size":"16px"});
+	$('#showCompetenceLabel').css({"text-decoration":"none","font-weight":"100","font-size":"16px"});
+}
+
+function prepareBodyForQuestions(section){
+	debugger
+	competencyCache.sequentialQuestionsMap = {};
+	var bodyContainer = $('<div class="col-sm-12" style="padding-left:4%;padding-right:4%;">');
+	var sectionMap =  competencyCache.getSectionAndQuestions();
+	var questionIdMap = competencyCache.getQuestionFromId();
+	var empId = getUserId();
+	var userrole = getUserRole();
+	if(sectionMap != undefined && sectionMap != null && !jQuery.isEmptyObject(sectionMap)){
+			var subMap = sectionMap[section];
+			var sequenceMap = competencyCache.sequentialQuestionsMap;
+			var counter = 1;
+			totalScoreContainer = [];
+			var totalEmpScore = 0;
+			var totalMngScore = 0;
+			var totalRevScore = 0;
+			for(var qId in subMap){
+				var empRemarks = "";
+				var mngRemarks = "";
+			    var revRemarks = "";
+			    var empRating = 0;
+			    var mngRating = 0;
+			    var revRating = 0;
+			    var isRatingEnable="";
+			    var question = questionIdMap[qId];
+				var storageUnit = competencyCache.dataStorageMap;
+				if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+					var returnValueArray = checkAndFillValuesInElements(qId,empId);
+					if(currentPhase == "1"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+					}else if(currentPhase == "2"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+						mngRemarks = returnValueArray[2];
+						if(returnValueArray[3] != ""){
+							mngRating = parseInt(returnValueArray[3]);
+						}else{
+							mngRating = 0;
+						}
+					}else if(currentPhase == "3"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+						mngRemarks = returnValueArray[2];
+						mngRating = parseInt(returnValueArray[3]);
+						revRemarks = returnValueArray[4]
+						if(returnValueArray[5] != ""){
+							revRating = parseInt(returnValueArray[5]);
+						}else{
+							revRating = 0;
+						}
+					}
+				}else{
+					var dataArray = subMap[qId];
+					if(dataArray != undefined && dataArray != "" && dataArray.length > 0){
+						empRemarks = dataArray["1"];
+						mngRemarks = dataArray["2"];
+						revRemarks = dataArray["3"];
+						empRating =  dataArray["4"];
+						mngRating =  dataArray["5"];
+						revRating =  dataArray["6"];
+						isRatingEnable = dataArray["7"];
+					}	
+				}
+				totalEmpScore += empRating;
+				totalMngScore += mngRating;
+				totalRevScore += revRating;
+				sequenceMap[qId] = counter;
+			    var contentDiv = $('<div class="col-sm-12">');
+			    var smallLabelDiv = $('<div class="col-sm-12" style="margin-top:1%;">');
+			    var span1=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:1.5%">');
+			    var span2=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:3%">');
+			    var span3=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:3%">');
+			    span1.html("R");
+			    span2.html("A");
+			    span3.html("S");
+			    smallLabelDiv.append(span1);
+			    smallLabelDiv.append(span2);
+			    smallLabelDiv.append(span3);
+			    contentDiv.append(smallLabelDiv);
+				var leftContent = $('<div class="col-sm-10"><label data-target="#" onclick="openModalBox(\''+qId+'\',\''+empId+'\',\''+section+'\',\''+question+'\',\''+isRatingEnable+'\')" style="font-weight:600;cursor:pointer;width:100%;"><i class="fa fa-external-link" style="color:#66BEA5;margin-right:1%;"></i>'+question+'</label></div>');
+			    var rightContent = $('<div class="col-sm-2 pull-right">');
+			    var selfRatingLabel = $('<label id="empRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var managerRatingLabel = $('<label  id="mngRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var reviewerRatingLabel = $('<label  id="revRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var selfRemarkLabel = $('<div class="col-sm-12" id="questionRemarkLabel_'+empId+"_"+qId+'" disabled="disabled" style="width:96%;margin-left:4%;padding-top:2%;margin-bottom:1%;border-bottom:1px solid #d3d5d3;padding-left:0px !important;">').html(empRemarks);
+		    	if(empRating == "" || empRating == undefined){
+		    		selfRatingLabel.html("0");
+		    	}else{
+		    		selfRatingLabel.html(empRating);
+		    	}
+		    	if(mngRating == "" || mngRating == undefined){
+		    		managerRatingLabel.html("0");
+		    	}else{
+		    		managerRatingLabel.html(mngRating);
+		    	}
+		    	if(revRating == "" || revRating == undefined){
+		    		reviewerRatingLabel.html("0");
+		    	}else{
+		    		reviewerRatingLabel.html(revRating);
+		    	}
+		    	if(userrole == "Appraiser" && teamMemberId != null){
+		    		selfRemarkLabel.html(mngRemarks);
+		    	}
+		    	if(userrole == "Reviewer" && teamMemberId != null){
+		    		selfRemarkLabel.html(revRemarks);
+		    	}
+			    rightContent.append(reviewerRatingLabel);
+		    	rightContent.append(managerRatingLabel);
+		    	rightContent.append(selfRatingLabel);
+			    contentDiv.append(leftContent);
+			    contentDiv.append(rightContent);
+			    contentDiv.append(selfRemarkLabel);
+			    bodyContainer.append(contentDiv);
+			    counter++;
+			}
+			 totalScoreContainer.push(totalEmpScore);
+			 totalScoreContainer.push(totalMngScore);
+			 totalScoreContainer.push(totalRevScore);
+			 competencyCache.sequentialQuestionsMap = sequenceMap;
+	}
+	openModalBox(qId,empId,section,question,isRatingEnable);
+	prepareBodyForCompetency();
+	//showCompetencies('','null');
+
+	//return bodyContainer;
+}
+
+/*function prepareBodyForQuestions(section){
+	debugger
+	competencyCache.sequentialQuestionsMap = {};
+	var bodyContainer = $('<div class="col-sm-12" style="padding-left:4%;padding-right:4%;">');
+	var sectionMap =  competencyCache.getSectionAndQuestions();
+	var questionIdMap = competencyCache.getQuestionFromId();
+	var empId = getUserId();
+	var userrole = getUserRole();
+	if(sectionMap != undefined && sectionMap != null && !jQuery.isEmptyObject(sectionMap)){
+			var subMap = sectionMap[section];
+			var sequenceMap = competencyCache.sequentialQuestionsMap;
+			var counter = 1;
+			totalScoreContainer = [];
+			var totalEmpScore = 0;
+			var totalMngScore = 0;
+			var totalRevScore = 0;
+			for(var qId in subMap){
+				var empRemarks = "";
+				var mngRemarks = "";
+			    var revRemarks = "";
+			    var empRating = 0;
+			    var mngRating = 0;
+			    var revRating = 0;
+			    var isRatingEnable="";
+			    var question = questionIdMap[qId];
+				var storageUnit = competencyCache.dataStorageMap;
+				if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+					var returnValueArray = checkAndFillValuesInElements(qId,empId);
+					if(currentPhase == "1"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+					}else if(currentPhase == "2"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+						mngRemarks = returnValueArray[2];
+						if(returnValueArray[3] != ""){
+							mngRating = parseInt(returnValueArray[3]);
+						}else{
+							mngRating = 0;
+						}
+					}else if(currentPhase == "3"){
+						empRemarks = returnValueArray[0];
+						empRating = parseInt(returnValueArray[1]);
+						mngRemarks = returnValueArray[2];
+						mngRating = parseInt(returnValueArray[3]);
+						revRemarks = returnValueArray[4]
+						if(returnValueArray[5] != ""){
+							revRating = parseInt(returnValueArray[5]);
+						}else{
+							revRating = 0;
+						}
+					}
+				}else{
+					var dataArray = subMap[qId];
+					if(dataArray != undefined && dataArray != "" && dataArray.length > 0){
+						empRemarks = dataArray["1"];
+						mngRemarks = dataArray["2"];
+						revRemarks = dataArray["3"];
+						empRating =  dataArray["4"];
+						mngRating =  dataArray["5"];
+						revRating =  dataArray["6"];
+						isRatingEnable = dataArray["7"];
+					}	
+				}
+				totalEmpScore += empRating;
+				totalMngScore += mngRating;
+				totalRevScore += revRating;
+				sequenceMap[qId] = counter;
+			   var contentDiv = $('<div class="col-sm-12">');
+			    var smallLabelDiv = $('<div class="col-sm-12" style="margin-top:1%;">');
+			    var span1=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:1.5%">');
+			    var span2=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:3%">');
+			    var span3=$('<span class="pull-right" style="color:#bdbdbd;font-size:10px;margin-right:3%">');
+			    span1.html("R");
+			    span2.html("A");
+			    span3.html("S");
+			    smallLabelDiv.append(span1);
+			    smallLabelDiv.append(span2);
+			    smallLabelDiv.append(span3);
+			    contentDiv.append(smallLabelDiv);
+			  
+				
+				var leftContent = $('<div class="col-sm-10"><label data-target="#" onclick="openModalBox(\''+qId+'\',\''+empId+'\',\''+section+'\',\''+question+'\',\''+isRatingEnable+'\')" style="font-weight:600;cursor:pointer;width:100%;"><i class="fa fa-external-link" style="color:#66BEA5;margin-right:1%;"></i>'+question+'</label></div>');
+			    var rightContent = $('<div class="col-sm-2 pull-right">');
+			    var selfRatingLabel = $('<label id="empRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var managerRatingLabel = $('<label  id="mngRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var reviewerRatingLabel = $('<label  id="revRatingLabel_'+empId+"_"+qId+'" class="label label-default pull-right" style="color:black;background:white;border-radius:0px;height:25px;float:left;border:1px solid #d3d5d3;padding-top:5%;width:25%;">').html("0");
+			    var selfRemarkLabel = $('<div class="col-sm-12" id="questionRemarkLabel_'+empId+"_"+qId+'" disabled="disabled" style="width:96%;margin-left:4%;padding-top:2%;margin-bottom:1%;border-bottom:1px solid #d3d5d3;padding-left:0px !important;">').html(empRemarks);
+		    	if(empRating == "" || empRating == undefined){
+		    		selfRatingLabel.html("0");
+		    	}else{
+		    		selfRatingLabel.html(empRating);
+		    	}
+		    	if(mngRating == "" || mngRating == undefined){
+		    		managerRatingLabel.html("0");
+		    	}else{
+		    		managerRatingLabel.html(mngRating);
+		    	}
+		    	if(revRating == "" || revRating == undefined){
+		    		reviewerRatingLabel.html("0");
+		    	}else{
+		    		reviewerRatingLabel.html(revRating);
+		    	}
+		    	if(userrole == "Appraiser" && teamMemberId != null){
+		    		selfRemarkLabel.html(mngRemarks);
+		    	}
+		    	if(userrole == "Reviewer" && teamMemberId != null){
+		    		selfRemarkLabel.html(revRemarks);
+		    	}
+			    rightContent.append(reviewerRatingLabel);
+		    	rightContent.append(managerRatingLabel);
+		    	rightContent.append(selfRatingLabel);
+			    contentDiv.append(leftContent);
+			    contentDiv.append(rightContent);
+			    contentDiv.append(selfRemarkLabel);
+			    bodyContainer.append(contentDiv);
+			    counter++;
+			}
+			 totalScoreContainer.push(totalEmpScore);
+			 totalScoreContainer.push(totalMngScore);
+			 totalScoreContainer.push(totalRevScore);
+			 competencyCache.sequentialQuestionsMap = sequenceMap;
+	}
+	//return bodyContainer; 
+}
+*/
+function alignModalBox(){
+	var bodyWidth = $(window).outerWidth();
+	var bodyHeight = $(window).height();
+	var widthPercentage = (bodyWidth * 10) / 100;
+	var heightPercentage = (bodyHeight * 5) / 100;
+	$('#remarksAndScoreBox').css({'left': widthPercentage+'px !important','top':heightPercentage+'px !important'});
+	$('#remarksAndScoreBox').modal('show');
+}
+
+function openModalBox(qId,empId,section,question,isRatingEnable,questionTitle){
+	var countOfAnsweredQuestion = 0;
+	debugger
+	alignModalBox();
+	enableAllFields();
+	var isInformation = false;  // Whether its a competence/information.
+	if(questionTitle != undefined && questionTitle != null && questionTitle != ""){
+		changeBoxAccordingInformation(questionTitle,question);
+		isInformation = true;
+	}else{
+		changeBoxAccordingCompetence();
+		if(question.length > 30){
+			$('#sectionLabel').html(section.substr(0,30)+"...");
+		}else{
+			$('#sectionLabel').html(section);
+			
+		}
+	}
+	questionForCompetencyPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle);
+	questionForInformationPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle);
+	
+	emptyAllValueInModalBox(); 
+	fillScoreBox();  
+	checkAndFillValuesInElements(qId,empId);
+	qIdForModal = qId;
+	empIdForModal = empId;
+	sectionForModal = section;
+		$("#saveAndContinueBtn").on("click",function(){ 
+			debugger
+		/*if(validationNumber != null){
+			var allValidationsVerified = checkCredibiltyOfValidationsOnModalBox(validationNumber); 
+			if(allValidationsVerified){
+				debugger
+				var storageUnit = competencyCache.getDataStorageMap();	
+				var sectionStorage = competencyCache.getSectionDataStorageMap();
+					
+				if(hasBackAndForth){
+					bindRemarksLabelsWithModalValues(qIdForModal,empIdForModal);
+					saveAndViewMultipleRemarks();
+					hasBackAndForth = false;
+					navigationIndex = null;
+				}if(hasBackAndForth){
+					bindRemarksLabelsWithModalValues(qIdForModal,empIdForModal);
+					saveAndViewMultipleRemarks();
+					hasBackAndForth = false;
+					navigationIndex = null;
+				}else{
+					if(currentPhase == "1"){
+						sectionStorage.set(qIdForModal,sectionForModal);
+						competencyCache.questionSectionStorageMap =sectionStorage;
+						var dualValueArray = [];
+						var empRemarks =  $('#emp_remarks').val();
+						var empScore = $('#emp_dropdown').val();
+						dualValueArray.push(empRemarks);
+						dualValueArray.push(empScore);
+						storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+						competencyCache.dataStorageMap = storageUnit;
+						if(empScore == undefined || empScore == null || empScore == ""){
+							$("#empRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+						}else{
+							$("#empRatingLabel_"+empIdForModal+"_"+qIdForModal).html(empScore);
+						}
+						$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(empRemarks);
+					}
+					if(currentPhase == "2"){
+						sectionStorage.set(qIdForModal,sectionForModal);
+						competencyCache.questionSectionStorageMap =sectionStorage;
+						var dualValueArray = [];
+						var apprRemarks =  $('#appr_remarks').val();
+						var apprScore = $('#appr_dropdown').val();
+						dualValueArray.push(apprRemarks);
+						dualValueArray.push(apprScore);
+						storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+						competencyCache.dataStorageMap = storageUnit;
+						if(apprScore == undefined || apprScore == null || apprScore == ""){
+							$("#mngRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+						}else{
+							$("#mngRatingLabel_"+empIdForModal+"_"+qIdForModal).html(apprScore);
+						}
+						var questionRatingStatusMap = competencyCache.getMapOfQuestionIsRatedOrNot();
+						var questionRatingStatus = questionRatingStatusMap[qIdForModal];
+						if(questionRatingStatus == "N"){
+							$('#appr_questionRemarkLabel_'+empIdForModal+"_"+qIdForModal).html(apprRemarks);
+						}else{
+							$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(apprRemarks);
+						}
+					}
+					if(currentPhase == "3"){
+						sectionStorage.set(qIdForModal,sectionForModal);
+						competencyCache.questionSectionStorageMap =sectionStorage;
+						var dualValueArray = [];
+						var revRemarks =  $('#rev_remarks').val();
+						var revScore = $('#rev_dropdown').val();
+						dualValueArray.push(revRemarks);
+						dualValueArray.push(revScore);
+						storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+						competencyCache.dataStorageMap = storageUnit;
+						if(revScore == undefined || revScore == null || revScore == ""){
+							$("#revRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+						}else{
+							$("#revRatingLabel_"+empIdForModal+"_"+qIdForModal).html(revScore);
+						}
+						$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(revRemarks);
+					}
+				}
+			}else{
+				showToster('Warning !', "Form has been tempered.", 5, "warning");
+			}
+		}
+		*/
+			// Error while saving the score:
+			
+			if(validationNumber != null){
+				var allValidationsVerified = checkCredibiltyOfValidationsOnModalBox(validationNumber); 
+				if(allValidationsVerified){
+					debugger
+					var storageUnit = competencyCache.getDataStorageMap();	
+					var sectionStorage = competencyCache.getSectionDataStorageMap();
+					
+							//competencyCache.getSectionAndQuestions()[])
+						
+					if(hasBackAndForth){
+						bindRemarksLabelsWithModalValues(qIdForModal,empIdForModal);
+						saveAndViewMultipleRemarks();
+						hasBackAndForth = false;
+						navigationIndex = null;
+					}else{
+						if(currentPhase == "1"){
+							var dualValueArray = [];
+							var empRemarks =  $('#emp_remarks').val();
+							var empScore = $('#emp_dropdown').val();
+							if(sectionForModal=="Overview"){
+								if((empRemarks != "")||(empScore != ""))
+								{ 
+									dualValueArray.push(empRemarks);
+									dualValueArray.push(empScore);
+									
+								}
+								}
+							else{
+							if((empRemarks != "") && (empScore != ""))
+							{ 
+								dualValueArray.push(empRemarks);
+								dualValueArray.push(empScore);
+							}
+						}
+							if(dualValueArray.length!=0){
+								sectionStorage.set(qIdForModal,sectionForModal);
+								competencyCache.questionSectionStorageMap =sectionStorage;
+							    storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+							    competencyCache.dataStorageMap = storageUnit;
+							}
+							if(empScore == undefined || empScore == null || empScore == ""){
+								$("#empRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+							}else{
+								$("#empRatingLabel_"+empIdForModal+"_"+qIdForModal).html(empScore);
+							}
+							$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(empRemarks);
+						}
+						if(currentPhase == "2"){
+							var dualValueArray = [];
+							var apprRemarks =  $('#appr_remarks').val();
+							var apprScore = $('#appr_dropdown').val();
+							if(sectionForModal=="Overview"){
+								if(apprRemarks != "")
+								{ 
+									dualValueArray.push(apprRemarks);
+									dualValueArray.push(apprScore);
+								}
+								}
+							else{
+								if((apprRemarks != "") && (apprScore != ""))
+							{ 
+								dualValueArray.push(apprRemarks);
+								dualValueArray.push(apprScore);
+							}
+							}
+							if(dualValueArray.length!=0){
+								sectionStorage.set(qIdForModal,sectionForModal);
+								competencyCache.questionSectionStorageMap =sectionStorage;
+							    storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+							    competencyCache.dataStorageMap = storageUnit;
+							}
+						if(apprScore == undefined || apprScore == null || apprScore == ""){
+								$("#mngRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+							}else{
+								$("#mngRatingLabel_"+empIdForModal+"_"+qIdForModal).html(apprScore);
+							}
+							var questionRatingStatusMap = competencyCache.getMapOfQuestionIsRatedOrNot();
+							var questionRatingStatus = questionRatingStatusMap[qIdForModal];
+							if(questionRatingStatus == "N"){
+								$('#appr_questionRemarkLabel_'+empIdForModal+"_"+qIdForModal).html(apprRemarks);
+							}else{
+								$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(apprRemarks);
+							}
+						}
+						if(currentPhase == "3"){
+							var dualValueArray = [];
+							var revRemarks =  $('#rev_remarks').val();
+							var revScore = $('#rev_dropdown').val();
+							if(sectionForModal=="Overview"){
+								var revRemarks =  $('#rev_remarks').val();
+								if(revRemarks != "")
+								{ 
+									dualValueArray.push(revRemarks);
+									dualValueArray.push(revScore);
+								}
+								}
+							else{
+							if((revRemarks != "") && (revScore != ""))
+							{ 
+								dualValueArray.push(revRemarks);
+								dualValueArray.push(revScore);
+							}
+							}
+							if(dualValueArray.length!=0){
+								sectionStorage.set(qIdForModal,sectionForModal);
+								competencyCache.questionSectionStorageMap =sectionStorage;
+							    storageUnit.set(empIdForModal+"_"+qIdForModal,dualValueArray);
+							    competencyCache.dataStorageMap = storageUnit;
+							}
+							if(revScore == undefined || revScore == null || revScore == ""){
+								$("#revRatingLabel_"+empIdForModal+"_"+qIdForModal).html("0");
+							}else{
+								$("#revRatingLabel_"+empIdForModal+"_"+qIdForModal).html(revScore);
+							}
+							$("#questionRemarkLabel_"+empIdForModal+"_"+qIdForModal).html(revRemarks);
+						}
+					}
+				}else{
+					showToster('Warning !', "Form has been tempered.", 5, "warning");
+				}
+			}
+			showCompetencies('','null');
+		 var sectionMap = competencyCache.getSectionAndQuestions();
+		 var strOverview = Object.keys(sectionMap.Overview);
+		 if(!strOverview.includes(qIdForModal))
+		{
+			onEmpScoreDropdown();
+		}
+		 else{
+			 if(currentPhase==1){
+				 if($("#emp_remarks").val()==null||$("#emp_remarks").val()==""){
+					 showToster('Warning !', "Please fill valid remark", 5, "warning");
+				 }
+			 }
+			 else if(currentPhase==2){
+				 if($("#emp_remarks").val()==null||$("#appr_remarks").val()==""){
+					 showToster('Warning !', "Please fill valid remark", 5, "warning");
+				 }
+			 }
+		 }
+		
+	});
+	
+	hideAndShowPI(isInformation);
+	setPerformnaceIndicators(qId);
+	hideDropDownScore();
+	setValidations();
+	
+}
+
+function onEmpScoreDropdown()
+{
+	debugger;
+    var flag ;
+    if(currentPhase=="1")
+    {
+            if(($("#emp_dropdown").val()==null||$("#emp_dropdown").val()=="")||($("#emp_remarks").val()==null||$("#emp_remarks").val()==""))
+            {
+        	  flag = false;
+            }
+            else
+            {
+              flag = true;
+            }
+    }
+    else if(currentPhase=="2")
+    {
+        	 if(($("#appr_dropdown").val()==null||$("#appr_dropdown").val()=="")||($("#appr_remarks").val()==null||$("#appr_remarks").val()==""))
+             {
+         	  flag = false;
+             }
+        	 else
+        	{
+        	  flag = true;
+        	}	  
+    }
+    else if(currentPhase=="3")
+    {
+        	 if(($("#rev_dropdown").val()==null||$("#rev_dropdown").val()=="")||($("#rev_remarks").val()==null||$("#rev_remarks").val()==""))
+             {
+         	  flag = false;
+             }
+        	 else
+        	{
+        	  flag = true;
+        	}       
+    }
+   if(flag == false)
+	   {
+	   showToster('Warning !', "Please choose the valid score and fill the remark", 5, "warning");
+	   }
+}
+function hideAndShowPI(isInformation){
+	debugger
+	if(isInformation){
+		viewFlag = true;
+		viewAndHidePI();
+	}else{
+		viewFlag = false;
+		viewAndHidePI();
+	}
+}
+
+function saveAndViewMultipleRemarks(){
+	var storageUnit = competencyCache.getDataStorageMap();
+	var questionRatingStatus = competencyCache.getMapOfQuestionIsRatedOrNot();
+	if(storageUnit.size > 0){
+		for(var conjuctionKey of storageUnit.keys()){
+			var empId = conjuctionKey.split("_")[0];
+			var qId = conjuctionKey.split("_")[1];
+			var dataArray = storageUnit.get(conjuctionKey);
+			var remarks = dataArray[0];
+			var score =  dataArray[1];
+			var isRatingYOrN = questionRatingStatus[qId];
+			if(currentPhase == "1"){
+				if(score == undefined || score == null || score == ""){
+					$("#empRatingLabel_"+empId+"_"+qId).html("0");
+				}else{
+					$("#empRatingLabel_"+empId+"_"+qId).html(score);
+				}
+				$("#questionRemarkLabel_"+empId+"_"+qId).html(remarks);
+			}
+			if(currentPhase == "2"){
+				if(score == undefined || score == null || score == ""){
+					$("#mngRatingLabel_"+empId+"_"+qId).html("0");
+				}else{
+					$("#mngRatingLabel_"+empId+"_"+qId).html(score);
+				}
+				if(isRatingYOrN == "N"){
+					$('#appr_questionRemarkLabel_'+empId+"_"+qId).html(remarks);
+				}else{
+					$("#questionRemarkLabel_"+empId+"_"+qId).html(remarks);
+				}
+			}
+			if(currentPhase == "3"){
+				if(score == undefined || score == null || score == ""){
+					$("#revRatingLabel_"+empId+"_"+qId).html("0");
+				}else{
+					$("#revRatingLabel_"+empId+"_"+qId).html(score);
+				}
+				$("#questionRemarkLabel_"+empId+"_"+qId).html(remarks);
+			}
+		}
+	}
+}
+
+function changeBoxAccordingInformation(questionTitle,question){
+	$('#questionLabel').html(questionTitle);
+	$('#emp_score_dd_div').hide();
+	$('#emp_commentLabel > img').hide();
+	$('#emp_commentLabel').html(question);
+	$('#appr_score_dd_div').hide();
+	$('#appr_commentLabel > img').hide();
+	$('#appr_commentLabel').html("What your Appraiser would say ?");
+	$('#modal_rev_sec').hide();
+}
+
+function changeBoxAccordingCompetence(){
+	$('#emp_score_dd_div').show();
+	$('#emp_commentLabel').html('<img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comment');
+	$('#appr_score_dd_div').show();
+	$('#appr_commentLabel').html('<img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comment');
+	$('#modal_rev_sec').show();
+}
+
+function setPerformnaceIndicators(qId){
+	debugger
+	var piMap = competencyCache.getPerformanceIndicatorsMap();
+	if(piMap != undefined && piMap != null && !jQuery.isEmptyObject(piMap)){
+		var piArray = piMap[qId];
+		if(piArray != undefined && piArray[0] != null && piArray[0] != ""){
+			var previous_pi = piArray[0];
+			var pi = previous_pi.substr(0,150) + "...";
+			$('#pi_previous').html(pi);
+	    	$('#pi_previous').on("click",function(){
+	    		var previousPILabel = piArray[0];
+	    		$('#pi_previous').hide();
+	    		$('#pi_previous_ta').show();
+	    		$('#pi_previous_ta').focus();
+	    		$('#pi_previous_ta').val(previousPILabel);
+	    	});
+	    	$('#pi_previous_ta').on( 'keydown', function ( e ) {
+	    	    if ( e.keyCode === 27 || e.keyCode === 13) { 
+	    	        var previous_pi_textarea = $('#pi_previous_ta').val();
+	    	        $('#previous_pi.substr(0,150) + "...";').hide();
+	    	        $('#pi_previous').show();
+	    	        $('#pi_previous').html(previous_pi_textarea.substr(0,150)+"...");
+	    	    }
+	    	});
+	    	
+	    	$(document).mouseup(function (e){
+	    		var container = $("#pi_previous_ta");
+	    		var pi = previous_pi.substr(0,150) + "...";
+	    		if (!container.is(e.target) && container.has(e.target).length === 0){
+	    			container.hide()
+	    			$("#pi_previous").show();
+	    			$("#pi_previous").val(pi);
+	    			$("#pi_previous").blur();
+	    		}
+	    	});
+	    	
+	    }else{
+	    	$('#pi_previous').html("Not Available");
+	    }
+		if(piArray != undefined && piArray[1] != null && piArray[1] != ""){
+			var current_pi = piArray[1];
+			var pi = current_pi.substr(0,150) + "...";
+			$('#pi_current').html(pi);
+			$('#pi_current').on("click",function(){
+				debugger;
+	    		var currentPILabel = piArray[1];
+	    		$('#pi_current').hide();
+	    		$('#pi_current_ta').show();
+	    		$('#pi_current_ta').focus();
+	    		$('#pi_current_ta').val(currentPILabel);
+	    	});
+	    	$('#pi_current_ta').on( 'keydown', function ( e ) {
+	    	    if ( e.keyCode === 27 || e.keyCode === 13) { 
+	    	        var previous_pi_textarea = $('#pi_current_ta').val();
+	    	        $('#pi_current_ta').hide();
+	    	        $('#pi_current').show();
+	    	        $('#pi_current').html(previous_pi_textarea.substr(0,150)+"...");
+	    	    }
+	    	});
+	    	
+	    	$(document).mouseup(function (e){
+	    		var container = $("#pi_current_ta");
+	    		var pi = current_pi.substr(0,150) + "...";
+	    		if (!container.is(e.target) && container.has(e.target).length === 0){
+	    			container.hide()
+	    			$("#pi_current").show();
+	    			$("#pi_current").val(pi);
+	    			$("#pi_current").blur();
+	    		}
+	    	});
+		}else{
+			$('#pi_current').html("Not Available");
+		}
+		if(piArray != undefined && piArray[2] != null && piArray[2] != ""){
+			var next_pi = piArray[2];
+			var pi = next_pi.substr(0,150) + "...";
+			$('#pi_next').html(pi);
+			$('#pi_next').on("click",function(){
+	    		var currentPILabel = piArray[2];
+	    		$('#pi_next').hide();
+	    		$('#pi_next_ta').show();
+	    		$('#pi_next_ta').focus();
+	    		$('#pi_next_ta').val(currentPILabel);
+	    	});
+	    	$('#pi_next').on( 'keydown', function ( e ) {
+	    	    if ( e.keyCode === 27 || e.keyCode === 13) { 
+	    	        var previous_pi_textarea = $('#pi_next_ta').val();
+	    	        $('#pi_next_ta').hide();
+	    	        $('#pi_next').show();
+	    	        $('#pi_next').html(previous_pi_textarea.substr(0,150)+"...");
+	    	    }
+	    	});
+	    	
+	    	$(document).mouseup(function (e){
+	    	    var container = $("#pi_next_ta");
+	    	    var pi = next_pi.substr(0,150) + "...";
+	    	    if (!container.is(e.target) && container.has(e.target).length === 0){
+	    	        container.hide()
+	    	        $("#pi_next").show();
+	    	        $("#pi_next").val(pi);
+	    	        $("#pi_next").blur();
+	    	    }
+	    	});
+		}else{
+			$('#pi_next').html("Not Available");
+		}
+	}
+}
+
+
+function checkAndFillValuesInElements(qId,empId){
+	debugger
+	var storageUnit = competencyCache.dataStorageMap; //cached map
+	var returnValues = [];
+	if(currentPhase == "1"){
+		if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+			var dataArray = storageUnit.get(empId+"_"+qId); 
+			if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+			    $('#emp_remarks').val(dataArray[0]);
+			    $('#emp_dropdown').val(dataArray[1]);
+			    returnValues.push(dataArray[0]);
+			    returnValues.push(dataArray[1]);
+			}else{
+				returnValues.push("");
+			    returnValues.push(0);
+			}
+		}
+	}
+	if(currentPhase == "2"){
+		 var dataArray = getQuestionAndRemarksMap(qId);
+	     if(dataArray != null){
+	    	 $('#emp_remarks').val(dataArray[1]);
+	    	 if(dataArray[4] == "0"){
+	    		 $('#emp_dropdown').val("");
+	    	 }else{
+	    		 $('#emp_dropdown').val(dataArray[4]);
+	    	 }
+	    	 returnValues.push(dataArray[1]);
+	    	 returnValues.push(dataArray[4]);
+	     } 
+	     if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+	    	 var dataArray = storageUnit.get(empId+"_"+qId); 
+				if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+				    $('#appr_remarks').val(dataArray[0]);
+				    $('#appr_dropdown').val(dataArray[1]);
+				    returnValues.push(dataArray[0]);
+				    returnValues.push(dataArray[1]);
+				}else{
+					returnValues.push("");
+				    returnValues.push(0);
+				}
+	     }
+	 }    
+     if(currentPhase == "3"){
+		 var dataArray = getQuestionAndRemarksMap(qId);
+	     if(dataArray != null){
+	    	 $('#emp_remarks').val(dataArray[1]);
+	    	 if(dataArray[4] == "0"){
+	    		 $('#emp_dropdown').val("");
+	    	 }else{
+	    		 $('#emp_dropdown').val(dataArray[4]);
+	    	 }
+	    	 $('#appr_remarks').val(dataArray[2]);
+	    	 if(dataArray[5] == "0"){
+	    		 $('#appr_dropdown').val("");
+	    	 }else{
+	    		 $('#appr_dropdown').val(dataArray[5]);
+	    	 }
+	    	 returnValues.push(dataArray[1]);
+	    	 returnValues.push(dataArray[4]);
+	    	 returnValues.push(dataArray[2]);
+	    	 returnValues.push(dataArray[5]);
+	     }
+	     if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+	    	 var dataArray = storageUnit.get(empId+"_"+qId); 
+				if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+				    $('#rev_remarks').val(dataArray[0]);
+				    $('#rev_dropdown').val(dataArray[1]);
+				    returnValues.push(dataArray[0]);
+				    returnValues.push(dataArray[1]);
+				}else{
+					returnValues.push("");
+				    returnValues.push(0);
+				}
+	     }
+     }
+     return returnValues;
+}
+
+function emptyAllValueInModalBox(){
+	debugger
+	$('#emp_remarks').val("");
+	$('#appr_remarks').val("");
+	$('#rev_remarks').val("");
+	$('#emp_dropdown').select("val","");
+	$('#appr_dropdown').select("val","");
+	$('#rev_dropdown').select("val","");
+	$('#pi_previous').html('');
+	$('#pi_current').html('');
+	$('#pi_next').html('');
+}
+
+function emptyAllContainers(){
+	$("#emp_dropdown").select("val","");
+	$("#appr_dropdown").select("val","");
+	$("#rev_dropdown").select("val","");
+}
+
+function fillScoreBox(){
+	debugger
+	var empScoreDropDown = $("#emp_dropdown");
+	var apprScoreDropdwon = $("#appr_dropdown");
+	var revScoreDropdown = $("#rev_dropdown");
+	empScoreDropDown.html(new Option("", "", null, null));
+	apprScoreDropdwon.html(new Option("", "", null, null));
+	revScoreDropdown.html(new Option("", "", null, null));
+	for(var i=1; i <= 5 ;i++ ){
+		empScoreDropDown.append(new Option(i, i, null, null));	
+		apprScoreDropdwon.append(new Option(i, i, null, null));
+		revScoreDropdown.append(new Option(i, i, null, null));
+	}
+}
+
+function getQuestionAndRemarksMap(qId){
+	debugger
+	var sectionMap = competencyCache.getSectionAndQuestions();
+	if(sectionMap != undefined && sectionMap != null && !jQuery.isEmptyObject(sectionMap)){
+		for(var section in sectionMap){
+			var subMap = sectionMap[section];
+			var dataArray = subMap[qId];
+			if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+				return dataArray;
+			}
+		}
+	}
+	return null;
+}
+
+function viewAndHidePI(){
+	debugger;
+	var sectionMap = competencyCache.getSectionAndQuestions();
+    var strOverview = Object.keys(sectionMap.Overview);
+    
+    if(!strOverview.includes(qIdForModal)){
+    	if(viewFlag){
+    		$('#performanceIndicatorDiv').animate({
+    		}, 0, function() {
+    			$("#performanceIndicatorDiv").hide("slide", { direction: "right"},500);
+    		});
+    		$('#commentBoxDiv').animate({
+    		    }, 2000, function() {
+    		    	window.setTimeout(function(){$("#commentBoxDiv").removeClass("col-sm-9");}, 300);
+    		});
+    		viewFlag = false;
+    	}else{
+    		$('#commentBoxDiv').delay(5000).removeClass("col-sm-12");
+    		$('#commentBoxDiv').delay(5000).addClass("col-sm-9");
+    		$('#commentBoxDiv').delay(5000).removeAttr("style");
+    		$('#commentBoxDiv').delay(5000).prop("style","border-right:1px solid #d3d5d3 !important");
+    		$("#performanceIndicatorDiv").show("slide", { direction: "right"}, 800);
+    		viewFlag = true;
+    	}
+    }
+    else{
+    	$('#commentBoxDiv').animate({
+	    }, 2000, function() {
+	    	window.setTimeout(function(){$("#commentBoxDiv").removeClass("col-sm-9");}, 300);
+	});
+    	$("#performanceIndicatorDiv").hide();
+    }
+    	
+	
+}
+
+var navigationIndex = null;
+function fetchNextQuestion(qId,question,empId){
+	$('#previousQuestionIcon').css({"color":"#00000"});
+	hasBackAndForth = true;
+	var sequencialQuestionMap = competencyCache.sequentialQuestionsMap;
+	var swapPositionMap = getReverseSequenceMap(sequencialQuestionMap);
+	var questionMap = competencyCache.getQuestionFromId();
+	var totalElements = Object.keys(competencyCache.sequentialQuestionsMap).length;
+	var currentQuestionId = null;
+	if(navigationIndex != null && navigationIndex < totalElements){
+		 var currentQuestionId = swapPositionMap[navigationIndex];	
+		 performActionOnNextButton(swapPositionMap,questionMap,empId,currentQuestionId);
+	}else{
+		if(navigationIndex == null){
+			if(swapPositionMap != undefined && swapPositionMap != null && !jQuery.isEmptyObject(swapPositionMap)){
+				var index = sequencialQuestionMap[qId];
+				navigationIndex = index;
+				currentQuestionId = swapPositionMap[navigationIndex];
+				performActionOnNextButton(swapPositionMap,questionMap,empId,currentQuestionId);
+			}
+		}else{
+			navigationIndex = totalElements;
+			$('#nextQuestionIcon').css({"color":"#E0E0E0"});
+		}
+	}
+	
+}
+
+function bindRemarksLabelsWithModalValues(qId,empId){
+	debugger
+	var storageUnit = competencyCache.getDataStorageMap();
+	var dualValueArray = [];
+	if(currentPhase == "1"){
+		var remarks =  $('#emp_remarks').val();
+		var score = $('#emp_dropdown').val();
+		dualValueArray.push(remarks);
+		dualValueArray.push(score);
+		storageUnit.set(empId+"_"+qId,dualValueArray);
+		competencyCache.dataStorageMap = storageUnit;
+	}
+	if(currentPhase == "2"){
+		var remarks =  $('#appr_remarks').val();
+		var score = $('#appr_dropdown').val();
+		dualValueArray.push(remarks);
+		dualValueArray.push(score);
+		storageUnit.set(empId+"_"+qId,dualValueArray);
+		competencyCache.dataStorageMap = storageUnit;
+	}
+	if(currentPhase == "3"){
+		var remarks =  $('#rev_remarks').val();
+		var score = $('#rev_dropdown').val();
+		dualValueArray.push(remarks);
+		dualValueArray.push(score);
+		storageUnit.set(empId+"_"+qId,dualValueArray);
+		competencyCache.dataStorageMap = storageUnit;
+	}
+}
+
+function performActionOnNextButton(swapPositionMap,questionMap,empId,currentQuestionId){
+	bindRemarksLabelsWithModalValues(currentQuestionId,empId);
+	$('#emp_remarks').val("");
+	$("#emp_dropdown").val("");
+	$('#appr_remarks').val("");
+	$('#appr_dropdown').val("");
+	$('#rev_remarks').val("");
+	$('#rev_dropdown').val("");
+	navigationIndex++;
+	var nextQuestionId = swapPositionMap[navigationIndex];
+	var nextQuestion = questionMap[nextQuestionId];
+	var questionRatingStatusMap = competencyCache.getMapOfQuestionIsRatedOrNot();
+	var isRatingAvailable = questionRatingStatusMap[nextQuestionId];
+	if(isRatingAvailable == "N"){
+		$('#emp_commentLabel').html(nextQuestion);
+		var informationQuestionMap = competencyCache.overviewCustomizedMap;
+	    nextQuestion = informationQuestionMap[nextQuestionId];
+	}
+	$('#questionLabel').html(nextQuestion);
+	checkAndFillValuesInElements(nextQuestionId,empId);
+	setPerformnaceIndicators(nextQuestionId);
+	qIdForModal = nextQuestionId;
+	empIdForModal = empId;
+}
+function questionPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle){
+	$('#questionPerSection').html('');
+	var competencyDiv = $('<div id="competencyQuestionsDiv" class="col-sm-12" style="border:1px solid #ffffff;background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var headerdiv = $('<div class="col-sm-12" style="background:#ffffff;height:40px;">');
+	var arrowLeftDiv = $('<div class="col-sm-1" style="background:#ffffff;height:40px;">');
+	var arrowRightDiv = $('<div class="col-sm-1" style="background:#ffffff;height:40px;">');
+	var questionContent = $('<div class="col-sm-2" style="background:#ffffff;height:40px;">');
+	var sectionMap =  competencyCache.getSectionAndQuestions();
+	var questionIdMap = competencyCache.getQuestionFromId();
+	headerdiv.append(arrowLeftDiv);
+			var subMap = sectionMap[section];
+		for(var qId in subMap){
+			var question = questionIdMap[qId];
+			var questionLablePerSection = $('<div class="col-sm-2"><label data-target="#" onclick="openModalBox(\''+qId+'\',\''+empId+'\',\''+section+'\',\''+question+'\',\''+isRatingEnable+'\')" style="font-weight:600;cursor:pointer;width:100%;cursor: pointer;color:#4A4A4A;font-size:16px;">'+question+'</label></div>');
+			//changeQuestionColor();
+			//var questionLablePerSection = $('<div class="col-sm-2" style="background:#D6D7D9;height:40px;"><label style="width:100%;height:40px;text-align:left;font-weight:400; onclick="openModalBox(\''+qId+'\',\''+empId+'\',\''+section+'\',\''+question+'\',null,\''+questionTitle+'\')"> '+question+'</label></div>');
+			headerdiv.append(questionLablePerSection)
+			
+		}
+		$('.col-sm-2').click(function(){
+			  $(this).toggleClass(' style="background-color: yellow;"');
+			});
+		headerdiv.append(arrowRightDiv);
+		competencyDiv.append(headerdiv);
+	    $('#questionPerSection').append(competencyDiv);
+
+}
+
+function getReverseSequenceMap(sequencialQuestionMap){
+	var revereseSequenceMap = {};
+	if(sequencialQuestionMap != undefined && sequencialQuestionMap != null && !jQuery.isEmptyObject(sequencialQuestionMap)){
+		for(var key in sequencialQuestionMap){
+			var sequence = sequencialQuestionMap[key];
+			revereseSequenceMap[sequence] = key;
+		}
+	}
+	return revereseSequenceMap;
+}
+
+function fetchPreviousQuestion(qId,question,empId){
+	$('#nextQuestionIcon').css({"color":"#000000"});
+	hasBackAndForth = true;
+	var sequencialQuestionMap = competencyCache.sequentialQuestionsMap;
+	var swapPositionMap = getReverseSequenceMap(sequencialQuestionMap);
+	var questionMap = competencyCache.getQuestionFromId();
+	var totalElemenets = Object.keys(competencyCache.sequentialQuestionsMap).length;
+	var currentQuestionId = null;
+	if(navigationIndex != null && navigationIndex > 1){
+		currentQuestionId = swapPositionMap[navigationIndex];	
+		performActionOnPreviousButton(swapPositionMap,questionMap,empId,currentQuestionId);
+	}else{
+		if(navigationIndex == null){
+			if(swapPositionMap != undefined && swapPositionMap != null && !jQuery.isEmptyObject(swapPositionMap)){
+				var index = sequencialQuestionMap[qId];
+				navigationIndex = index
+				currentQuestionId = swapPositionMap[navigationIndex];;
+				performActionOnPreviousButton(swapPositionMap,questionMap,empId,currentQuestionId);
+			}
+		}else{
+			navigationIndex = 1;
+			$('#previousQuestionIcon').css({"color":"#E0E0E0"});
+		}
+	}
+}
+
+function performActionOnPreviousButton(swapPositionMap,questionMap,empId,currentQuestionId){
+	bindRemarksLabelsWithModalValues(currentQuestionId,empId);
+	$('#emp_remarks').val("");
+	$("#emp_dropdown").val("");
+	$('#appr_remarks').val("");
+	$('#appr_dropdown').val("");
+	$('#rev_remarks').val("");
+	$('#rev_dropdown').val("");
+	navigationIndex--;
+	var prevQuestionId = swapPositionMap[navigationIndex];
+	var prevQuestion = questionMap[prevQuestionId];
+	var questionRatingStatusMap = competencyCache.getMapOfQuestionIsRatedOrNot();
+	var isRatingAvailable = questionRatingStatusMap[prevQuestionId];
+	if(isRatingAvailable == "N"){
+		$('#emp_commentLabel').html(prevQuestionId);
+		var informationQuestionMap = competencyCache.overviewCustomizedMap;
+	    nextQuestion = informationQuestionMap[prevQuestionId];
+	}
+	$('#questionLabel').html(prevQuestion);
+	checkAndFillValuesInElements(prevQuestionId,empId);
+	setPerformnaceIndicators(prevQuestionId);
+	qIdForModal = prevQuestionId;
+	empIdForModal = empId;
+}
+
+/********************************************************Information Screen UI***********************************************************************/
+
+function showInformation(){
+	$('#headerOfFullContentDiv').html('');
+	$('#fullContentDiv').html('');
+	$('#previousQuestionIcon').css({"color":"#E0E0E0"});
+	$('#nextQuestionIcon').css({"color":"#00000"});
+	appendSubmitButtonOnTop();
+	highlightInformationLabel();
+	competencyCache.sequentialQuestionsMap = {};
+	navigationIndex = null;
+	var informationDiv = $('<div id="informationDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
+	var dataInformationDiv = $('<div id="dataInformationDiv" class="col-sm-12" style="margin-top:3%;"></div>');
+    var header1 = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;text-align:left;padding-left:3%;height:40px;border-left:none !important;border-right:none !important;font-weight:600;">').html('Appraisal Summary');
+    var header2 = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;text-align:center;height:40px;border-left:none !important;border-right:none !important;font-weight:600;">').html('Self');
+    var header3 = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;text-align:center;height:40px;border-left:none !important;font-weight:600;">').html('Appraiser');
+    var informationBody = prepareBodyForInformation("Overview");
+    dataInformationDiv.append(header1);
+    dataInformationDiv.append(header2);
+    dataInformationDiv.append(header3);
+    informationDiv.append(dataInformationDiv);
+    informationDiv.append(informationBody);
+    $('#fullContentDiv').append(informationDiv);
+    validationsOnSubmit();
+}
+
+
+function prepareBodyForInformation(section){
+	var bodyContainer = $('<div class="col-sm-12">');
+	var sectionMap =  competencyCache.getSectionAndQuestions();
+	var questionIdMap = competencyCache.getQuestionFromId();
+	var questionTitleMap = competencyCache.overviewCustomizedMap;
+	var empId = "";
+	if(teamMemberId != null && teamMemberId != ""){
+		empId = teamMemberId
+	}else{
+		empId = user.apprempid;
+	}
+	if(sectionMap != undefined && sectionMap != null && !jQuery.isEmptyObject(sectionMap)){
+			var subMap = sectionMap[section];
+			var sequenceMap = competencyCache.sequentialQuestionsMap;
+			var counter = 1;
+			for(var qId in subMap){
+				var empRemarks = "";
+				var mngRemarks = "";
+			    var question = questionIdMap[qId];
+			    var questionTitle = questionTitleMap[qId];
+				var storageUnit = competencyCache.dataStorageMap;
+				if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+					var returnValueArray = checkAndFillValuesInElements(qId,empId);
+					if(currentPhase == "1"){
+						empRemarks = returnValueArray[0];
+					}else if(currentPhase == "2"){
+						empRemarks = returnValueArray[0];
+						mngRemarks = returnValueArray[2];
+					}
+				}else{
+					var dataArray = subMap[qId];
+					if(dataArray != undefined && dataArray != "" && dataArray.length > 0){
+						empRemarks = dataArray["1"];
+						mngRemarks = dataArray["2"];
+					}
+				}
+				openModalBox(qId, empId, section, question, null, questionTitle);
+				sequenceMap[qId] = counter;
+				var nameOfInformation = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	    		var label1 = $('<label class="col-sm-12" style="padding-left:10%;cursor:pointer;margin-top:1%;font-weight:500;height:80px;overflow-y:auto;" onclick="openModalBox(\''+qId+'\',\''+empId+'\',\''+section+'\',\''+question+'\',null,\''+questionTitle+'\')"> <i class="fa fa-external-link" style="color:#66BEA5;margin-right:3%;"></i>'+questionTitle+'</label>');
+	    		nameOfInformation.append(label1);
+	    		var employeeRemarkDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	    		var empRemarksLabel = $('<label class="col-sm-12" id="questionRemarkLabel_'+empId+"_"+qId+'" style="padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
+	    		var managerRemarksDiv = $('<div class="col-sm-4"  style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	    		var mngRemarksLabel = $('<label class="col-sm-12" id="appr_questionRemarkLabel_'+empId+"_"+qId+'" style="padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
+	    		if(empRemarks != ""){
+	    			empRemarksLabel.html(empRemarks);
+	    		}
+	    		if(mngRemarks != ""){
+	    			mngRemarksLabel.html(mngRemarks);
+	    		}
+	    		employeeRemarkDiv.append(empRemarksLabel);
+	    		managerRemarksDiv.append(mngRemarksLabel);
+	    		bodyContainer.append(nameOfInformation);
+	    		bodyContainer.append(employeeRemarkDiv);
+	    		bodyContainer.append(managerRemarksDiv);
+	    		counter++;
+			}   
+			competencyCache.sequentialQuestionsMap = sequenceMap;
+			createStrengthLabel(empId,bodyContainer);
+			showAllStrengthView(empId,bodyContainer);
+			createWeaknessLabel(empId,bodyContainer);
+			showAllWeaknessView(empId,bodyContainer);
+	}else{
+		var errorDiv = $('<div class="col-sm-12" id="errorDiv">').html("No data available");
+    	bodyContainer.append(errorDiv);
+	}
+	return bodyContainer;
+}
+
+function createStrengthLabel(empId,element){
+	var strengthDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var label1 = $('<label style="width:100%;padding-left:10%;cursor:pointer;margin-top:1%;font-weight:500;height:80px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Strengths\')"> <i class="fa fa-external-link" style="color:#66BEA5;margin-right:3%;"></i> Strength</label>');
+	strengthDiv.append(label1);
+	element.append(strengthDiv);
+}
+
+function createWeaknessLabel(empId,element){
+	var weaknessDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var label1 = $('<label style="width:100%;padding-left:10%;cursor:pointer;margin-top:1%;font-weight:500;height:80px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Weaknesses\')"> <i class="fa fa-external-link" style="color:#66BEA5;margin-right:3%;"></i> Weakness</label>');
+	weaknessDiv.append(label1);
+	element.append(weaknessDiv);
+}
+
+function showAllStrengthView(empId,element){
+	var employeeRemarkDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var empRemarksLabel = $('<label  id="strengths_'+empId+'" style="padding-top:3%;padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
+	var managerRemarksDiv = $('<div class="col-sm-4"  style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var mngRemarksLabel = $('<label id="appr_strengths_'+empId+'" style="padding-top:3%;padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');	
+	var strengthArray = fetchSWFromCache(empId,'Strengths');
+	renderStrengthsOnInformationScreen(empRemarksLabel,mngRemarksLabel,strengthArray);
+	employeeRemarkDiv.append(empRemarksLabel);
+	managerRemarksDiv.append(mngRemarksLabel);
+	element.append(employeeRemarkDiv);
+	element.append(managerRemarksDiv);
+}
+
+function renderStrengthsOnInformationScreen(empStrength,apprStrength,strengthArray){
+	if((currentPhase == 2 || currentPhase == 1) && strengthArray.length > 0){
+		for(var i=0; i < strengthArray.length; i++){
+			var li = $('<li style="list-style-position: outside;">').html(strengthArray[i]);
+			empStrength.append(li);
+		}
+	}
+	if(currentPhase == 3 && strengthArray.length > 0){
+		for(var i=0; i < strengthArray.length; i++){
+			var li = $('<li style="list-style-position: outside;">').html(strengthArray[i]);
+			if(i < 3){
+				empStrength.append(li);
+			}else{
+				apprStrength.append(li);
+			}
+		}
+	}
+	
+}
+
+function showAllWeaknessView(empId,element){
+	var employeeRemarkDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var empRemarksLabel = $('<label id="weaknesses_'+empId+'" style="padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
+	var weaknessArray = fetchSWFromCache(empId,'Weaknesses');
+	var managerRemarksDiv = $('<div class="col-sm-4"  style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
+	var mngRemarksLabel = $('<label id="appr_weaknesses_'+empId+'" style="padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');	
+	renderStrengthsOnInformationScreen(empRemarksLabel,mngRemarksLabel,weaknessArray);
+	employeeRemarkDiv.append(empRemarksLabel);
+	managerRemarksDiv.append(mngRemarksLabel);
+	element.append(employeeRemarkDiv);
+	element.append(managerRemarksDiv);
+}
+
+function openSWBox(empId,question){
+	alignSWBox();
+	emptyAllValuesInSWBox();
+	$('#questionLabelSW').html(question);
+	if(question == "strength"){
+		$('#sOrwLabel').html('List out your '+question.toLowerCase()+'.');
+	}else{
+		$('#sOrwLabel').html('List out your '+question.toLowerCase()+'.');
+	}
+	fetchSWFromCache(empId,question);
+	$('#saveSW').on("click",function(){
+		var question = $('#questionLabelSW').text();
+		var char1 = "";
+		var char2 = "";
+		var char3 = "";
+		if(currentPhase == 1){
+			char1 = $('#emp_SW1').val();
+			char2 = $('#emp_SW2').val();
+			char3 = $('#emp_SW3').val();
+		}
+		if(currentPhase == 2){
+			char1 = $('#appr_SW1').val();
+			char2 = $('#appr_SW2').val();
+			char3 = $('#appr_SW3').val();
+		}
+		var storageUnit = competencyCache.getStrengthAndWeaknessMap();
+	    var swContainerArray = [];
+	    swContainerArray.push(char1);
+	    swContainerArray.push(char2);
+	    swContainerArray.push(char3);
+	    storageUnit.set(empId+"_"+question,swContainerArray);
+	    competencyCache.strengthAnsWeaknessMap = storageUnit;
+	    appendSWInInformationView();
+	});
+	setValidationsForSWBox();  // strength and weakness box validations based on role
+	hideAndShowPI(true);
+}
+
+function emptySWInInformationUI(empId,cp,question){
+	if(question == "Strengths" && cp == 1){
+		$('#strengths_'+empId).html('');
+	}if(question == "Weaknesses" && cp == 1){
+		$('#weaknesses_'+empId).html('');
+	}
+	if(question == "Strengths" && cp == 2){
+		$('#appr_strengths_'+empId).html('');
+	}
+	if(question == "Weaknesses" && cp == 2){
+		$('#appr_weaknesses_'+empId).html('');
+	}
+}
+
+function appendSWInInformationView(){
+	var empId = getUserId(); 
+	var question = $('#questionLabelSW').text();
+	emptySWInInformationUI(empId,currentPhase,question);
+	var swMap = competencyCache.getStrengthAndWeaknessMap();
+	if(swMap != null && swMap.size > 0){
+			var key = empId+"_"+question;
+			var swArray = swMap.get(key);
+			if(swArray != undefined && swArray != null && swArray.length > 0){
+				for(var i=0; i < swArray.length; i++){
+					if(question == "Strengths" && currentPhase == 1){
+						var li = $('<li style="list-style-position: outside;">').html(swArray[i]);
+						$('#strengths_'+empId).append(li);
+					}
+					if(question == "Strengths" && currentPhase == 2){
+						var li = $('<li style="list-style-position: outside;">').html(swArray[i]);
+						$('#appr_strengths_'+empId).append(li);
+					}
+					if(question == "Weaknesses" && currentPhase == 1){
+						var li = $('<li style="list-style-position: outside;">').html(swArray[i]);
+						$('#weaknesses_'+empId).append(li);
+					}
+					if(question == "Weaknesses" && currentPhase == 2){
+						var li = $('<li style="list-style-position: outside;">').html(swArray[i]);
+						$('#appr_weaknesses_'+empId).append(li);
+					}
+				}
+			}
+	}
+}
+
+function emptyAllValuesInSWBox(){
+	$('#emp_SW1').val('');
+	$('#emp_SW2').val('');
+	$('#emp_SW3').val('');
+	$('#appr_SW1').val('');
+	$('#appr_SW2').val('');
+	$('#appr_SW3').val('');
+}
+
+function fetchSWFromCache(empId,question){
+	var storageUnit = competencyCache.strengthAnsWeaknessMap;
+	var swMap = competencyCache.getStrengthAndWeaknessServerDataMap();
+	var returnValuesArray = [];
+	if(currentPhase ==  1){
+		if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+			var dataArray = storageUnit.get(empId+"_"+question); 
+			if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+			    $('#emp_SW1').val(dataArray[0]);
+			    $('#emp_SW2').val(dataArray[1]);
+			    $('#emp_SW3').val(dataArray[2]);
+			    returnValuesArray = dataArray;
+			}
+		}
+	}else if(currentPhase == "2"){
+	     var dataArray = swMap["1_"+question];
+		 if(dataArray != null){
+	    	 $('#emp_SW1').val(dataArray[0]);
+	    	 $('#emp_SW2').val(dataArray[1]);
+	    	 $('#emp_SW3').val(dataArray[2]);
+	    	 returnValuesArray.push(dataArray[0]);
+	    	 returnValuesArray.push(dataArray[1]);
+	    	 returnValuesArray.push(dataArray[2]);
+	     }
+	     if(storageUnit != undefined && storageUnit != null && storageUnit.size > 0){
+	    	 var dataArray = storageUnit.get(empId+"_"+question); 
+				if(dataArray != undefined && dataArray != null && dataArray.length > 0){
+				    $('#appr_SW1').val(dataArray[0]);
+				    $('#appr_SW2').val(dataArray[1]);
+				    $('#appr_SW3').val(dataArray[2]);
+				    returnValuesArray.push(dataArray[0]);
+				    returnValuesArray.push(dataArray[1]);
+				    returnValuesArray.push(dataArray[2]);
+				}else{
+					returnValuesArray.push("");
+				    returnValuesArray.push("");
+				    returnValuesArray.push("");
+				}
+	     }
+	}else{
+		var empSWArray = swMap["1_"+question];
+		var empApprSWArray = swMap["2_"+question];
+		$('#emp_SW1').val(empSWArray[0]);
+   	 	$('#emp_SW2').val(empSWArray[1]);
+   	 	$('#emp_SW3').val(empSWArray[2]);
+		$('#appr_SW1').val(empApprSWArray[0]);
+	    $('#appr_SW2').val(empApprSWArray[1]);
+	    $('#appr_SW3').val(empApprSWArray[2]);
+	    pushSWInFinalDataArray(empSWArray,empApprSWArray,returnValuesArray)
+	} 
+	return returnValuesArray;
+}
+
+function pushSWInFinalDataArray(empSWArray,empApprSWArray,returnValuesArray){
+	returnValuesArray.push(empSWArray[0]);
+	returnValuesArray.push(empSWArray[1]);
+	returnValuesArray.push(empSWArray[2]);
+	returnValuesArray.push(empApprSWArray[0]);
+	returnValuesArray.push(empApprSWArray[1]);
+	returnValuesArray.push(empApprSWArray[2]);
+}
+
+function alignSWBox(){
+	var bodyWidth = $(window).outerWidth();
+	var bodyHeight = $(window).height();
+	var widthPercentage = (bodyWidth * 10) / 100;
+	var heightPercentage = (bodyHeight * 5) / 100;
+	$('#strengthAndWeaknessBox').css({'left': widthPercentage+'px !important','top':heightPercentage+'px !important'});
+	$('#strengthAndWeaknessBox').modal('show');
+}
+
+/************************************************************************************ AJAX ***************************************************************************************/
+
+function getCompetencyDataFromServer(){
+	var empId = "";
+	if(teamMemberId != null && teamMemberId != ""){
+		empId = teamMemberId
+	}else{
+		empId = user.apprempid;
+	}
+	var data = null;
+	$.ajax({
+		type : "POST",
+		url : getMyFormDataURL,
+		async : false,
+		data : {
+			cycleId : apprCycle.cycleId,
+			empId : empId
+		},
+		beforeSend : function() {
+			$("body").showLoading();
+		},
+		complete : function() {
+			$("body").hideLoading();
+		},
+		error : function(response, error, thrownError) {
+			displayError(response, error, thrownError);
+		},
+		success : function success(response) {
+			var res = response;
+			if (res.status) {
+			     data = eval(res);
+			     competencyCache.sectionMap = eval('('+data.sectionMap+ ')'); 
+			     competencyCache.questionMap = eval('('+data.questionMap+ ')');
+			     competencyCache.finalScoreMap = eval('('+data.finalScoreMap+ ')');
+			     competencyCache.phaseScoreContainer = eval('('+data.eachPhaseScore+ ')');
+			     competencyCache.piIndicatorsMap = eval('('+data.piMap+ ')');
+			     competencyCache.questionRatingStatusMap = eval('('+data.ratingStatusMap+')');
+			     competencyCache.strengthAndWeaknessServerDataMap = eval('('+data.swMap+')');
+			     currentPhase = data.currentPhase; 
+			} else {
+				showToster('Error !', res.errorMessage, 5, "error");
+			}
+		}
+	});
+	return data;
+}
+
+function updateCompetencies(){
+	debugger
+	var res = null;
+	var cachedDataMap = competencyCache.getDataStorageMap();
+	var map = JSON.stringify([...cachedDataMap]);
+	var swCachedDataMap = competencyCache.getStrengthAndWeaknessMap();
+	var swMap = JSON.stringify([...swCachedDataMap]);
+	var empId = getUserId();
+	var apprId = user.apprempid;
+	$.ajax({
+		type : "POST",
+		url : updateCompetenciesURL,
+		async : false,
+		data : {
+			empId : empId,
+			dataMap : map,
+			cycleId : apprCycle.cycleId,
+			phaseId : currentPhase,
+			strgWeakMap : swMap,
+			appraiserId : apprId
+ 		},
+		beforeSend : function() {
+			$("body").showLoading();
+		},
+		complete : function() {
+			$("body").hideLoading();
+		},
+		error : function(response, error, thrownError) {
+			displayError(response, error, thrownError);
+		},
+		success : function success(response) {
+			res = response;
+			if (res.status) {
+				 showToster('Success !', "Successfully submitted !", 5, "success");
+			     data = eval(res);
+			     competencyCache.sectionMap = eval('('+data.sectionMap+ ')'); 
+			     competencyCache.questionMap = eval('('+data.questionMap+ ')');
+			     competencyCache.finalScoreMap = eval('('+data.finalScoreMap+ ')');
+			     competencyCache.phaseScoreContainer = eval('('+data.eachPhaseScore+ ')');
+			     currentPhase = data.currentPhase;
+			     userGeneralInfo = eval('('+ data.userGeneralInfo +')');
+			     myTeamDataMap = eval('('+ data.myTeamData +')');
+			     competencyCache.strengthAndWeaknessServerDataMap = eval('('+data.swMap+')');
+			     competencyCache.dataStorageMap.clear();
+			     competencyCache.strengthAnsWeaknessMap.clear();
+			     showCompetencies(empId);
+			} else {
+				showToster('Error !', res.errorMessage, 5, "error");
+			}
+		}
+	});
+	return res;
+}
+
+/*************************************************************************Validations**************************************************************/
+
+var validationNumber = null;
+function setValidations(){
+	debugger
+	var userrole = getUserRole();
+	var isFinalized = apprCycle.isFinalized;
+	var CurrentDate = new Date();
+	var SelfApprEndDate=new Date(moment(apprCycle.selfApprEndDate).format('DD-MMM-YY'));
+	var MngApprEndDate= new Date(moment(apprCycle.mngApprEndDate).format('DD-MMM-YY'));
+	var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+
+	if ((teamMemberId == null || teamMemberId == "")&&(CurrentDate<=SelfApprEndDate)) {
+	    enableEmployeeFields();
+	    validationNumber = 0;
+	}
+	if ((userrole == "ESS" || userrole == "Appraiser" || userrole == "Reviewer") && currentPhase > 1 && teamMemberId == null) {
+	    disableAllFields();
+	    validationNumber = 3;
+	}
+	if ((teamMemberId != null && teamMemberId != "" && currentPhase == 2)&&(CurrentDate<=MngApprEndDate)) {
+	    enableAppraiserFields();
+	    validationNumber = 1;
+	}
+	if (teamMemberId != null && teamMemberId != "" && currentPhase == 1 && (userrole == "Appraiser"||userrole == "Reviewer")) {
+	    disableAllFields();
+	    validationNumber = 3;
+	}
+	if ((teamMemberId != null && teamMemberId != "" && currentPhase > 2 && userrole == "Reviewer")&&(CurrentDate<=RevApprEndDate)) {
+	    enableReviewerFields();
+	    validationNumber = 2;
+	}
+	if (isFinalized == "isFinished" || (currentPhase == 2 && userrole == "Reviewer") || (teamMemberId != null && teamMemberId != "" && currentPhase > 2 && userrole == "Appraiser")) {
+	    disableAllFields();
+	    validationNumber = 3;
+	}
+}
+
+
+function checkCredibiltyOfValidationsOnModalBox(validationNumber){
+   var isVerifiedFlag = null;
+   if(validationNumber == "0"){
+	   isVerifiedFlag = reverifyAllTheValidationForEmployee();
+   }
+   if(validationNumber == "1"){
+	   isVerifiedFlag = reverifyAllTheValidationForAppraiser();
+   }
+   if(validationNumber == "2"){
+	   isVerifiedFlag = reverifyAllTheValidationForReviewer();
+   }
+   if(validationNumber == "3"){
+	   isVerifiedFlag = reverifyAllTheValidationForAll();
+   }
+   return isVerifiedFlag;
+}
+
+function reverifyAllTheValidationForEmployee(){
+	var verifiedFlag = false;
+	var cond1 = $('#appr_dropdown').prop('disabled');
+	var cond2 = $('#appr_remarks').prop('disabled');
+	var cond3 = $('#rev_dropdown').prop('disabled');
+	var cond4 = $('#rev_remarks').prop('disabled');
+	if(cond1 && cond2 && cond3 && cond4){
+		verifiedFlag = true;
+	}
+	return verifiedFlag;
+}
+
+function reverifyAllTheValidationForAppraiser(){
+	var verifiedFlag = false;
+	var cond1 = $('#emp_dropdown').prop('disabled');
+	var cond2 = $('#emp_remarks').prop('disabled');
+	var cond3 = $('#rev_dropdown').prop('disabled');
+	var cond4 = $('#rev_remarks').prop('disabled');
+	if(cond1 && cond2 && cond3 && cond4){
+		verifiedFlag = true;
+	}
+	return verifiedFlag;
+}
+
+
+function reverifyAllTheValidationForReviewer(){
+	var verifiedFlag = false;
+	var cond1 = $('#appr_dropdown').prop('disabled');
+	var cond2 = $('#appr_remarks').prop('disabled');
+	var cond3 = $('#emp_dropdown').prop('disabled');
+	var cond4 = $('#emp_remarks').prop('disabled');
+	if(cond1 && cond2 && cond3 && cond4){
+		verifiedFlag = true;
+	}
+	return verifiedFlag;
+}
+
+function reverifyAllTheValidationForAll(){
+	var verifiedFlag = false;
+	var cond1 = $('#appr_dropdown').prop('disabled');
+	var cond2 = $('#appr_remarks').prop('disabled');
+	var cond3 = $('#rev_dropdown').prop('disabled');
+	var cond4 = $('#rev_remarks').prop('disabled');
+	var cond5 = $('#emp_dropdown').prop('disabled');
+	var cond6 = $('#emp_remarks').prop('disabled');
+	if(cond1 && cond2 && cond3 && cond4 && cond5 && cond6){
+		verifiedFlag = true;
+	}
+	return verifiedFlag;
+}
+
+
+
+function enableEmployeeFields(){
+	$('#appr_dropdown').prop('disabled','true');
+	$('#appr_remarks').prop('disabled','true');
+	$('#rev_remarks').prop('disabled','true');
+	$('#rev_dropdown').prop('disabled','true');
+	$('#rev_dropdown').css({"cursor":"not-allowed"});
+	$('#appr_dropdown').css({"cursor":"not-allowed"});
+	$('#modal_appr_sec').css({"color":"#999"});
+	$('#modal_rev_sec').css({"color":"#999"});
+}
+
+function enableAppraiserFields(){
+	$('#emp_dropdown').prop('disabled','true');
+	$('#emp_remarks').prop('disabled','true');
+	$('#rev_remarks').prop('disabled','true');
+	$('#rev_dropdown').prop('disabled','true');
+	$('#rev_dropdown').css({"cursor":"not-allowed"});
+	$('#emp_dropdown').css({"cursor":"not-allowed"});
+	$('#modal_emp_sec').css({"color":"#999"});
+	$('#modal_rev_sec').css({"color":"#999"});
+}
+
+function enableReviewerFields(){
+	$('#appr_dropdown').prop('disabled','true');
+	$('#appr_remarks').prop('disabled','true');
+	$('#emp_dropdown').prop('disabled','true');
+	$('#emp_remarks').prop('disabled','true');
+	$('#appr_dropdown').css({"cursor":"not-allowed"});
+	$('#emp_dropdown').css({"cursor":"not-allowed"});
+	$('#modal_emp_sec').css({"color":"#999"});
+	$('#modal_appr_sec').css({"color":"#999"});
+}
+
+function disableAllFields(){
+	$('#appr_dropdown').prop('disabled','true');
+	$('#appr_remarks').prop('disabled','true');
+	$('#emp_dropdown').prop('disabled','true');
+	$('#emp_remarks').prop('disabled','true');
+	$('#rev_remarks').prop('disabled','true');
+	$('#rev_dropdown').prop('disabled','true');
+	$('#rev_dropdown').css({"cursor":"not-allowed"});
+	$('#appr_dropdown').css({"cursor":"not-allowed"});
+	$('#emp_dropdown').css({"cursor":"not-allowed"});
+	$('#modal_emp_sec').css({"color":"#999"});
+	$('#modal_appr_sec').css({"color":"#999"});
+	$('#modal_rev_sec').css({"color":"#999"});
+}
+
+function enableAllFields(){
+	$('#appr_dropdown').prop('disabled',false);
+	$('#appr_remarks').prop('disabled',false);
+	$('#emp_dropdown').prop('disabled',false);
+	$('#emp_remarks').prop('disabled',false);
+	$('#rev_remarks').prop('disabled',false);
+	$('#rev_dropdown').prop('disabled',false);
+	$('#rev_dropdown').css({"cursor":"pointer"});
+	$('#appr_dropdown').css({"cursor":"pointer"});
+	$('#emp_dropdown').css({"cursor":"pointer"});
+	$('#modal_emp_sec').css({"color":"#000000"});
+	$('#modal_appr_sec').css({"color":"#000000"});
+	$('#modal_rev_sec').css({"color":"#000000"});
+}
+
+function validationsOnSubmit(){
+	debugger
+	var userrole = getUserRole();
+	var isFinalized = apprCycle.isFinalized;
+	if((userrole == "ESS" || userrole == "Appraiser" || userrole == "Reviewer") && currentPhase > 1 && (teamMemberId == null ||  teamMemberId == "")){
+		$('#submitCompetenciesBtn').prop("disabled","true");
+		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
+	}
+	if(teamMemberId != null && teamMemberId != "" && userrole == "Appraiser" && currentPhase > 2){
+		$('#submitCompetenciesBtn').prop("disabled","true");
+		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
+	}
+	/*if((userrole == "Appraiser" || userrole == "Reviewer") && (teamMemberId != null ||  teamMemberId != "") && currentPhase == 1){
+		$('#submitCompetenciesBtn').prop("disabled","true");
+		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
+	}*/
+	if(isFinalized=="isFinished"){
+		$('#submitCompetenciesBtn').prop("disabled","true");
+		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
+	}
+	
+	/*if(isFilledAllScore!=true)
+		{
+		$('#submitCompetenciesBtn').prop("disabled","true");
+		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
+		$("#submitCompetenciesBtn").hover(function (){
+			$(this).html($("<span> Please choose the valid score value </span>"));
+		});
+		}*/
+	return true;
+}
+
+function submitCompetencies(){
+	debugger
+	//$('#dialog-confirm').modal('show');
+	var response = confirm('Are you sure you want to submit?');
+	var storageUnit = competencyCache.getDataStorageMap();
+	var totalQuestions = Object.keys(competencyCache.getQuestionFromId()).length;
+	if((currentPhase == "3"))
+	{
+		if(response && (storageUnit.size == (totalQuestions-4))){
+			var isUpdated = updateCompetencies();
+		    window.location.reload(true); //for reloading page
+		}else{
+			showToster('Warning !', "Please fill out complete form.", 5, "warning");
+		}
+	}
+	else {
+	if(response && storageUnit.size == totalQuestions){
+		var isUpdated = updateCompetencies();
+	    window.location.reload(true); //for reloading page
+	}else{
+		showToster('Warning !', "Please fill out complete form.", 5, "warning");
+	}
+	}
+}
+
+function setValidationsForSWBox(){
+	debugger
+	var isFinalized = apprCycle.isFinalized;
+	var userrole = getUserRole();
+	if(currentPhase == 1){
+		enableSWForEmployee();
+	}
+	if(currentPhase == 2){
+		enableSWForAppraiser();
+	}
+	if(currentPhase == 3 || isFinalized=="isFinished"){
+		enableSWForEmployee();
+		enableSWForAppraiser();
+		
+	}
+	if(userrole == "ESS" && currentPhase > 1){
+		enableSWForEmployee();
+		enableSWForAppraiser();
+	}
+}
+
+function enableSWForEmployee(){
+	$('#appr_SW1').prop("disabled","true");
+	$('#appr_SW1').css({"cursor":"not-allowed"});
+	$('#appr_SW2').prop("disabled","true");
+	$('#appr_SW2').css({"cursor":"not-allowed"});
+	$('#appr_SW3').prop("disabled","true");
+	$('#appr_SW3').css({"cursor":"not-allowed"});
+	$('#modal_appr_sec_sw').css({"color":"#999"});
+}
+
+function enableSWForAppraiser(){
+	$('#emp_SW1').prop("disabled","true");
+	$('#emp_SW1').css({"cursor":"not-allowed"});
+	$('#emp_SW2').prop("disabled","true");
+	$('#emp_SW2').css({"cursor":"not-allowed"});
+	$('#emp_SW3').prop("disabled","true");
+	$('#emp_SW3').css({"cursor":"not-allowed"});
+	$('#modal_emp_sec_sw').css({"color":"#999"});
+	
+	
+}

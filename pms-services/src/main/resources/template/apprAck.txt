@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<style>
+</style>
+<body>
+   <p>Hi ${apprName},</p>
+   <p>Thank you!</p>
+   <p>You have successfully submitted appraiser assessment for ${selfName} on ${selfCompletionDate}</p> 
+
+    <br>
+    Best Regards,<br>
+    pms.support@the3i.com<br>
+    Analytics | Data Management | Visualizations | Custom Apps | Big Data<br>
+    www.the3i.com<br>
+    
+</body>
+</html>

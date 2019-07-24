@@ -1,0 +1,69 @@
+<html>
+ 
+<head></head>
+ 
+<body>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+td {
+	padding-left:1%;
+}
+
+</style>
+
+    <p>Hi All,</p>
+    
+    <p>You are required to submit and upload the completed Performance Review Form on or before <b> ${cycleEndDate}</b></p>
+    
+    <p>Appraisee (Associate being appraised) has to do self-evaluation of the performance based on Performance Criteria. 
+    Please provide examples / instances / data (commonly known as substantiation) on different achievements throughout the cycle as 
+    you do self-scoring on different parameters.</p>
+    
+    <h3>Corrected Performance Review Calendar:</h3>
+    <table style="border-collapse: collapse;border: 1px solid black;">
+		 <thead>
+			 <tr>
+				<td style="font-weight: bold;text-align:center;border: 1px solid black;padding-left:1%;">Action Items</td>
+				<td style="font-weight: bold;text-align:center;border: 1px solid black;padding-left:1%; width:55%;"> Dates(Apr Cycle) </td>
+			 </tr>
+		 </thead>
+		 <tbody>
+			 <tr>
+			 	<td style="border: 1px solid black;padding-left:1%;" nowrap="nowrap"> Self Assessment by Appraisee</td>
+			 	<td style="border: 1px solid black;padding-left:5%;padding-right:5%" nowrap="nowrap"> ${selfAssessmentDuration} </td>
+			 </tr>
+			 <tr>
+			 	<td style="border: 1px solid black;padding-left:1%;" nowrap="nowrap"> Appraiser Assessment </td>
+			 	<td style="border: 1px solid black;padding-left:5%;padding-right:5%" nowrap="nowrap"> ${appraiserAssessmentDuration} </td>
+			 </tr>
+			 <tr>
+			 	<td style="border: 1px solid black;padding-left:1%;" nowrap="nowrap"> Reviewer Assessment </td>
+			 	<td style="border: 1px solid black;padding-left:5%;padding-right:5%" nowrap="nowrap"> ${reviewerAssessmentDuration} </td>
+			 </tr>
+			 <tr>
+			 	<td style="border: 1px solid black;padding-left:1%;" nowrap="nowrap"> Appraiser and Appraisee's meeting </td>
+			 	<td style="border: 1px solid black;padding-left:5%;padding-right:5%" nowrap="nowrap"> 23 jun 2018- 23 july 2018</td>
+			 </tr>
+		 </tbody>
+    </table>
+    
+    
+    <p> Please refer <a href="https://drive.google.com/open?id=1qvN2IcEXebOPYH5SWpPVQAoNCJ2CoI08">PMS user manual</a> for assessment process.
+    <br><br>
+    You can refer these video's link for further assistance. ( Use VLC )
+    <br>
+    1. <a href="https://drive.google.com/open?id=1VduoKBTtD0j_ZhlINI-sZJResATP7S6l">Self-Assessment Video</a> <br>
+    2. <a href="https://drive.google.com/open?id=11DV9sNgNEt-_WyljMlOE-XQ1S1OGNHF2">Appraiser-Assessment Video</a>
+    
+    
+    
+</body>
+ 
+</html>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="pms-services"/>
+<aop-project name="pms-web"/>
+</aop-reference-model>

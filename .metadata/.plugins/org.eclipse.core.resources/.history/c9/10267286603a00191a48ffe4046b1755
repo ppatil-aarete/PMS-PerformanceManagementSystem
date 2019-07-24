@@ -1,0 +1,99 @@
+package com.thirdi.pms.auth;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.codehaus.jackson.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import  com.google.gson.JsonParser;
+
+
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+@Component
+public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
+	
+	@Autowired @Lazy
+	private CustomAuthenticationProvider( UserDetailsService detailsService){
+		super.setUserDetailsService(detailsService);
+	}
+	
+	@Override
+	protected void additionalAuthenticationChecks(UserDetails userDetails,
+			UsernamePasswordAuthenticationToken authentication)
+			throws AuthenticationException {
+
+		
+		if (authentication.getCredentials() == null) {
+			System.out.println("Authentication failed: no credentials provided");
+
+			throw new BadCredentialsException(messages.getMessage(
+					"AbstractUserDetailsAuthenticationProvider.badCredentials",
+					"Bad credentials"));
+		}
+
+		String presentedPassword = authentication.getCredentials().toString();
+
+		System.out.println("token:: "+authentication);
+		if (!isValidUserInHRMS(authentication.getName() , presentedPassword)) {
+			logger.debug("Authentication failed: password does not match stored value");
+
+			throw new BadCredentialsException(messages.getMessage(
+					"AbstractUserDetailsAuthenticationProvider.badCredentials",
+					"Bad credentials"));
+		}
+	}
+
+	private boolean isValidUserInHRMS(String username, String password) {
+
+		try {
+			String url = "http://172.16.17.110/thirdihrms/symfony/web/index.php/auth/validateCredentials";
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+			MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+			map.add("txtUsername", username);
+			map.add("txtPassword", password);
+			map.add("isService", "true");
+
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+			RestTemplate restTemplate = new RestTemplate();
+			List<HttpMessageConverter<?>> converters = Arrays.asList(new StringHttpMessageConverter() , new MappingJackson2HttpMessageConverter(), new FormHttpMessageConverter());
+			restTemplate.setMessageConverters(converters);
+			
+			String response = restTemplate.postForObject(url, request, String.class);
+			JsonParser parser = new JsonParser(); 
+			JsonObject json = (JsonObject) parser.parse(response);
+			return json.get("isValid").getAsBoolean();
+	//	return true;
+//			JsonNode response = restTemplate.postForObject(url, request, JsonNode.class);
+//			return response.get("isValid").asBoolean();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+}

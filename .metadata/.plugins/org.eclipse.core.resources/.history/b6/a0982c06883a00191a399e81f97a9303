@@ -1,0 +1,20 @@
+<html>
+<head></head>
+<style>
+</style>
+<body>
+   <p> Hi ${apprName},</p>
+   <p> ${selfName} has submitted his/her self-assessment form on ${selfCompletionDate}.</p>
+   <p> Please complete his/her appraiser assessment by ${appraiserAssessmentDuration}</p>
+   <p> Review his/ her form here <a href="${url}">here</p> 
+      <br>
+    <br>
+    <br>
+    
+    Best Regards,<br>
+    pms.support@the3i.com<br>
+    Analytics | Data Management | Visualizations | Custom Apps | Big Data<br>
+    www.the3i.com<br>
+    
+</body>
+</html>

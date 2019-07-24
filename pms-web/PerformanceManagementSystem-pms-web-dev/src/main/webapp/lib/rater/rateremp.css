@@ -1,0 +1,44 @@
+.rateemp {
+	font-size: 23px;
+	color: #CECECE
+}
+
+.rateemp .rate-hover-layer {
+	color: #3a97d3
+}
+
+.rateemp .rate-select-layer {
+	color: #3a97d3
+}
+
+.dot {
+	height: 8px;
+	width: 8px;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+#pending {
+	border-radius: 5px;
+	border: 1px solid #FF8C9A;
+	padding: 8px;
+	width: 43px;
+	height: 5px;
+}
+
+.balldot {
+    height: 30px;
+    width: 20px;
+    background-color: #F1F1F1;
+    border-radius: 50%;
+    display: inline-block;
+    border:1px solid #979797;
+  }
+
+  hr{
+      width:30%;
+      color:#CECECE;
+      border-top: 1px solid #CECECE;
+      margin: 1.1%; 
+      height:10px;
+    }

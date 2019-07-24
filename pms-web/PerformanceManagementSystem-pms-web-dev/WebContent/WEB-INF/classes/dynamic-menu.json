@@ -1,0 +1,24 @@
+{
+	"Admin": [
+		"dashboard",
+		"introduction",
+		"goal",
+		"competency",
+		"history",
+		"logbook"
+	],
+	"ESS": [
+		"introduction",
+		"goal",
+		"competency",
+		"history",
+		"logbook"
+	],
+	"Supervisor": [
+		"introduction",
+		"goal",
+		"competency",
+		"history",
+		"logbook"
+	]
+}

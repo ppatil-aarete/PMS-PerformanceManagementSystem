@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Tue Mar 05 17:10:16 IST 2019
+org.eclipse.jst.j2ee.server\:/binary\:D\:\\Project\\PMS_Copy\\pms-web\\PerformanceManagementSystem-pms-web-dev\\WebContent\\WEB-INF\\lib\\spring-web-4.3.9.RELEASE.jar=WEB-INF/lib/spring-web-4.3.9.RELEASE.jar
+org.eclipse.jst.j2ee.server\:pms-services=WEB-INF/lib/pms-services-1.0.0.jar
