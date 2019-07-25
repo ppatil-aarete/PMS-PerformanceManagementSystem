@@ -54,6 +54,13 @@ function prepareAdminPanelCache(){
 				}
 		 },
 		 
+		 getExporteddataMap : function(){
+			 	var cachedDataMap = cache.exportDataMap;
+				if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
+					return cachedDataMap;
+				}else{
+				}
+		 },
 		 getAboveConsulantEmployee : function(){
 			 	var cachedDataMap = cache.aboveConsultantEmployeeMap;
 				if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
@@ -186,9 +193,44 @@ function viewProgressStatusDropdown(){
 	       }
 
 	   } );
+	}
+
+function exportdataDropdown(){
+	debugger
+	$('#exportTableId').DataTable( {
+	"bStateSave": true,
+	   	initComplete: function () {
+	   	this.api().columns([3]).every( function () {
+	               var column = this;
+	               var select = $('<select style="margin-right: 19px;"><option value="">Show all</option></select>')
+	               .appendTo( $(column.header()) )
+	                   .on( 'change', function () {
+	                       var val = $.fn.dataTable.util.escapeRegex(
+	                           $(this).val()
+	                       );
+	                     column
+	                           .search( val ? '^'+val+'$' : '', true, false )
+	                           .draw();
+	                   } );
+
+	               column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ) {
+	                   if(column.search() === '^'+d+'$'){
+	                       select.append( '<option value="'+d+'" selected="selected">'+d+'</option>' )
+	                   } else {
+	                   	var val = $('<div/>').html(d).text();
+	                   	select.append( '<option value="' + val + '">' + val + '</option>' );
+	                   }
+	               } );
+	           } );
+	   	
+	       }
+
+	   } );
 
 
 	}
+
+
 function showEmployeeProgressView(){
 	$('#adminDashboardContentArea').show();
 	$('#adminDashboardContentArea').html('');
@@ -374,6 +416,127 @@ function prepareBodyOfEmployeeMetricSheet(){
 	return tbody;
 }
 
+function exportdata(){
+	$('#adminDashboardContentArea').show();
+	$('#adminDashboardContentArea').html('');
+	$('#actionContainer').hide();
+	$('#createNewCycelContainer').hide();
+	var title = "Export Employee Data";
+	var icon = $('<i class="fa fa-file-text" style="color:#18A689;margin-right:1%;"></i>');
+	var exportButton =  $('<a href="#"><button onclick="exportDataAjax()" style="margin-left: 500px;" class="btn btn-outline-green btn-success" > Export Data </button></a>');
+	//var exportButton =  $('<a href="dataExport"><button style="margin-left: 500px;" class="btn btn-outline-green btn-success" > Export Data </button></a>');
+	var titleDiv = setHeaderOfAvailActionExport(title,icon,exportButton);
+	var exportDataContainer = $('<div class="col-sm-12">');
+	var tableContainer = $('<div class="table-responsive">');
+	var table = $('<table class="table" id="exportTableId">');
+	var thead = $('<thead>');
+	var tr = $('<tr>');
+    var no = $('<th style="text-align:left;">').html('#');
+    var employeeName = $('<th style="text-align:left;">').html('Employee Name');
+    var DesignationName = $('<th style="text-align:left;width: 110px;">').html('Designation');
+    var StatusName = $('<th style="text-align:left;width: 262px;">').html('Status');
+    var AppraiserName = $('<th style="text-align:left;">').html('Appraiser Name');
+    var ManagerName = $('<th style="text-align:left;">').html('Manager Name');
+	var SelfScore = $('<th style="text-align:center;">').html('Self Rating');
+	var ApprScore = $('<th style="text-align:center;">').html('Appraiser Rating');
+	var RevScore = $('<th style="text-align:center;">').html('Reviewer Rating');
+	//var Rev2Score = $('<th style="text-align:center;">').html('Reviewer Level-2 Rating');
+	//var RevComments = $('<th style="text-align:center;">').html('Reviewer Comments');
+	tr.append(no);
+	tr.append(employeeName);
+	tr.append(DesignationName);
+	tr.append(StatusName);
+	tr.append(AppraiserName);
+	tr.append(ManagerName);
+	tr.append(SelfScore);
+	tr.append(ApprScore);
+	tr.append(RevScore);
+	//tr.append(Rev2Score)
+	//tr.append(RevComments);
+	thead.append(tr);
+	var tbody = prepareBodyOfExportDataSheet();
+	table.append(thead);
+	table.append(tbody);
+	exportDataContainer.append(table);
+	$('#adminDashboardContentArea').append(titleDiv);
+	$('#adminDashboardContentArea').append(exportDataContainer);
+	//$('#exportTableId').DataTable();
+	exportdataDropdown();
+	checkBackButton();
+}
+
+
+function prepareBodyOfExportDataSheet(){
+	debugger
+	var revId = user.empid;
+	var cycleId = apprCycle.cycleId;
+	var exportDataMap = adminCache.getExporteddataMap();
+	var tbody = $('<tbody>');
+	if(exportDataMap != undefined && exportDataMap != null && !jQuery.isEmptyObject(exportDataMap)){
+		var count = 1;
+		for(var empId in exportDataMap){
+			var tr = $('<tr>');
+			var empDataJson = exportDataMap[empId];
+			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
+			var noTd = $('<td style="text-align:left;">').append(noLabel);
+			var empNameTd = $('<td style="text-align:left;">').html(empDataJson["employeeName"]);
+			var designationNameId = $('<td style="text-align:left;">').html(empDataJson["designationName"]);
+			var apprStatus = empDataJson["status"];
+			var apprStatusTd = $('<td style="text-align:center;">');
+			var label = $('<label style="text-align:center;width:100%;">');
+			label.html(apprStatus);
+			if(apprStatus == "Self Assessment - pending"){
+			label.append('<i class="custom-icon icon-warning fa fa-level-down" style="color:#fff;margin-left:3%;"></i>');
+			}else if(apprStatus == "Appraiser Assessment - pending"){
+			label.append('<i class="custom-icon icon-primary fa fa-level-up" style="color:#fff;margin-left:3%;"></i>');
+			}else if(apprStatus == "Reviewer Assessment - pending"){
+			label.append('<i class="custom-icon label-deafult fa fa-level-up label label-custom" style="color:#fff;margin-left:3%;"></i>');
+			}
+			apprStatusTd.append(label);
+			var appraiserNameTd = $('<td style="text-align:left;">').html(empDataJson["appraiserName"]);
+			var reviewerName = $('<td style="text-align:left;">').html(empDataJson["reviewerName"]);
+			var seldRatingTd = $('<td id='+empId+"self"+' style="text-align:center;">').html(empDataJson["selfScore"]);
+			var apprRatingTd = $('<td id='+empId+"appr"+' style="text-align:center;">').html(empDataJson["mngScore"]);
+			var revRatingTd =  $('<td id='+empId+"rev"+' style="text-align:center;">').html(empDataJson["revScore"]);
+			/*var revRating = empDataJson["rev2score"];
+			var revComments = empDataJson["revRemarks"];
+			var rev2RatingTd = $('<td style="text-align:center;">')
+		    var rev2RatingLabel = $('<label data-toggle="tooltip" data-placement="right" title="click here to update" style="font-weight:400;" onclick="InlineEditRevRatings(\''+empId+'\',this,\''+revRating+'\',\''+revId+'\',\''+cycleId+'\')">').html(revRating);
+			var selfVal = seldRatingTd.html();
+			var apprVal = apprRatingTd.html();
+			var revVal = revRatingTd.html();
+			var endDate = new Date(moment(apprCycle.endate).format("DD MMM YY"));
+			endDate.addDays(1);
+			var currentDate = new Date();
+			
+			var revCommentTd= $('<td style="text-align:center;">');
+		    var revCommentLabel = $('<label data-toggle="tooltip" data-placement="right" title="click here to update" style="font-weight:400;" onclick="InlineEditRevRemarks(\''+empId+'\',this,\''+revComments+'\',\''+revId+'\',\''+cycleId+'\')">').html(revComments);
+		   if((selfVal=="0"||apprVal=="0"||revVal=="0")||(currentDate>endDate)){
+				rev2RatingLabel.prop("onclick", null).off("click");
+				revCommentLabel.prop("onclick", null).off("click");
+				}
+		    rev2RatingTd.append(rev2RatingLabel);
+		    revCommentTd.append(revCommentLabel);*/
+		    tr.append(noTd);
+		    tr.append(empNameTd);
+		    tr.append(designationNameId);
+		    tr.append(apprStatusTd);
+		    tr.append(appraiserNameTd);
+		    tr.append(reviewerName);
+		    tr.append(seldRatingTd);
+		    tr.append(apprRatingTd);
+		    tr.append(revRatingTd);
+		    //tr.append(rev2RatingTd);
+		    //tr.append(revCommentTd);
+		    tbody.append(tr);
+		    count++;
+		}
+	}else{
+		var tr = $('<tr>').html('No Data Available');
+		tbody.append(tr);
+	}
+	return tbody;
+}
 
 
 function InlineEditRevRatings(empId,element,currentValue,revId,cycleId){
@@ -423,6 +586,38 @@ function InlineEditRevRatings(empId,element,currentValue,revId,cycleId){
 	fetchEmpMetricSheetDataAjax();
 	
 		
+}
+
+function getExportDataAjax(){
+	debugger;
+	var res = null;
+	$.ajax({
+		type : "POST",
+		url : generateExportedDataURL,
+		async : false,
+		data : {},
+		beforeSend : function() {
+			$("body").showLoading();
+		},
+		complete : function() {
+			$("body").hideLoading();
+		},
+		error : function(response, error, thrownError) {
+			displayError(response, error, thrownError);
+		},
+		success : function success(response) {
+			res = eval(response);
+			if (res.status) {
+				 showToster('Success !', "Data sheet Exported successfully!", 5, "success");
+			     data = eval(res);
+			     adminCache.exportDataMap = data.exportDataMap; 
+			} else {
+				showToster('Error !',"Oops! Something went wrong.", 5, "error");
+				console.log('Error Cause :' + res.errorMessage);
+			}
+		}
+	});
+	return res;
 }
 
 
@@ -767,6 +962,17 @@ function setHeaderOfAvailAction(title,icon){
     label.html(title);
     headerDiv.append(icon);
     headerDiv.append(label);
+    return headerDiv;
+}
+
+
+function setHeaderOfAvailActionExport(title,icon,exportButtonTd){
+	var headerDiv = $('<div class="col-sm-12" style="padding-left:2%;font-size:20px;margin-bottom:1%;margin-top:0%;border-bottom:solid 3px #eee;padding-bottom:0.5%;">');
+    var label = $('<label style="width:50%;color:#18A689;">');
+    label.html(title);
+    headerDiv.append(icon);
+    headerDiv.append(label);
+    headerDiv.append(exportButtonTd);
     return headerDiv;
 }
 function setHeaderOfAvailActionProgress(title,icon,button){
@@ -1433,3 +1639,10 @@ function clearCheckBox(){
 	    this.checked = item.defaultChecked; 
 	  }); 
 	}
+
+
+function exportDataAjax(){
+	$("#exportTableId").table2excel({
+        filename: "EmployeeRatingSheet.xls"
+    });
+}

@@ -356,4 +356,109 @@ public class AdminServiceImpl implements AdminService {
 		emailService.sendRevTwoEmail(recipientList, mail, "reminderToEmployeeList.txt");
 		return true;
 	}
+	@Transactional(readOnly = true)
+	public Map<Integer, JsonObject> exportData(Integer cycleId) {
+		Map<Integer, JsonObject> exportDataMap = new HashMap<Integer, JsonObject>();
+		Map<Integer, Integer> idMap = competencyService.getMappingOfIds();
+		Map<Integer, String> userIdNameMap = loginService.getNameOfUserById();
+		Map<Integer, String> designationNameMap = loginService.getDesignationOfUserById();
+		Map<Integer, String> Remark = competencyService.getRemarkOfUserById(cycleId);
+		Set<Integer> allActiveMemberSet = loginDao.getActiveEmpMemberIdsSet(cycleId);
+		Map<Integer, Double[]> finalRatingsMap = competencyService.getMapOfFinalScore(cycleId);
+		List<EmployeeDetails> myTeamDataListUnsorted = loginDao
+				.getAllPhaseStatusAndSuperiorsDetailsOfAllTeamMembers(allActiveMemberSet);
+		if (myTeamDataListUnsorted != null && myTeamDataListUnsorted.size() > 0 && allActiveMemberSet != null
+				&& allActiveMemberSet.size() > 0) {
+			for (Integer emp_appr_Id : allActiveMemberSet) {
+				JsonObject detailsContainer = new JsonObject();
+				String appraiserName = "";
+				String employeeName = "";
+				String completionDate = "";
+				String reviewerName = "";
+				String designationName = "";
+				String status = "";
+				List<EmployeeDetails> myTeamDataList = loginService
+						.fetchEmployeeRecordAndSortList(myTeamDataListUnsorted, emp_appr_Id);
+				if (myTeamDataList != null && myTeamDataList.size() > 0) {
+					for (EmployeeDetails empDetails : myTeamDataList) {
+						PhaseStatus phaseName = empDetails.getCurrentPhase();
+						Integer progressOfCycle = empDetails.getStatus();
+						Integer apprId = empDetails.getNextUserRoleId();
+						employeeName = userIdNameMap.get(idMap.get(emp_appr_Id));
+						designationName = designationNameMap.get(idMap.get(emp_appr_Id));
+						/*if (empDetails.getCompletionDate() != null) {
+							completionDate = empDetails.getCompletionDate();
+						}*/
+						
+						if (phaseName == PhaseStatus.Reviewer && progressOfCycle.equals(1)) {
+							status = "Completed";
+						}
+						if (phaseName == PhaseStatus.Reviewer && progressOfCycle.equals(0)) {
+							status = "Reviewer Assessment - pending";
+						}
+						if ((phaseName == PhaseStatus.Appraisar && progressOfCycle.equals(0))) {
+							status = "Appraiser Assessment - pending";
+						}
+						if (phaseName == PhaseStatus.Self && progressOfCycle.equals(0)) {
+							status = "Self Assessment - pending";
+						}
+						detailsContainer.addProperty("status", status);
+						if (phaseName == PhaseStatus.Appraisar) {
+							if (userIdNameMap.get(apprId) != null) {
+								appraiserName = userIdNameMap.get(apprId);
+							} else {
+								appraiserName = "-";
+							}
+
+						}
+						if (phaseName == PhaseStatus.Reviewer) {
+							if (userIdNameMap.get(apprId) != null) {
+								reviewerName = userIdNameMap.get(apprId);
+							} else {
+								reviewerName = "-";
+							}
+						}
+					
+						if (appraiserName.equals("") || reviewerName.equals("")) {
+							detailsContainer.addProperty("appraiserName", "-");
+							detailsContainer.addProperty("employeeName", employeeName);
+							detailsContainer.addProperty("reviewerName", "-");
+							detailsContainer.addProperty("designationName", designationName);
+							detailsContainer.addProperty("status", status);
+							
+						} else {
+							detailsContainer.addProperty("appraiserName", appraiserName);
+							detailsContainer.addProperty("employeeName", employeeName);
+							detailsContainer.addProperty("reviewerName", reviewerName);
+							detailsContainer.addProperty("designationName", designationName);
+							detailsContainer.addProperty("status", status);
+						}
+					}
+					Double[] scoreContainer = finalRatingsMap.get(emp_appr_Id);
+					if (scoreContainer != null) {
+						detailsContainer.addProperty("selfScore", scoreContainer[0]);
+						detailsContainer.addProperty("mngScore", scoreContainer[1]);
+						detailsContainer.addProperty("revScore", scoreContainer[2]);
+						detailsContainer.addProperty("rev2score", scoreContainer[3]);
+					} else {
+						detailsContainer.addProperty("selfScore", "0");
+						detailsContainer.addProperty("mngScore", "0");
+						detailsContainer.addProperty("revScore", "0");
+						detailsContainer.addProperty("rev2score", "0");
+					}
+
+					String remarkContainer = Remark.get(emp_appr_Id);
+					if (remarkContainer != null) {
+						detailsContainer.addProperty("revRemarks", remarkContainer);
+					} else {
+						detailsContainer.addProperty("revRemarks", "-");
+					}
+
+					exportDataMap.put(emp_appr_Id, detailsContainer);
+				}
+			}
+		}
+		return exportDataMap;
+	}
+
 }

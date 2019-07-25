@@ -330,4 +330,21 @@ public class AdminController {
 			}
 			writeDataInResponse(response,dataJson.toString());
 	  } 
+	  
+	  @RequestMapping(value="/dataExport.do", method=RequestMethod.POST)
+			public void exportDataMap(HttpServletRequest request,HttpServletResponse response) throws IOException {
+				
+				JsonObject dataJson = new JsonObject();
+				try {
+					AppraisalCycle currentCycle = loginService.getCurrentAppraisalCycle();
+					Map<Integer, JsonObject> exportDataMap = adminService.exportData(currentCycle.getCycleId());
+					dataJson.addProperty("status", true);
+				    dataJson.add("exportDataMap", gson.toJsonTree(exportDataMap));
+				}catch(Exception e) {
+					dataJson.addProperty("status", false);
+					dataJson.addProperty("errorMessage", e.getMessage());
+					e.printStackTrace();
+				}
+				writeDataInResponse(response,dataJson.toString());
+			}
 }
