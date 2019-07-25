@@ -59,6 +59,8 @@ function prepareAdminPanelCache(){
 				if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
 					return cachedDataMap;
 				}else{
+					getExportDataAjax();
+					return cache.exportDataMap; 
 				}
 		 },
 		 getAboveConsulantEmployee : function(){
