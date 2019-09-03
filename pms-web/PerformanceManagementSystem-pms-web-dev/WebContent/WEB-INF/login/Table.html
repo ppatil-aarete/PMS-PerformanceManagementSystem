@@ -1,0 +1,115 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+</head>
+<body>
+	<table id="myTable" style="border: 1px solid black">
+		<tbody>
+			<tr>     
+			        <th>Key Area</th>
+					<th>KRA Weightage</th>
+					<th>Goal Weightage</th>
+					<th>Outcome</th>
+					<th>Measurement Criteria</th>
+					<th>Target</th>
+					<th>Self Comments</th>
+					<th>Appraiser Comments</th>
+					<th>Appraiser Ratings</th>
+					<th>Reviewer Comments</th>
+					<th>Reviewer Ratingss</th>
+				</tr>				
+				<TR>
+		            <TD>
+											Business Result
+											
+					</TD>
+					 <TD>
+										<INPUT type="text" name="txt" placeholder="kra weightage" />
+											
+					</TD>
+		            <TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><SELECT name="ApprRating" style="width: 100%">
+							<OPTION value="1">1</OPTION>
+							<OPTION value="2">2</OPTION>
+							<OPTION value="3">3</OPTION>
+							<OPTION value="4">4</OPTION>
+							<OPTION value="5">5</OPTION>
+					</SELECT></TD>
+					<TD><INPUT type="text" name="txt" /></TD>
+					<TD><SELECT name="RevRatings" style="width: 100%">
+							<OPTION value="1">1</OPTION>
+							<OPTION value="2">2</OPTION>
+							<OPTION value="3">3</OPTION>
+							<OPTION value="4">4</OPTION>
+							<OPTION value="5">5</OPTION>
+					</SELECT></TD>
+				</TR>
+				
+				
+		</tbody>
+	</table>
+	<p>
+		<input type="button" value="Insert row">
+	</p>
+</body>
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						$('#myTable').on('click', 'input[type="button"]',
+								function() {
+									$(this).closest('tr').remove();
+								})
+						/* $('p input[type="button"]').click(function () {
+						 $('#myTable').append('<TR> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD> 
+						 '	<SELECT name="ApprRating"> 
+						 '		<OPTION value="1">1</OPTION> 
+						 '	<OPTION value="2">2</OPTION> 
+						 '		<OPTION value="3">3</OPTION> 
+						 '	<OPTION value="4">4</OPTION> 
+						 '	<OPTION value="5">5</OPTION> 
+						 '	</SELECT> 
+						 '	</TD> 
+						 '	<TD><INPUT type="text" name="txt"/></TD> 
+						 '	<TD> 
+						 '		<SELECT name="RevRatings"> 
+						 '			<OPTION value="1">1</OPTION> 
+						 '			<OPTION value="2">2</OPTION> 
+						 '		<OPTION value="3">3</OPTION> 
+						 '		<OPTION value="4">4</OPTION> 
+						 '		<OPTION value="5">5</OPTION> 
+						 '	</SELECT> 
+						 '</TD> 
+						 '</TR>')
+						 }); */
+
+						$('p input[type="button"]')
+								.click(
+										function() {
+											$('#myTable')
+													.append(
+															'<TR><TD><INPUT type="text" name="txt"/></TD><TD><INPUT type="text" name="txt"/></TD><TD><INPUT type="text" name="txt"/></TD> <TD><INPUT type="text" name="txt"/></TD><TD><INPUT type="text" name="txt"/></TD> <TD><INPUT type="text" name="txt"/></TD><TD> <SELECT name="ApprRating"><OPTION value="1">1</OPTION> <OPTION value="2">2</OPTION> <OPTION value="3">3</OPTION> <OPTION value="4">4</OPTION> <OPTION value="5">5</OPTION> </SELECT> </TD> <TD><INPUT type="text" name="txt"/></TD> <TD> <SELECT name="RevRatings"> <OPTION value="1">1</OPTION> <OPTION value="2">2</OPTION> <OPTION value="3">3</OPTION> <OPTION value="4">4</OPTION> <OPTION value="5">5</OPTION> </SELECT> </TD> </TR>')
+										});
+					});
+</script>
+</html>
+

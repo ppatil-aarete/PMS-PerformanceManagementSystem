@@ -3,6 +3,7 @@ package com.thirdi.pms.competency.controller;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,7 +17,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -27,6 +30,7 @@ import com.thirdi.pms.competency.CompetencyService;
 import com.thirdi.pms.competency.PhaseStatus;
 import com.thirdi.pms.competency.SelfAppraisal;
 import com.thirdi.pms.competency.StrengthWeakness;
+import com.thirdi.pms.goal.model.Goal;
 import com.thirdi.pms.login.api.LoginService;
 
 @Controller
@@ -42,6 +46,7 @@ public class CompetencyController {
     private final Log logger = LogFactory.getLog(getClass());
     Gson gson = new Gson();
 	
+ 
 	@RequestMapping(value="/getcompetencies.do", method=RequestMethod.POST)
 	public void getCompetency(HttpServletRequest request,HttpServletResponse response) throws URISyntaxException, IOException, JSONException {
 		 

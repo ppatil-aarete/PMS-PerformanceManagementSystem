@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.thirdi.pms.admin.AdminDao;
 import com.thirdi.pms.admin.modal.AppraisalCycle;
+import com.thirdi.pms.competency.CompetencyService;
 import com.thirdi.pms.login.api.LoginService;
 import com.thirdi.pms.login.model.LoginUser;
 
@@ -39,6 +40,9 @@ public class LoginController {
 
 	@Autowired
 	private AdminDao adminDao;
+	
+	@Autowired
+	CompetencyService service;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public String ShowLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -95,5 +99,37 @@ public class LoginController {
 		request.setAttribute("errorMessage", "Invalid username and password.");
 		return "login/login";
 	}
+	/*@RequestMapping(value = "/displayForm", method = RequestMethod.GET)
+	public String diplayForm() {
+		return "login/main-menu";
 
+	}
+
+	@RequestMapping(value = "/showform", method = RequestMethod.GET)
+	public String showform(Model model, HttpServletRequest request, HttpServletResponse response) {
+		model.addAttribute("goal", new Goal());
+		return "login/Goal";
+
+	}
+
+	@RequestMapping("/submitForm")
+	// @ModelAttribute binds form data to the object
+	public void submitForm(@ModelAttribute("goal") Goal res) {
+		List<Goal> goals = new ArrayList<Goal>();
+		goals.add(res);
+		Boolean setGoals = service.setGoals(goals);
+	}*/
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+

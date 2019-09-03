@@ -52,9 +52,7 @@
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterappr.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/raterrev.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterrev.js'/>"></script>
-  <script type="text/javascript" src="<c:url value='/lib/Export/table2excel.js'/>"></script>
   <%-- <script type="text/javascript" src="<c:url value='/lib/chart/canvasjs.min.js'/>"></script>
-  
    --%>
   <style><%@include file="/WEB-INF/login/css/masterpagestyle.css"%></style>
   
@@ -134,7 +132,6 @@ background-color: white; /* Green */
 		 <div class="col-sm-5 pull-right" style="margin-bottom:0.5%;background-color:#f8f8f8;">
 		   <label class="pull-right" style="color:#9A9A9A;margin-top:3.5%;text-align:right;font-size:14px;font-weight:300;padding-right:4%;font-family:Nunito Sans;">Welcome, <label id="username" style="color:#9A9A9A;font-family:Nunito Sans;font-weight:300;font-size:14px;">User</label>
 		   <img src="images/usercustom.png" style="width:8%;border-radius:100%;margin-left:4%;"></img>
-		   
 		   <a id="adminDashboardLink" onclick="showAdminDashboard()"><img src="images/admin-icon.svg" title="Admin Panel" style="cursor: pointer;height:20px;width:20px;margin-left: 15px;"></img>
 		   <a href="<c:url value='/j_spring_security_logout' />"><img src="images/logout-icon.svg" title="Logout" style="cursor: pointer;height: 20px;width: 20px;margin-left: 15px;"></img>
 		</div>
@@ -146,6 +143,7 @@ background-color: white; /* Green */
 					
 					<li id="dashboard"  onclick="showDashboard()" data-toggle="tooltip" data-placement="right" ><a href="#tab2"  style="padding:5% 0% 5% 15%;margin:7%;"><img id="dashboardImage" src="images/Analytics-icon-blue.svg" alt="" title="Dashboard" style="width:60%;"></img></a></li>
 					<li id="competency" data-toggle="tooltip" data-placement="right" onclick="showCompetencies('')"><a href="#tab4" style="padding:35% 0% 25% 15%;margin:12%;"><img id="myformImage" src="images/Document-icon.svg" alt="" title="My Form" style="width:60%;"></img></a></li>
+			        <li id="goal" data-toggle="tooltip" data-placement="tooltip" onclick="renderCompetencyQuestions('Approach')"><a href="#tab4" style="padding:35% 0% 25% 15%;margin:12%;"><img id="goalImage" src="images/goal.png" alt="" title="My Goals" style="width:60%;"></img></a></li>
 			</ul>	
 		</div>
 		<div class="col-sm-11" style="padding-top: 2%;">
@@ -289,18 +287,7 @@ background-color: white; /* Green */
 									 <i class="fa fa-arrow-right fa-2x" style="color:#18A689;cursor:pointer;"></i>
 								</div>
 						</div>	
-						<div class="col-sm-12" id="exportdata" onclick="exportdata()" style="cursor:pointer;padding-top:1%;padding-bottom:2%;border-bottom:1px solid #eeeeee;background:white">
-								<div class="col-sm-1" style="width:5% !important;">
-									<i class="fa fa-user fa-2x" style="color:#18A689;"></i>
-								</div>
-								<div class="col-sm-10">
-									<label style="cursor:pointer;width:100%;float:none;font-size:14px; font-weight:600;"> Export Data</label>
-									 <label style="cursor:pointer;width:100%;float:none;font-size:12px; font-weight:500;color:#999999;">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</label>
-								</div>
-								<div class="col-sm-1" style="text-align:right;padding:1% 0 1% 0;">
-									 <i class="fa fa-arrow-right fa-2x" style="color:#18A689;cursor:pointer;"></i>
-								</div>
-						</div>	
+						
 					<!-- 	<div class="col-sm-12" id="mapEmployeeWithReviewerView" onclick="mapEmployeeWithReviewerView()" style="cursor:pointer;padding-top:1%;padding-bottom:2%;border-bottom:1px solid #eeeeee;background:white">
 								<div class="col-sm-1" style="width:5% !important;">
 									<i class="fa fa-users fa-2x" style="color:#18A689;"></i>
@@ -492,8 +479,8 @@ background-color: white; /* Green */
 
 <!------------------------------------------------------------ Competence modal box starts ------------------------------------------------------------->
  
- 
-  <div id="remarksAndScoreBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none; width:80% !important;height:600px !important;overflow-y:inherit !important;">
+
+<!--   <div id="remarksAndScoreBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none; width:80% !important;height:600px !important;overflow-y:inherit !important;">
         <div class="modal-content clearfix" style="padding-bottom:1%;">
         	<div class="modal-header" style="border-bottom:2px solid #d3d5d3 !important;padding:1% !important;">
             <div class="col-sm-12" style="height:55px">
@@ -515,8 +502,8 @@ background-color: white; /* Green */
             <br>
              <div class="col-sm-12" id="questionPerSection" >
 			             	</div>
-        </div>	
-        <div class="modal-body">
+        </div> -->	
+        <div class="modal-body" style="overflow: hidden;">
             <form id="submitCommentsAndScoreForm" style="overflow-y: auto;max-height: 400px;">
 				<div class="col-sm-12" style="padding-left:0% !important;">
 					<div class="col-sm-9" style="padding-left:0% !important;padding-right: 0px;" id="commentBoxDiv">
@@ -529,13 +516,13 @@ background-color: white; /* Green */
 								<div class='col-sm-7'>
 								<!-- <label style="font-weight:500;"> Score  </label>  -->
                                    <input type='hidden' id="emp_dropdown" data-toggle="tooltip" data-placement="right" size="1" disabled> 
-								</div>
+					<!-- 			</div>
 								<div class='col-sm-4'> 
-								<!-- <label style="color:#4A4A4A;font-family:Nunito Sans;font-size: 12px;font-weight: bold;">SCORE</label> -->
+								<label style="color:#4A4A4A;font-family:Nunito Sans;font-size: 12px;font-weight: bold;">SCORE</label>
 								<div id="rateemp" class="rateemp"></div></div>
 							</div>
 							<div class="col-sm-12">
-								<!-- <label style="font-size:14px;width:100%;font-weight:500;" id="emp_commentLabel"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label> -->
+								<label style="font-size:14px;width:100%;font-weight:500;" id="emp_commentLabel"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label>
 								<textarea rows="3" cols="100" id="emp_remarks" charswidth="23" class="emp_remarks"  placeholder="   Drop your comment here"style="margin-top:1%;width:96%;margin-bottom:1%;resize: none;border:solid 1px #CECECE" maxlength="2500"></textarea>
 							</div>
 						</div>
@@ -546,13 +533,13 @@ background-color: white; /* Green */
 							</div>	
 							<div id="appr_score_dd_div" class="col-sm-6" style="text-align:center;">
 								<div class='col-sm-7'>
-                                   <!-- <label style="font-weight:500;"> Score  </label>  -->
+                                   <label style="font-weight:500;"> Score  </label> 
                                    <input type='hidden' id="appr_dropdown" data-toggle="tooltip" data-placement="right" size="1" disabled> 
                                  </div>
                                 <div class='col-sm-4'><div id="rateappr" class="rateappr" ></div></div>
 							</div>
 							<div class="col-sm-12">
-								<!-- <label style="font-size:14px;width:100%;font-weight:500;" id="appr_commentLabel"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label> -->
+								<label style="font-size:14px;width:100%;font-weight:500;" id="appr_commentLabel"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label>
 								<textarea rows="3" cols="100" id="appr_remarks" charswidth="23" maxlength="2500"   placeholder="   Drop your comment here" class="appr_remarks" style="margin-top:1%;width:96%;margin-bottom:1%;resize: none;border:solid 1px #CECECE""></textarea>
 							</div>
 						</div>
@@ -562,16 +549,16 @@ background-color: white; /* Green */
 							</div>	
 							<div class="col-sm-6" style="text-align:center;">
 								<div class='col-sm-7'>
-                                 <!-- <label style="font-weight:500;"> Score  </label> --> 
+                                 <label style="font-weight:500;"> Score  </label> 
                                   <input type='hidden' id="rev_dropdown" data-toggle="tooltip" data-placement="right" size="1" disabled> 
                                  </div>
                                 <div class='col-sm-4'><div id="raterev" class="raterev"></div></div>
 							</div>
 							<div class="col-sm-12">
-								<!-- <label style="font-size:14px;width:100%;font-weight:500;"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label> -->
+								<label style="font-size:14px;width:100%;font-weight:500;"><img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comments</label>
 								<textarea rows="3" cols="100" id="rev_remarks"  maxlength="2500"  charswidth="23"  placeholder="   Drop your comment here" class="rev_remarks" style="margin-top:1%;width:96%;margin-bottom:1%;resize: none;border:solid 1px #CECECE""></textarea>
 							</div>
-						</div>
+						</div> -->
 					</div>
 					<div class="col-sm-3 row" style="width: 279px;padding-right:7px !important;background-color:#F4F4F5" id="performanceIndicatorDiv">
 						<label style="width:100%; style="height: 24px;width: 175px;color: #4A4A4A;font-family: Nunito Sans;font-size: 17px;font-weight: 300;line-height: 24px;">
@@ -603,7 +590,7 @@ background-color: white; /* Green */
       	</div>
 </div>
 
-
+ -->
 <!------------------------------------------------------------------ competence modal box end---------------------------------------------------------------------------------->
 
 
@@ -722,18 +709,18 @@ var saveCompetenciesURL = '<c:url value="/competency/savecompetencies.do"/>';
 var createNewCycleURL = '<c:url value="/admin/createnewcycle.do"/>';
 var fetchEmpProgressURL = '<c:url value="/admin/employeestatusdata.do"/>';
 var generateEmpMetricSheetURL = '<c:url value="/admin/generatemetricsheet.do"/>';
-var sendEmailToAllURL = '<c:url value="/admin/sendemailtoallemp.do"/>';
+//var sendEmailToAllURL = '<c:url value="/admin/sendemailtoallemp.do"/>';
 var fetchEmpProgressCheckedEmpListURL = '<c:url value="/admin/fetcheckedempprogresslist.do"/>';
-var sendEmailToSingleEmpURL = '<c:url value="/admin/sendemailtosingleemp.do"/>';
+//var sendEmailToSingleEmpURL = '<c:url value="/admin/sendemailtosingleemp.do"/>';
 var updateRevScoreAndRemarksURL = '<c:url value="/admin/updaterevscoreandremarks.do"/>';
 var getActiveAndAboveConsulantEmpURL = '<c:url value="/admin/mapreviewerandemployee.do"/>';
 var getHRAdminMemberURL = '<c:url value="/admin/getHRAdminMember.do"/>';
 var mapReviewerWithHRAdminURL = '<c:url value="/admin/mapreviewerwithhradmin.do"/>';
 var mapEmployeeWithReviewerURL = '<c:url value="/admin/mapreviewerwithemployees.do"/>';
-var sendMailToAppraiserURL = '<c:url value="/competency/sendmailtoappr.do"/>';
+//var sendMailToAppraiserURL = '<c:url value="/competency/sendmailtoappr.do"/>';
 var getreviewerfinalratingURL = '<c:url value="/competency/getreviewerfinalrating.do"/>';
-var getSameApprRevDataURL = '<c:url value="/competency/getSameApprRevData.do"/>';
-var generateExportedDataURL = '<c:url value="/admin/dataExport.do"/>';
+var sendGoalsDataURL = '<c:url value="/admin/sendgoalsdata.do"/>';
+var sendApprCommentsGoalsURL = '<c:url value="/admin/sendApprCommentsGoals.do"/>';
 
 var user = ${user};
 

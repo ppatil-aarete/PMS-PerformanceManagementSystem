@@ -3,7 +3,7 @@ package com.thirdi.pms.admin.controller;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -347,4 +349,26 @@ public class AdminController {
 				}
 				writeDataInResponse(response,dataJson.toString());
 			}
+	  @RequestMapping(value="/sendgoalsdata.do", method=RequestMethod.POST)
+		public void sendGoalsData(HttpServletRequest request,HttpServletResponse response) throws IOException, JSONException {
+		  String empId = request.getParameter("empId");
+		  Integer cycleId = Integer.parseInt(request.getParameter("cycleId"));
+		  String goalsData = request.getParameter("goalsMap");
+		  Integer phaseId =  Integer.parseInt(request.getParameter("phaseId"));
+		  
+		  JSONObject dataJson = new JSONObject();
+		  Map<String,JSONObject> goalDataMap = null;
+			try {
+				HashMap<String,Object> result =
+				        new ObjectMapper().readValue(goalsData, HashMap.class);
+				Boolean addGoals = adminService.addGoalsInfo(result, cycleId, phaseId);
+			//	dataJson.addProperty("status", true);
+			 //   dataJson.addProperty("goalsData", addGoals);
+		}catch(Exception e) {
+				dataJson.put("status", false);
+				dataJson.put("errorMessage", e.getMessage());
+				e.printStackTrace();
+			}
+			writeDataInResponse(response,dataJson.toString());
+		}
 }

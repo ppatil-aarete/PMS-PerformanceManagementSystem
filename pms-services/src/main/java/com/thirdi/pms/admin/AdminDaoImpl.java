@@ -24,6 +24,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import com.thirdi.pms.goal.model.Goal;
 import com.thirdi.pms.login.dao.LoginDao;
 
 @Repository
@@ -322,12 +323,33 @@ public class AdminDaoImpl implements AdminDao{
 		            Recipient rc = new Recipient();
 		            rc.setEmail(rs.getString("emp_work_email"));
 		        	rc.setFirstName(rs.getString("emp_firstname"));
-		        	rc.setLastName(rs.getString("emp_lastname"));;
+		        	rc.setLastName(rs.getString("emp_lastname"));
 		            recipients.add(rc);
 		        }
 		        return recipients;
 		    }                 
 		});
 	}
+
+
+	public Boolean addGoalsInformation(List<Goal> goal,Integer cycleId, final Integer phaseId) {
+		String insertSQL= "update tx_appr_empl_rating SET remarks = ? where appr_phase_id = ? and ApprEmpId = ?";
+	      for (final Goal gl : goal) {
+				template.execute(insertSQL, new PreparedStatementCallback<Boolean>() {
+					public Boolean doInPreparedStatement(PreparedStatement ps)
+							throws SQLException, DataAccessException {
+						ps.setString(1,gl.getSelfComments());
+						ps.setInt(2, phaseId );
+						ps.setString(3, gl.getEmpId());
+						//ps.setInt(4, appraiserId);
+						//ps.setString(4, gl.getSelfComments());
+						//ps.setString(5, gl.getAppraiserComments());
+						//ps.setString(6, gl.getReviewerComments());
+						return ps.execute();
+					}
+				});
+			}
+			return null;
+		}
 	
 }

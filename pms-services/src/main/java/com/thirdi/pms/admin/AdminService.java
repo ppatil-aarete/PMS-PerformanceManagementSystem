@@ -1,6 +1,7 @@
 package com.thirdi.pms.admin;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,8 @@ public interface AdminService {
 	public Boolean sendEmailSelectedEmployee(String empList);
 	
 	public Map<Integer, JsonObject> exportData(Integer cycleId);
+
+	public Boolean addGoalsInfo(HashMap<String, Object> result, Integer cycleId, Integer phaseId);
 
 	
 	

@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import com.thirdi.pms.competency.CompetencyDao;
 import com.thirdi.pms.competency.CompetencyService;
 import com.thirdi.pms.competency.PhaseStatus;
 import com.thirdi.pms.external.services.EmailMessageService;
+import com.thirdi.pms.goal.model.Goal;
 import com.thirdi.pms.login.api.LoginService;
 import com.thirdi.pms.login.dao.LoginDao;
 import com.thirdi.pms.login.model.EmployeeDetails;
@@ -185,28 +188,30 @@ public class AdminServiceImpl implements AdminService {
 								reviewerName = "-";
 							}
 						}
-						
-					/*	if (appraiserName.equals("") && reviewerName.equals("")) {
+
+						/*
+						 * if (appraiserName.equals("") &&
+						 * reviewerName.equals("")) {
+						 * detailsContainer.addProperty("appraiserName", "-");
+						 * detailsContainer.addProperty("employeeName",
+						 * employeeName);
+						 * detailsContainer.addProperty("reviewerName", "-");
+						 * detailsContainer.addProperty("designationName",
+						 * designationName); }
+						 */
+						if (appraiserName.equals("")) {
+
 							detailsContainer.addProperty("appraiserName", "-");
 							detailsContainer.addProperty("employeeName", employeeName);
-							detailsContainer.addProperty("reviewerName", "-");
 							detailsContainer.addProperty("designationName", designationName);
-						}*/
-						if (appraiserName.equals("")) {	
-							
-							detailsContainer.addProperty("appraiserName", "-");
-							detailsContainer.addProperty("employeeName", employeeName);
-							detailsContainer.addProperty("designationName", designationName);
-						}
-							else if (reviewerName.equals("")) {
+						} else if (reviewerName.equals("")) {
 							detailsContainer.addProperty("appraiserName", appraiserName);
 							detailsContainer.addProperty("reviewerName", appraiserName);
 							detailsContainer.addProperty("employeeName", employeeName);
 							detailsContainer.addProperty("designationName", designationName);
-						
-						
+
 						}
-						
+
 						else {
 							detailsContainer.addProperty("appraiserName", appraiserName);
 							detailsContainer.addProperty("employeeName", employeeName);
@@ -356,6 +361,7 @@ public class AdminServiceImpl implements AdminService {
 		emailService.sendRevTwoEmail(recipientList, mail, "reminderToEmployeeList.txt");
 		return true;
 	}
+
 	@Transactional(readOnly = true)
 	public Map<Integer, JsonObject> exportData(Integer cycleId) {
 		Map<Integer, JsonObject> exportDataMap = new HashMap<Integer, JsonObject>();
@@ -386,10 +392,11 @@ public class AdminServiceImpl implements AdminService {
 						Integer apprId = empDetails.getNextUserRoleId();
 						employeeName = userIdNameMap.get(idMap.get(emp_appr_Id));
 						designationName = designationNameMap.get(idMap.get(emp_appr_Id));
-						/*if (empDetails.getCompletionDate() != null) {
-							completionDate = empDetails.getCompletionDate();
-						}*/
-						
+						/*
+						 * if (empDetails.getCompletionDate() != null) {
+						 * completionDate = empDetails.getCompletionDate(); }
+						 */
+
 						if (phaseName == PhaseStatus.Reviewer && progressOfCycle.equals(1)) {
 							status = "Completed";
 						}
@@ -418,14 +425,14 @@ public class AdminServiceImpl implements AdminService {
 								reviewerName = "-";
 							}
 						}
-					
+
 						if (appraiserName.equals("") || reviewerName.equals("")) {
 							detailsContainer.addProperty("appraiserName", "-");
 							detailsContainer.addProperty("employeeName", employeeName);
 							detailsContainer.addProperty("reviewerName", "-");
 							detailsContainer.addProperty("designationName", designationName);
 							detailsContainer.addProperty("status", status);
-							
+
 						} else {
 							detailsContainer.addProperty("appraiserName", appraiserName);
 							detailsContainer.addProperty("employeeName", employeeName);
@@ -461,4 +468,36 @@ public class AdminServiceImpl implements AdminService {
 		return exportDataMap;
 	}
 
+	public Boolean addGoalsInfo(HashMap<String, Object> result, Integer cycleId, Integer phaseId) {
+		List<Goal> goal = new ArrayList<Goal>();
+		Goal goal2 = null;
+		for (String emp : result.keySet()) {
+			goal2 = new Goal();
+			goal2.setEmpId(emp);
+			goal.add(goal2);
+		}
+		for (Goal g : goal) {
+			for (Entry<String, Object> entry : result.entrySet()) {
+				LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) entry.getValue();
+				for (Map.Entry<String, String> value : map.entrySet()) {
+					if (value.getKey() == "weightage") {
+						g.setGoalWeightage(value.getValue());
+					} else {
+						g.setSelfComments(value.getValue());
+						/*
+						 * g.setAppraiserComments(value.getValue());
+						 * g.setReviewerComments(value.getValue());
+						 */
+					}
+
+				}
+
+			}
+		}
+
+		Boolean status = adminDao.addGoalsInformation(goal, cycleId, phaseId);
+		return status;
+	}
+
+	
 }
