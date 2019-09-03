@@ -52,6 +52,7 @@
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterappr.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/raterrev.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterrev.js'/>"></script>
+  <script type="text/javascript" src="<c:url value='/lib/Export/table2excel.js'/>"></script>
   <%-- <script type="text/javascript" src="<c:url value='/lib/chart/canvasjs.min.js'/>"></script>
    --%>
   <style><%@include file="/WEB-INF/login/css/masterpagestyle.css"%></style>
@@ -281,6 +282,18 @@ background-color: white; /* Green */
 								</div>
 								<div class="col-sm-10">
 									<label style="cursor:pointer;width:100%;float:none;font-size:14px; font-weight:600;">Assign Admin</label>
+									 <label style="cursor:pointer;width:100%;float:none;font-size:12px; font-weight:500;color:#999999;">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</label>
+								</div>
+								<div class="col-sm-1" style="text-align:right;padding:1% 0 1% 0;">
+									 <i class="fa fa-arrow-right fa-2x" style="color:#18A689;cursor:pointer;"></i>
+								</div>
+						</div>	
+						<div class="col-sm-12" id="exportdata" onclick="exportdata()" style="cursor:pointer;padding-top:1%;padding-bottom:2%;border-bottom:1px solid #eeeeee;background:white">
+								<div class="col-sm-1" style="width:5% !important;">
+									<i class="fa fa-user fa-2x" style="color:#18A689;"></i>
+								</div>
+								<div class="col-sm-10">
+									<label style="cursor:pointer;width:100%;float:none;font-size:14px; font-weight:600;"> Export Data</label>
 									 <label style="cursor:pointer;width:100%;float:none;font-size:12px; font-weight:500;color:#999999;">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</label>
 								</div>
 								<div class="col-sm-1" style="text-align:right;padding:1% 0 1% 0;">
@@ -720,6 +733,7 @@ var mapEmployeeWithReviewerURL = '<c:url value="/admin/mapreviewerwithemployees.
 var sendMailToAppraiserURL = '<c:url value="/competency/sendmailtoappr.do"/>';
 var getreviewerfinalratingURL = '<c:url value="/competency/getreviewerfinalrating.do"/>';
 var getSameApprRevDataURL = '<c:url value="/competency/getSameApprRevData.do"/>';
+var generateExportedDataURL = '<c:url value="/admin/dataExport.do"/>';
 
 var user = ${user};
 
