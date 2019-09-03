@@ -43,6 +43,8 @@ public interface AdminService {
 	public void sendReminderMailToReviewer();
 
 	public Boolean sendEmailSelectedEmployee(String empList);
+	
+	public Map<Integer, JsonObject> exportData(Integer cycleId);
 
 	
 	
