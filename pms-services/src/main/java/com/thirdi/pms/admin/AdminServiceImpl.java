@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import com.thirdi.pms.competency.CompetencyDao;
 import com.thirdi.pms.competency.CompetencyService;
 import com.thirdi.pms.competency.PhaseStatus;
 import com.thirdi.pms.external.services.EmailMessageService;
+import com.thirdi.pms.goal.model.Goal;
 import com.thirdi.pms.login.api.LoginService;
 import com.thirdi.pms.login.dao.LoginDao;
 import com.thirdi.pms.login.model.EmployeeDetails;
@@ -460,5 +463,37 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return exportDataMap;
 	}
+	
+	public Boolean addGoalsInfo(HashMap<String, Object> result, Integer cycleId, Integer phaseId) {
+		List<Goal> goal = new ArrayList<Goal>();
+		Goal goal2 = null;
+		for (String emp : result.keySet()) {
+			goal2 = new Goal();
+			goal2.setEmpId(emp);
+			goal.add(goal2);
+		}
+		for (Goal g : goal) {
+			for (Entry<String, Object> entry : result.entrySet()) {
+				LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) entry.getValue();
+				for (Map.Entry<String, String> value : map.entrySet()) {
+					if (value.getKey() == "weightage") {
+						g.setGoalWeightage(value.getValue());
+					} else {
+						g.setSelfComments(value.getValue());
+						/*
+						 * g.setAppraiserComments(value.getValue());
+						 * g.setReviewerComments(value.getValue());
+						 */
+					}
+
+				}
+
+			}
+		}
+
+		Boolean status = adminDao.addGoalsInformation(goal, cycleId, phaseId);
+		return status;
+	}
+
 
 }

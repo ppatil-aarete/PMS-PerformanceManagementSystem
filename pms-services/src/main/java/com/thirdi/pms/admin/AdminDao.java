@@ -3,6 +3,8 @@ package com.thirdi.pms.admin;
 import java.util.List;
 import java.util.Map;
 
+import com.thirdi.pms.goal.model.Goal;
+
 public interface AdminDao {
 
 	public 	Map<Integer,String> getFunctionOfEmployeeWithIdMap();
@@ -35,5 +37,6 @@ public interface AdminDao {
 
 	public List<Recipient> fetchAllRecipientsForReviewerReminder();
 
+	public Boolean addGoalsInformation(List<Goal> goal, Integer cycleId, Integer phaseId);
 
 }
