@@ -168,7 +168,7 @@ function backToDashboard(){
 }
 
 function viewProgressStatusDropdown(){
-	debugger
+	
 	$('#tableId').DataTable( {
 	"bStateSave": true,
 	   	initComplete: function () {
@@ -202,7 +202,7 @@ function viewProgressStatusDropdown(){
 	}
 
 function exportdataDropdown(){
-	debugger
+	
 	$('#exportTableId').DataTable( {
 	"bStateSave": true,
 	   	initComplete: function () {
@@ -274,7 +274,7 @@ function showEmployeeProgressView(){
 	}
 
 function prepareBodyOfEmployeeProgress(){
-	debugger
+	
 	var progressDataMap = adminCache.getEmpProgressDataMap();
 	var tbody = $('<tbody>');
 	if(progressDataMap != undefined && progressDataMap != null && !jQuery.isEmptyObject(progressDataMap)){
@@ -363,7 +363,7 @@ function generateEmployeeMetricSheet(){
 }
 
 function prepareBodyOfEmployeeMetricSheet(){
-	debugger
+	
 	var revId = user.empid;
 	var cycleId = apprCycle.cycleId;
 	var metricSheetDataMap = adminCache.getMetricSheetDataMap();
@@ -472,7 +472,7 @@ function exportdata(){
 
 
 function prepareBodyOfExportDataSheet(){
-	debugger
+	
 	var revId = user.empid;
 	var cycleId = apprCycle.cycleId;
 	var exportDataMap = adminCache.getExporteddataMap();
@@ -544,7 +544,7 @@ function prepareBodyOfExportDataSheet(){
 }
 
 function InlineEditRevRatings(empId,element,currentValue,revId,cycleId){
-	debugger
+	
 	var value = $(element).html();
 	$(element).removeAttr('onclick');
 	$(element).hide();
@@ -748,7 +748,7 @@ function prepareBodyForRevMappingView(){
 
 
 function prepareBodyForHRrevMappingView(){
-	debugger
+	
 	var aboveConsultantDataMap = adminCache.getAboveConsulantEmployee();
 	var HRAdminDataMap = adminCache.getHRAdminMembers();
 	var tbody = $('<tbody>');
@@ -916,7 +916,7 @@ function getListOfActiveReviewer(aboveConsultantDataMap){
 }
 
 function getListOfHRAdmin(HRAdminDataMap){
-	debugger
+	
 	var activeHRAdminList = [];
 	if(HRAdminDataMap != undefined && HRAdminDataMap != null && !jQuery.isEmptyObject(HRAdminDataMap)){
 		 for(var activeRevId in HRAdminDataMap){
@@ -958,7 +958,7 @@ function setHeaderOfAvailActionProgress(title,icon,button){
 	}
 
 function showEmailBox(empId){
-	debugger;
+	
     $('#emailSubject').val('');
     $('#configMailtext').html('');
     $('#empId').val(empId);
@@ -1040,7 +1040,7 @@ function createNewCycleAjax(){
 					 showAdminDashboard();
 					 showToster('info !', " Start sending emails", 5, "success");
 					 clearCycleForm();
-					 sendEmailToAll();
+					 //sendEmailToAll();
 			} else {
 				showToster('Error !',"Oops ! Something went wrong.", 5, "error");
 				console.log('Error Cause :' + res.errorMessage);
@@ -1052,7 +1052,7 @@ function createNewCycleAjax(){
 
 
 function fetchEmpMetricSheetDataAjax(){
-	debugger;
+	
 	var res = null;
 	$.ajax({
 		type : "POST",
@@ -1084,7 +1084,7 @@ function fetchEmpMetricSheetDataAjax(){
 }
 
 function getExportDataAjax(){
-	debugger;
+	
 	var res = null;
 	$.ajax({
 		type : "POST",
@@ -1139,7 +1139,7 @@ function sendEmailToAll(){
 }
 
 function sendMailToSpecificEmp(){
-	debugger;
+	
 	var data =  $('.configMailSummerNote').code()
 	   $('#configMailtext').html(data);
 	var empIdForMail = $("#empId").val();
@@ -1365,7 +1365,7 @@ function mapSelectedRevWithHRAdminAjax(){
 }
 
 function fetchCheckedEmpListFromViewPogress(checks){
-	debugger
+	
 	var list = JSON.stringify([...checks]);
 	   $.ajax({
 	       type : "POST",
@@ -1613,7 +1613,7 @@ function mandatoryField(fieldObject, fieldName) {
 
 
 function SubmitCheckedEmpID(){
-debugger
+
 // var $empId=$('#checkedEmpId').html();
 var checks = $('input[type="checkbox"]:checked').map(function(){
        return $(this).val();
@@ -1644,7 +1644,7 @@ function clearCheckBox(){
 	}
 
 function exportDataAjax(){
-	debugger
+	
 	$("#exportTableId").table2excel({
         filename: "EmployeeRatingSheet.xls"
     });

@@ -153,7 +153,7 @@ function setUserGeneralInfo(userGeneralInfo){
 	this.userGeneralInfoObject =userGeneralInfo;
 }
 function showDashboard(){
-	debugger;
+
 	$('#headerOfFullContentDiv').html('');
 	$('#fullContentDiv').html('');
 	changeLogoStyleForDashboard();
@@ -693,7 +693,7 @@ function checkFiller(section){
 }
 
 function hideDropDownScore(){
-	debugger
+	
     var CurrentDate = new Date();
     var userrole = user.role//getUserRole();
     var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
@@ -702,10 +702,10 @@ function hideDropDownScore(){
     //$("#commentBoxDiv").ready(function() {
     if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate>cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="ESS")))
     {
-        $("#appr_dropdown").val();
-        $("#rev_dropdown").val();
-        $("#appr_remarks").val();
-        $("#rev_remarks").val();
+    	$("#appr_dropdown").val("0");
+        $("#rev_dropdown").val("0");
+        $("#appr_remarks").val("");
+        $("#rev_remarks").val("");
     }
    /* else if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate<cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="ESS")))
     {
@@ -727,7 +727,7 @@ function hideDropDownScore(){
 
 
 function checkSelfFormOrAppraiserForm(employeeId){
-	debugger
+	
 	$("#fullContentDiv").show();
 	var userRole = getUserRole();
 	if(employeeId != "" && teamMemberId == null){
@@ -778,7 +778,7 @@ debugger
 }*/
 
 function getQuestionAnsweredPerSection(section){
-	debugger
+	
 		var countAsSave = 0;
 	    var countAsSaveAsDraft=0
 		var answeredSectionMap = competencyCache.questionSectionStorageMap ;
@@ -816,11 +816,13 @@ function getQuestionAnsweredPerSection(section){
 	else
 		return countAsSave;
 	}
+
 function setNewPhaseId(currentPhase){
 	this.newPhaseId = currentPhase; 
 	}
+
 function prepareBodyForCompetency(){
-	debugger;
+	
 	var bodyContainer = $('<div class="col-sm-12" id="competencyBodyDiv" style="padding-left:0px !important;padding-right:0px !important;">');
     var finalScoreMap = competencyCache.getFinalScoreMap();
     setNewPhaseId(currentPhase);
@@ -1147,7 +1149,7 @@ function checkValidationOnFirstQuestion(qId){
 }
 
 function firstAndLastQuestion(){
-	debugger
+	
 	 var sectionMap = competencyCache.getSectionAndQuestions();
 	 var lengthOfSectionMap = Object.keys(sectionMap).length;
 	 for(var i=0; i<lengthOfSectionMap; i++){
@@ -1182,7 +1184,7 @@ function raterSetup(){
 }
 
 function starTwoWayDataBinding() {
-	debugger
+	
     var empVal= $("#emp_dropdown").val();
     var apprVal = $("#appr_dropdown").val();
     var revVal = $("#rev_dropdown").val();
@@ -1241,7 +1243,7 @@ function openModalBox(qId,empId,section,question,isRatingEnable,questionTitle){
 
 	
 function saveAndContinue1(qId,empId,section,question,isRatingEnable,questionTitle){
-	debugger
+	
 	 var status = getStatusOfTeamMember(empId);
 	if(validationNumber != null){
 		var allValidationsVerified = checkCredibiltyOfValidationsOnModalBox(validationNumber); 
@@ -1694,7 +1696,7 @@ function setPerformnaceIndicators(qId){
 
 
 function checkAndFillValuesInElements(qId,empId){
-	debugger
+	
 	var storageUnit = competencyCache.dataStorageMap; //cached map
 	var status = getStatusOfTeamMember();
 	var returnValues = [];
@@ -1893,7 +1895,7 @@ function checkAndFillValuesInElements(qId,empId){
 }
 
 function emptyAllValueInModalBox(){
-	debugger
+	
 	$('#emp_remarks').val("");
 	$('#appr_remarks').val("");
 	$('#rev_remarks').val("");
@@ -2110,7 +2112,7 @@ informationDiv.append(headerdiv);
    $("#"+currentInfoqId+"LabelDiv").css("border-bottom","2.5px solid #3a97d3");
 }
 function questionPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle){
-	debugger
+	
 	setCurrentqId(qId);
 	setCurrentQuestion(question)
 	$('#questionPerSection').html('');
@@ -2340,7 +2342,7 @@ function prepareBodyForInformation(section){
 }
 
 function createStrengthLabel(empId,element){
-	debugger
+	
 	var strengthDiv = $('<div class="col-sm-12" style="height: auto;font-weight:500;padding:0.5%;">');
 	var label1 = $('<label class="col-sm-12" style="width:100%;padding-left:2%;cursor:pointer;color: #3A97D3;margin-top:1%;font-weight:500;height:30px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Strengths\')">Strength</label>');
     var pencilDiv = $('<img class="pull-right" src="images/Edit.svg" onclick="openSWBox(\''+empId+'\',\'Strengths\')" style="cursor:pointer;">')
@@ -2350,7 +2352,7 @@ function createStrengthLabel(empId,element){
 }
 
 function createWeaknessLabel(empId,element){
-	debugger
+	
 	var weaknessDiv = $('<div class="col-sm-12" style="height: auto;font-weight:500;padding:0.5%;">');
 	var label1 = $('<label class="col-sm-12" style="width:100%;padding-left:2%;cursor:pointer;color: #3A97D3;margin-top:1%;font-weight:500;height:30px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Weaknesses\')">Weakness</label>');
     var pencilDiv = $('<img class="pull-right" src="images/Edit.svg" onclick="openSWBox(\''+empId+'\',\'Weaknesses\')" style="cursor:pointer;">')
@@ -2575,7 +2577,7 @@ function alignSWBox(){
 /************************************************************************************ AJAX ***************************************************************************************/
 
 function getCompetencyDataFromServer(){
-	debugger
+	
 	var empId = "";
 	if(teamMemberId != null && teamMemberId != ""){
 		empId = teamMemberId
@@ -2621,7 +2623,7 @@ function getCompetencyDataFromServer(){
 }
 
 function updateCompetencies(status){
-	debugger
+	
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2678,7 +2680,7 @@ function updateCompetencies(status){
 }
 
 function saveCompetencies(status){
-	debugger
+	
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2729,7 +2731,7 @@ function saveCompetencies(status){
 }
 
 function saveBeforeUpdate(){
-	debugger
+	
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2774,7 +2776,7 @@ function saveBeforeUpdate(){
 	return res;
 }
 function sendMailToAppraiser(){
-	debugger
+	
 	var empId = getUserId();
 	var date = new Date();
 	var CurrentDate = date.toDateString();
@@ -2810,7 +2812,7 @@ function sendMailToAppraiser(){
 	}
 
 function getReviewerFinalRating(){
-	debugger;
+	
 	var res = null;
 	$.ajax({
 		type : "POST",
@@ -2840,7 +2842,7 @@ Date.prototype.addDays = function(days) {
 	};
 var validationNumber = null;
 function setValidations(){
-	debugger
+	
 	var userrole = getUserRole();
 	var isFinalized = apprCycle.isFinalized;
 	var CurrentDate = new Date();
@@ -3210,7 +3212,6 @@ function saveAsDraft(){
 }
 
 function submitCompetencies(){
-	debugger
 		var response = confirm('Are you sure you want to submit?');
 	saveBeforeUpdate();
 	var status = getStatusOfTeamMember();
@@ -3301,11 +3302,10 @@ function submitCompetencies(){
 	
 	}
 	
-	//sendMailToAppraiser();
 	
 	if(response && (isFilledSubjective==true && isFilledObjective== true)){
 	var isUpdated = updateCompetencies(status);
-	sendMailToAppraiser();
+	//sendMailToAppraiser();
 	sessionStorage.clear();
 	window.location.reload(true); //for reloading page
 	}
@@ -3317,7 +3317,6 @@ function submitCompetencies(){
 		}
 	
 function setValidationsForSWBox(){
-	debugger
 	enableAllSW();
 	var isFinalized = apprCycle.isFinalized;
 	var userrole = getUserRole();
@@ -3335,7 +3334,6 @@ function setValidationsForSWBox(){
 }
 
 function disableSWForAppraiser(){
-	debugger
 	$('#appr_SW1').prop("disabled","true");
 	$('#appr_SW1').css({"cursor":"not-allowed"});
 	$('#appr_SW2').prop("disabled","true");
@@ -3345,7 +3343,6 @@ function disableSWForAppraiser(){
 	$('#modal_appr_sec_sw').css({"color":"#999"});
 }
 function disableSWForEmployee(){
-	debugger
 	$('#emp_SW1').prop("disabled","true");
 	$('#emp_SW1').css({"cursor":"not-allowed"});
 	$('#emp_SW2').prop("disabled","true");
@@ -3373,7 +3370,6 @@ function enableAllSW(){
 
 function readMoreFunction(empRemarksLabel,mngRemarksLabel,empRemarks,mngRemarks)
 {
-	debugger;
   if(empRemarks != ""&&empRemarks!=null)
   {
 	  if(empRemarks.length>=20)

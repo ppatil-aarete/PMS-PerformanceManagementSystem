@@ -3,7 +3,7 @@
 <style>
 </style>
 <body>
-   <p> Hi ${selfName},</p>
+   <p> Hello ${selfName},</p>
    <p> You have been added as one of the Reviewers in Reviewers Assessment Group by HR. 
        This group is required to complete the assessment and normalization for all Associates by ${reviewerAssessmentDuration}</p>
    <br>
