@@ -3,7 +3,7 @@
 <style>
 </style>
 <body>
-   <p> Hi ${selfName},</p>
+   <p> Hello ${selfName},</p>
    <p> Thank you!</p>
    <p> You have successfully submitted your self-assessment form on ${selfCompletionDate}.</p>
    <p> Your Form  has been shared with your Appraiser ${apprName}.</p>

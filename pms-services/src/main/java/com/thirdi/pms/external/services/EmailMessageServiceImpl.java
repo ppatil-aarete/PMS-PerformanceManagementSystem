@@ -253,7 +253,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		} else {
 			parameterMap.put("selfCompletionDate", "NA");
 		}
-		parameterMap.put("url", "http://172.16.17.132:8080/pms");
+		//parameterMap.put("url", "http://172.16.17.78:8080/pms");
+		parameterMap.put("url", Constant.PMS_LINK);
 		return parameterMap;
 	}
 
@@ -355,7 +356,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		if (recipient.getFirstName() + " " + recipient.getLastName() != null) {
 			parameterMap.put("selfName", recipient.getFirstName() + " " + recipient.getLastName());
 		}
-		parameterMap.put("url", "http://172.16.17.132:8080/pms");
+		//parameterMap.put("url", "http://172.16.17.78:8080/pms");
+		parameterMap.put("url", Constant.PMS_LINK);
 		return parameterMap;
 	}
 

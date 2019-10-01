@@ -3,7 +3,7 @@
 <style>
 </style>
 <body>
-   <p> Hi ${selfName},</p>
+   <p> Hello ${selfName},</p>
    <p> Your assessment is pending.
 		Please note that submission after due date will not be accepted and you might not be
 		considered for review in this cycle.</p>

@@ -3,7 +3,7 @@
 <style>
 </style>
 <body>
-   <p> Hi ${selfName},</p>
+   <p> Hello ${selfName},</p>
    <p> You need to give reviewer assessment for your sub-ordinates 
        Please complete your reviewer assessment process by ${reviewerAssessmentDuration}</p>
    <br>   
