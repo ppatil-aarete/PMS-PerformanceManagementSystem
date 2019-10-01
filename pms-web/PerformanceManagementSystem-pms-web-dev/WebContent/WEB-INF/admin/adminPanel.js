@@ -429,7 +429,6 @@ function exportdata(){
 	var title = "Export Employee Data";
 	var icon = $('<i class="fa fa-file-text" style="color:#18A689;margin-right:1%;"></i>');
 	var exportButton =  $('<a href="#"><button onclick="exportDataAjax()" style="margin-left: 500px;" class="btn btn-outline-green btn-success" > Export Data </button></a>');
-	//var exportButton =  $('<a href="dataExport"><button style="margin-left: 500px;" class="btn btn-outline-green btn-success" > Export Data </button></a>');
 	var titleDiv = setHeaderOfAvailActionExport(title,icon,exportButton);
 	var exportDataContainer = $('<div class="col-sm-12">');
 	var tableContainer = $('<div class="table-responsive">');
@@ -445,8 +444,6 @@ function exportdata(){
 	var SelfScore = $('<th style="text-align:center;">').html('Self Rating');
 	var ApprScore = $('<th style="text-align:center;">').html('Appraiser Rating');
 	var RevScore = $('<th style="text-align:center;">').html('Reviewer Rating');
-	//var Rev2Score = $('<th style="text-align:center;">').html('Reviewer Level-2 Rating');
-	//var RevComments = $('<th style="text-align:center;">').html('Reviewer Comments');
 	tr.append(no);
 	tr.append(employeeName);
 	tr.append(DesignationName);
@@ -456,8 +453,6 @@ function exportdata(){
 	tr.append(SelfScore);
 	tr.append(ApprScore);
 	tr.append(RevScore);
-	//tr.append(Rev2Score)
-	//tr.append(RevComments);
 	thead.append(tr);
 	var tbody = prepareBodyOfExportDataSheet();
 	table.append(thead);
@@ -465,7 +460,6 @@ function exportdata(){
 	exportDataContainer.append(table);
 	$('#adminDashboardContentArea').append(titleDiv);
 	$('#adminDashboardContentArea').append(exportDataContainer);
-	//$('#exportTableId').DataTable();
 	exportdataDropdown();
 	checkBackButton();
 }
@@ -503,25 +497,6 @@ function prepareBodyOfExportDataSheet(){
 			var seldRatingTd = $('<td id='+empId+"self"+' style="text-align:center;">').html(empDataJson["selfScore"]);
 			var apprRatingTd = $('<td id='+empId+"appr"+' style="text-align:center;">').html(empDataJson["mngScore"]);
 			var revRatingTd =  $('<td id='+empId+"rev"+' style="text-align:center;">').html(empDataJson["revScore"]);
-			/*var revRating = empDataJson["rev2score"];
-			var revComments = empDataJson["revRemarks"];
-			var rev2RatingTd = $('<td style="text-align:center;">')
-		    var rev2RatingLabel = $('<label data-toggle="tooltip" data-placement="right" title="click here to update" style="font-weight:400;" onclick="InlineEditRevRatings(\''+empId+'\',this,\''+revRating+'\',\''+revId+'\',\''+cycleId+'\')">').html(revRating);
-			var selfVal = seldRatingTd.html();
-			var apprVal = apprRatingTd.html();
-			var revVal = revRatingTd.html();
-			var endDate = new Date(moment(apprCycle.endate).format("DD MMM YY"));
-			endDate.addDays(1);
-			var currentDate = new Date();
-			
-			var revCommentTd= $('<td style="text-align:center;">');
-		    var revCommentLabel = $('<label data-toggle="tooltip" data-placement="right" title="click here to update" style="font-weight:400;" onclick="InlineEditRevRemarks(\''+empId+'\',this,\''+revComments+'\',\''+revId+'\',\''+cycleId+'\')">').html(revComments);
-		   if((selfVal=="0"||apprVal=="0"||revVal=="0")||(currentDate>endDate)){
-				rev2RatingLabel.prop("onclick", null).off("click");
-				revCommentLabel.prop("onclick", null).off("click");
-				}
-		    rev2RatingTd.append(rev2RatingLabel);
-		    revCommentTd.append(revCommentLabel);*/
 		    tr.append(noTd);
 		    tr.append(empNameTd);
 		    tr.append(designationNameId);
@@ -531,8 +506,6 @@ function prepareBodyOfExportDataSheet(){
 		    tr.append(seldRatingTd);
 		    tr.append(apprRatingTd);
 		    tr.append(revRatingTd);
-		    //tr.append(rev2RatingTd);
-		    //tr.append(revCommentTd);
 		    tbody.append(tr);
 		    count++;
 		}
@@ -714,21 +687,18 @@ function prepareBodyForRevMappingView(){
 	if(aboveConsultantDataMap != undefined && aboveConsultantDataMap != null && !jQuery.isEmptyObject(aboveConsultantDataMap) && 
 			allEmployeeDataMap != undefined && allEmployeeDataMap != null && !jQuery.isEmptyObject(allEmployeeDataMap)){
 		var count = "";
-		// for(var consultantEmpId in aboveConsultantDataMap){
 			var tr = $('<tr>');
 			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
 			var noTd = $('<td>').append(noLabel);  
 			var iconTd = $('<td style="text-align:left;width:20%;">');
 			var icon = $('<i class="fa fa-arrows-h fa-2x" style="color:#18A689;">');
 			iconTd.append(icon);
-			// var reviewerName = aboveConsultantDataMap[consultantEmpId];
 			var reviewerTd = $('<td style="width:10%;">');
 			var reviewerDropdown = $('<select id="revDropdown">');
 			var employeeTd = $('<td style="width:40%; text-align:center">');
 		    var empDropdown = $('<select multiple="multiple" id="empDropdown" class="input-box">');
 			var mapButtonTd = $('<td style="width:40%;text-align:center">');
 			var mapButton = $('<button onclick="mapSelectedEmpwithReviewerAjax()" class="btn btn-outline-green btn-success" > Map </button>');
-							
 			employeeTd.append(empDropdown);
 			reviewerTd.append(reviewerDropdown);
 			mapButtonTd.append(mapButton);
@@ -1040,7 +1010,7 @@ function createNewCycleAjax(){
 					 showAdminDashboard();
 					 showToster('info !', " Start sending emails", 5, "success");
 					 clearCycleForm();
-					 //sendEmailToAll();
+					 //sendEmailToAll();   // TODO mail send to all at the time of cycle creation.
 			} else {
 				showToster('Error !',"Oops ! Something went wrong.", 5, "error");
 				console.log('Error Cause :' + res.errorMessage);
@@ -1178,19 +1148,7 @@ function sendMailToSpecificEmp(){
 	}
 
 
-/*
- * function sendMailToSpecificEmp(){ debugger $('#configMailtext').html(
- * $('.configMailSummerNote').code()); //save HTML If you need(aHTML: array).
- * $.ajax({ type : "POST", url : sendEmailToSingleEmpURL, data :
- * $('#configMailform').serialize(), beforeSend : function() {
- * $("body").showLoading(); }, complete : function() { $("body").hideLoading(); },
- * error : function(response, error, thrownError) { displayError(response,
- * error, thrownError); }, success : function success(response) { var res =
- * eval(response); if (res.status) { showToster("Success", "Email has been sent
- * successfully.", 5, 'success'); $('.configMailSummerNote').destroy();
- * $('#configMailModal').modal('hide'); } else { showToster('Error !',
- * res.errorMessage, 5, "error"); } } }); }
- */
+
 
 function updateRevScoreOrRemarks(empId,flag,value,revId,cycleId){
 	var res = null;
@@ -1341,10 +1299,7 @@ function mapSelectedRevWithHRAdminAjax(){
 			hrAdminID : hrAdminID,
 			revIdList : JSON.stringify(revIdList)	
 		},
-		/*
-		 * beforeSend : function() { $("body").showLoading(); }, complete :
-		 * function() { $("body").hideLoading(); },
-		 */
+		
 		error : function(response, error, thrownError) {
 			displayError(response, error, thrownError);
 		},
@@ -1505,63 +1460,7 @@ function cycleDatesValidations() {
 	
 }
 
-/*
- * function cycleDatesValidations() {
- * 
- * var date = new Date(); var startDate = new Date(); var endDate=new Date();
- * date.setDate(date.getDate());
- * 
- * $('#cycleStartDate').datepicker({ autoclose : true, todayHighlight : true,
- * format : 'dd-mm-yyyy', startDate : date }).on('changeDate', function(){ var
- * temp = $(this).datepicker('getDate'); var d = new Date(temp);
- * d.setDate(d.getDate()+1);
- * 
- * $('#cycleEndDate').datepicker({ autoclose : true, todayHighlight : true,
- * format : 'dd-mm-yyyy', startDate : d
- * 
- * }).on('changeDate', function() { var temp1 = $(this).datepicker('getDate');
- * endDate=new Date(temp1); }) });
- * 
- * 
- * $('#cycleStartDate').datepicker().on('changeDate', function() { var temp =
- * $(this).datepicker('getDate'); var d = new Date(temp);
- * d.setDate(d.getDate());
- * 
- * $('#selfApprStartDate').datepicker({ autoclose : true, format : 'dd-mm-yyyy',
- * startDate : d //endDate:endDate });
- * 
- * $('#selfApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate() + 1);
- * 
- * $('#selfApprEndDate').datepicker({
- * 
- * autoclose : true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * 
- * $('#selfApprEndDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate()); $('#mngApprStartDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * $('#mngApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d3 = new Date(temp1);
- * d3.setDate(d3.getDate() + 1); $('#mngApprEndDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d3, endDate:endDate });
- * 
- * 
- * $('#mngApprEndDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate()); $('#revApprStartDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * $('#revApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d5 = new Date(temp1);
- * d5.setDate(d5.getDate() + 1); $('#revApprEndDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d5, endDate:endDate }); });
- * 
- * });
- * 
- * }); }); }); });
- *  }
- */
+
 
 function mandatoryField(fieldObject, fieldName) {
 	if ("" == fieldObject.value) {
@@ -1613,8 +1512,6 @@ function mandatoryField(fieldObject, fieldName) {
 
 
 function SubmitCheckedEmpID(){
-
-// var $empId=$('#checkedEmpId').html();
 var checks = $('input[type="checkbox"]:checked').map(function(){
        return $(this).val();
    }).get()

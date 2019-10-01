@@ -112,7 +112,7 @@ function prepareCompetencyCache(){
 		},
 		
 		getStrengthAndWeaknessMap : function(){
-			debugger
+			
 			var cachedDataMap = cache.strengthAnsWeaknessMap;
 			if(cachedDataMap == undefined || cachedDataMap == null){
 				if((sessionStorage.myMap!=null && sessionStorage.myMap!=undefined)){
@@ -124,7 +124,7 @@ function prepareCompetencyCache(){
 			return cache.strengthAnsWeaknessMap;
 		},
 		getStrengthAndWeaknessServerDataMap : function(){
-			debugger
+			
 			var cachedDataMap = cache.strengthAndWeaknessServerDataMap;
 			if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
 				return cachedDataMap;
@@ -307,7 +307,6 @@ function previewMyTeamDetails(){
 	else{
 	var titleDivLabel = $('<label class="pull-left" style="margin-top:1%;padding-top:5px;font-size:16px;height:55px;padding-left:13px;font-weight:500;font-family:Nunito Sans;color: #4A4A4A;" ></label>').html("<p style='margin: 0 0 0px;height:18px;color:#4A4A4A;font-family:Nunito Sans;font-size:14px;line-height:18px;'>My Team's Appraisal</p>"+"<span style='height:23px;width:160px;color:#4A4A4A;font-family:Nunito Sans;font-size:17.07px;font-weight:800;line-height:23px;'>Team Members - "+numberOfTeamMembers+"</span>");
 	}
-	//var titleDivLabel = $('<label class="pull-left" style="margin-top:1%;padding-top:5px;font-size:16px;height:55px;padding-left:13px;font-weight:500;font-family:Nunito Sans;color: #4A4A4A;" ></label>').html("<p style='margin: 0 0 0px;height:18px;color:#4A4A4A;font-family:Nunito Sans;font-size:14px;line-height:18px;'>My Team's Appraisal</p>"+"<span style='height:23px;width:160px;color:#4A4A4A;font-family:Nunito Sans;font-size:17.07px;font-weight:800;line-height:23px;'>Team Members - "+numberOfTeamMembers+"</span>");
 	titleDiv.append(titleDivLabel);
 	var headerDiv = $('<div class="col-sm-12" style="height:40px;font-size: 13px;margin-top:1%;background:#F7F7F7;padding-top:1%;">');
 	var header1 = $('<div class="col-sm-3" style="height:40px;float:left;font-weight:700;font-family:Nunito Sans;color:#4A4A4A;">').html("ASSOCIATE");
@@ -332,8 +331,7 @@ function previewMyTeamDetails(){
 	}else{
 		dashboardDiv.append(contentDiv);
 	}
-	/*var disclamerDiv = $('<p id="disclamer" hidden >please fill the self appraisal form first</p>');
-	dashboardDiv.append(disclamerDiv)*/
+
 	$('#fullContentDiv').append(dashboardDiv);
 	contentDiv.prop('disabled',true).off('click');
 	
@@ -382,7 +380,6 @@ function renderMyTeamData(){
 				});
 				}
 			var apprNameContainer = $('<div class="col-sm-2"  style="height:40px;vertical-align:middle;float:left;word-wrap: break-word;">').html(apprShortName);
-			//var goalStatusContainer = $('<div class="col-sm-1" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">').html("-");
 			var reviewStatusContainer = $('<div class="col-sm-4" style="height:40px;text-align:center;vertical-align:middle;float:left;word-wrap: break-word;">');
 			if(status.includes("pending")){
 				var newstatus= status.replace(' - pending','');
@@ -433,7 +430,6 @@ function changeLogoStyleForCompetency(){
 	$('#goalImage').attr("src","images/goal.png");
 	$('#historyImage').attr("src","images/history.png");
 	$('#feedbackImage').attr("src","images/feedback.png");
-	//$('#competency').addClass("active");
 	$('#dashboard').removeClass("active");
 	$('#goal').removeClass("active");
 	$('#history').removeClass("active");
@@ -502,7 +498,7 @@ function employeeNameSetter(employeeName){
 }
 
 function showCompetencies(employeeId,roleFromDashboard){	
-	debugger
+	
 	
 	if(employeeId!=null||employeeId!=undefined){
 		this.currentEmpId =  employeeId;
@@ -631,8 +627,6 @@ function showCompetencies(employeeId,roleFromDashboard){
     fullScore.append(phase2Rating);
     fullScore.append(phase1Rating);
     competencyDiv.append(userName);
-    //competencyDiv.append(title);
-    // competencyDiv.append(teamMemeberName);
     competencyDiv.append(fullScore);
     competencyDiv.append(dataCompetencyDiv);
     $('#fullContentDiv').append(competencyDiv);
@@ -681,11 +675,8 @@ function checkFiller(section){
            {
                 mngRating = "mngRatingLabel_"+empId+"_"+qId;
                 revRating = "revRatingLabel_"+empId+"_"+qId;
-                //RemarksLabel = "questionRemarkLabel_"+empId+"_"+qId; 
-               
                $("#"+mngRating).html("-");
                $("#"+revRating).html("-");
-               //$("#"+RemarksLabel).html("");
            }   
 	    } 
 	});
@@ -699,7 +690,6 @@ function hideDropDownScore(){
     var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
     var cycleEndDate = new Date(moment(apprCycle.endate).format('DD-MMM-YY'));
     cycleEndDate.addDays(1);
-    //$("#commentBoxDiv").ready(function() {
     if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate>cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="ESS")))
     {
     	$("#appr_dropdown").val("0");
@@ -736,22 +726,15 @@ function checkSelfFormOrAppraiserForm(employeeId){
 		teamMemberId = employeeId;
 	} 
 	if(teamMemberId != null && teamMemberId != "" && employeeId != teamMemberId){
-		//competencyCache.dataStorageMap = null;
 		competencyCache.emptyAllExistedValue();
 		teamMemberId = employeeId;
 	}
 	if(employeeId == "" && (userRole == "Appraiser" || userRole == "Reviewer")){
 		teamMemberId = null;
-		//competencyCache.dataStorageMap = null;
 		competencyCache.emptyAllExistedValue();
 	}else{
 		teamMemberId = employeeId;
 	}
-	/*if(userRole == "Appraiser" && teamMemberId != null){
-		teamMemberId = null;
-		competencyCache.dataStorageMap = null;
-		competencyCache.emptyAllExistedValue();
-	}*/
 }
 
 function getQuestionPerSection(section){
@@ -760,22 +743,7 @@ function getQuestionPerSection(section){
 	var subMap = sectionMap[section];
 	return Object.keys(subMap).length;
 }
-//
-/*function getQuestionAnsweredPerSection(section){
-debugger
-	var count = 0;
-	var answeredSectionMap = competencyCache.questionSectionStorageMap ;
-	if(answeredSectionMap != undefined && answeredSectionMap != null && answeredSectionMap.size > 0){
-		var mapIter = answeredSectionMap.values();
-		for(var i=0;i<answeredSectionMap.size ;i++)
-		{
-		  if(mapIter.next().value == section)
-			 count++;
-		}
-	}
-	 
- return count;	
-}*/
+
 
 function getQuestionAnsweredPerSection(section){
 	
@@ -836,8 +804,7 @@ function prepareBodyForCompetency(){
     			var status = getStatusOfTeamMember();
     			if(status=="Completed"){
     		       	var countOfAnsweredQuestionPerSection = $('<label id="countOfAnsweredQuestionPerSection" class="col-sm-6" style="cursor:pointer;margin-left:65%;margin-top:-10%;font-weight:500;padding-right: 130px;z-index:999999"><img class="pull-right" src="images/Edit.svg" onclick="renderCompetencyQuestions(\''+ section +'\')" style="cursor:pointer;">'+'</label>');
-    		     /*  	$("#saveAndContinueBtn").prop('disabled', true);
-    		        $("#saveAndContinueBtn").css("cursor","no-drop");*/
+    	
     		     	$("#saveAndContinueBtn").prop('disabled', false);
     		        $("#saveAndContinueBtn").css("cursor","pointer");
     			}
@@ -936,15 +903,11 @@ function renderCompetencyQuestions(section){
     $('#fullContentDiv').append(competencyDiv);
     fillTotalScore(section);
     checkFiller(section);
-   // $("#fullContentDiv").hide();
+  
     var bodyContainer = prepareBodyForQuestions(section);
 }
 
-/*function renderCompetencyQuestions(section){
-	
-		prepareBodyForQuestions(section);
-}
-*/
+
 function fillTotalScore(section){
 	var finalScoreMap = competencyCache.getFinalScoreMap();
 	var ratingContainer = finalScoreMap[section];
@@ -1082,9 +1045,7 @@ function prepareBodyForQuestions(section){
 			    span1.html("R");
 			    span2.html("A");
 			    span3.html("S");
-			    //smallLabelDiv.append(span1);
-			    //smallLabelDiv.append(span2);
-			    //smallLabelDiv.append(span3);
+			  
 			    contentDiv.append(smallLabelDiv);
 			  
 				
@@ -1115,9 +1076,7 @@ function prepareBodyForQuestions(section){
 		    	if(userrole == "Reviewer" && teamMemberId != null){
 		    		selfRemarkLabel.html(revRemarks);
 		    	}
-			    //rightContent.append(reviewerRatingLabel);
-		    	//rightContent.append(managerRatingLabel);
-		    	//rightContent.append(selfRatingLabel);
+			    
 			    contentDiv.append(leftContent);
 			    contentDiv.append(rightContent);
 			    contentDiv.append(selfRemarkLabel);
@@ -2143,7 +2102,7 @@ function questionPerSectionSlider(qId,empId,section,question,isRatingEnable,ques
 		$('.col-sm-2').click(function(){
 			  $(this).toggleClass(' style="background-color: yellow;"');
 			});
-		//headerdiv.append(arrowRightDiv);
+		
 		competencyDiv.append(headerdiv);
 	    $('#questionPerSection').append(competencyDiv);
 	    $("#"+currentqId+"Label").html("<p style='font-weight:650;color:#4A4A4A;'>"+currentQuestion+"</p>")
@@ -2322,18 +2281,16 @@ function prepareBodyForInformation(section){
 	    		   	}
 	    		employeeRemarkDiv.append(empRemarksLabel);
 	    		managerRemarksDiv.append(mngRemarksLabel);
-	    		//bodyContainer.append(nameOfInformation);
-	    		//bodyContainer.append(employeeRemarkDiv);
-	    		//bodyContainer.append(managerRemarksDiv);
+	    		
 	    		counter++;
 			}   
 			bodyContainer.append(nameOfInformation);
 			firstAndLastQuestion()
 			competencyCache.sequentialQuestionsMap = sequenceMap;
 			createStrengthLabel(empId,bodyContainer);
-			//showAllStrengthView(empId,bodyContainer);
+			
 			createWeaknessLabel(empId,bodyContainer);
-			//showAllWeaknessView(empId,bodyContainer);
+		
 	}else{
 		var errorDiv = $('<div class="col-sm-12" id="errorDiv">').html("No data available");
     	bodyContainer.append(errorDiv);
@@ -2856,57 +2813,7 @@ function setValidations(){
 	SelfApprEndDate = SelfApprEndDate.addDays(1);
 	MngApprEndDate = MngApprEndDate.addDays(1);
 	RevApprEndDate = RevApprEndDate.addDays(1);
-/*	if ((teamMemberId == null || teamMemberId == "")&&(CurrentDate<=SelfApprEndDate)) {
-	    enableEmployeeFields();
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 0;
-	}
-	if ((userrole == "ESS" || userrole == "Appraiser" || userrole == "Reviewer") && currentPhase > 1 && (teamMemberId == null||teamMemberId=="")) {
-	    disableAllFields();
-	    tosterValidation(false);
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 3;
-	}
-	if ((teamMemberId != null && teamMemberId != "" && currentPhase == 2)&&(CurrentDate<=MngApprEndDate)) {
-	    enableAppraiserFields();
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 1;
-	}
-	if (teamMemberId != null && teamMemberId != "" && currentPhase == 1 && (userrole == "Appraiser"||userrole == "Reviewer")) {
-	    disableAllFields();
-	    tosterValidation(false);
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 3;
-	}
-	if ((teamMemberId != null && teamMemberId != "" && currentPhase > 2 && userrole == "Reviewer")&&(CurrentDate<=RevApprEndDate)) {
-	    enableReviewerFields();
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#rateemp").attr("disabled", "disabled").off('click');
-	    validationNumber = 2;
-	}
-	if (isFinalized == "isFinished" || (currentPhase == 2 && userrole == "Reviewer") || (teamMemberId != null && teamMemberId != "" && currentPhase > 2 && userrole == "Appraiser")) {
-	    disableAllFields();
-	    tosterValidation(false);
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 3;
-	}
-	if (teamMemberId != null && teamMemberId != "" && currentPhase == 3 && (userrole == "Appraiser"||userrole == "Reviewer")&& (status=="Completed")) {
-	    disableAllFields();
-	    tosterValidation(false);
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 3;
-	}
-	*/
+
 	//Date Validation
 	
 	if ((teamMemberId == null || teamMemberId == "")&&(SelfApprStartDate<=CurrentDate)&&(CurrentDate<=SelfApprEndDate)&&currentPhase==1) {
@@ -2979,18 +2886,7 @@ function setValidations(){
 		$('#saveCompetenciesBtn').css({"cursor":"not-allowed"});
 	}
 	
-	/*else if (teamMemberId != null && teamMemberId != "" && currentPhase == 3 && (userrole == "Appraiser"||userrole == "Reviewer")&& (status=="Completed")) {
-	    disableAllFields();
-	    tosterValidation(false);
-	    $("#rateemp").attr("disabled", "disabled").off('click');
-	    $("#rateappr").attr("disabled", "disabled").off('click');
-		$("#raterev").attr("disabled", "disabled").off('click');
-	    validationNumber = 3;
-	    $('#submitCompetenciesBtn').prop("disabled","true");
-		$('#submitCompetenciesBtn').css({"cursor":"not-allowed"});
-		$('#saveCompetenciesBtn').prop("disabled","true");
-		$('#saveCompetenciesBtn').css({"cursor":"not-allowed"});
-	}*/
+	
 	
 	else if(((CurrentDate<SelfApprStartDate)||(CurrentDate>RevApprEndDate))){
 		disableAllFields();
@@ -3305,7 +3201,7 @@ function submitCompetencies(){
 	
 	if(response && (isFilledSubjective==true && isFilledObjective== true)){
 	var isUpdated = updateCompetencies(status);
-	//sendMailToAppraiser();
+	//sendMailToAppraiser();   // TODO mail send to self and appraiser after filling self assessment.
 	sessionStorage.clear();
 	window.location.reload(true); //for reloading page
 	}
