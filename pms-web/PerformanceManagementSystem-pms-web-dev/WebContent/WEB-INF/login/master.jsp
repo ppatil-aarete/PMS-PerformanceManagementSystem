@@ -159,7 +159,7 @@ background-color: white; /* Green */
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">
 						Self Assessment </span> <span id="selfAssessmentED" class="col-sm-12"></span>
 				</div>
-				<!-- <div class="col-sm-3" style="width: 20%";>
+			<div class="col-sm-3" style="width: 20%";>
 					<span class="col-sm-12 apprAssess"
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">Appraiser
 						Assessment</span> <span id="apprAssessmentED" class="col-sm-12">
@@ -170,18 +170,18 @@ background-color: white; /* Green */
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">Reviewer
 						Assessment</span> <span id="revAssessmentED" class="col-sm-12"></span>
 				</div>
- -->			</div>
+		</div>
 			<div class="col-sm-12">
 				<span><br></span>
 			</div>
-			<!-- <div class='col-sm-12' style="margin-left: 1%">
+		 <div class='col-sm-12' style="margin-left: 1%">
 				<span id="ball1" class="col-sm-1 balldot"></span>
 				<hr id="line1" class="col-sm-3">
 				<span id="ball2" class="col-sm-1 balldot"></span>
 				<hr id="line2" class="col-sm-3">
 				<span id="ball3" class="col-sm-1 balldot"></span>
 				<hr id="line3" class="col-sm-3">
-			</div> -->
+			</div> 
 			<div class="col-sm-12" id="headerOfFullContentDiv"
 				style="padding-top: 1%; padding-bottom: 0.5%;"></div>
 			<div class="col-sm-12" id="fullContentDiv" style="margin-bottom: 5%;"></div>

@@ -153,7 +153,7 @@ function setUserGeneralInfo(userGeneralInfo){
 	this.userGeneralInfoObject =userGeneralInfo;
 }
 function showDashboard(){
-
+	debugger
 	$('#headerOfFullContentDiv').html('');
 	$('#fullContentDiv').html('');
 	changeLogoStyleForDashboard();
@@ -266,6 +266,7 @@ function longName(name){
 }
 
 function fillColorLines(){
+	debugger
 	var currentDate = new Date();
 	var SelfApprStartDate = new Date(moment(apprCycle.selfApprStartDate).format('DD-MMM-YY'))
 	var SelfApprEndDate=new Date(moment(apprCycle.selfApprEndDate).format('DD-MMM-YY'));
@@ -295,7 +296,7 @@ function fillColorLines(){
 }
 
 function previewMyTeamDetails(){	
-	
+	debugger
 	$('#fullContentDiv').html('');
 	var dashboardDiv = $('<div id="teamDetailsDiv" class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
 	var errorDiv = $('<div class="container-fluid" style="background:white;padding-left:0px !important;padding-right:0px !important;"></div>');
@@ -338,7 +339,7 @@ function previewMyTeamDetails(){
 }
 
 function renderMyTeamData(){
-	
+	debugger
 	var dashboardDiv = $('<div id="teamDetailsContentDiv" class="col-sm-12" style="background:white;padding-left:0px !important;padding-right:0px !important;height:400px; overflow-y:auto;max-height:250px;">');
 	if(myTeamDataMap != undefined && myTeamDataMap != null && !jQuery.isEmptyObject(myTeamDataMap)){
 		for(var empId in myTeamDataMap){
@@ -497,8 +498,8 @@ function employeeNameSetter(employeeName){
 	this.employeeName = employeeName
 }
 
-/*function showCompetencies(employeeId,roleFromDashboard){	
-	
+function showCompetencies(employeeId,roleFromDashboard){	
+	debugger
 	
 	if(employeeId!=null||employeeId!=undefined){
 		this.currentEmpId =  employeeId;
@@ -605,7 +606,7 @@ function employeeNameSetter(employeeName){
                  {
                      phase3Rating.html(phaseScoreArray[2].toFixed(2));
                  }
-                else if(teamMemberId == null&&CurrentDate>RevApprEndDate)
+                else if(teamMemberId == null&&CurrentDate>cycleEndDate)
                     {
                      phase3Rating.html(phaseScoreArray[2].toFixed(2));
                     }
@@ -634,9 +635,9 @@ function employeeNameSetter(employeeName){
     validationsOnSubmit();
     removeSubmitButton(teamDataJson);
     }
-*/
 
-function showCompetencies(employeeId,roleFromDashboard){
+
+/*function showCompetencies(employeeId,roleFromDashboard){
 	debugger
 
 	if(employeeId!=null||employeeId!=undefined){
@@ -792,10 +793,10 @@ function showCompetencies(employeeId,roleFromDashboard){
 	    $("#showCompetenceLabel").css("font-weight","bold");
 	    validationsOnSubmit();
 	    removeSubmitButton(teamDataJson);
-	    }
+	    }*/
 
 function getUserRole(){
-	
+	debugger
 	var userRole = "";
 	if(empRole == null || empRole=="null"){
 		userRole = user.role
@@ -806,6 +807,7 @@ function getUserRole(){
 }
 
 function getUserId(){
+	debugger
 	var empId = "";
 	if(teamMemberId != null && teamMemberId != ""){
 		empId = teamMemberId;
@@ -842,40 +844,62 @@ function checkFiller(section){
 }
 
 function hideDropDownScore(){
-	
+	debugger
     var CurrentDate = new Date();
     var userrole = user.role//getUserRole();
     var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
     var cycleEndDate = new Date(moment(apprCycle.endate).format('DD-MMM-YY'));
     cycleEndDate.addDays(1);
-    if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate>cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="ESS")))
+    if ((((teamMemberId == null||teamMemberId=="")&&(CurrentDate<cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="Reviewer")))
     {
     	$("#appr_dropdown").val("0");
         $("#rev_dropdown").val("0");
         $("#appr_remarks").val("");
         $("#rev_remarks").val("");
+        
     }
-   /* else if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate<cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="ESS")))
+   /*else  if((((teamMemberId != null||teamMemberId!="")&&(CurrentDate<cycleEndDate)))||((teamMemberId != null||teamMemberId!="")&&(userrole=="ESS")))
     {
     	$("#appr_dropdown").val("0");
         $("#rev_dropdown").val("0");
         $("#appr_remarks").val("");
         $("#rev_remarks").val("");
+        
     }*/
-    else if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate<cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer")))
+   /*else if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate<cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer")))
     {
     	$("#appr_dropdown").val("0");
         $("#rev_dropdown").val("0");
         $("#appr_remarks").val("");
         $("#rev_remarks").val("");
-    }        
+    }  */    
        
-    //});
+    /*});*/
 }
 
 
+/*function hideDropDownScore()
+{
+    var CurrentDate = new Date();
+    var userrole = user.role//getUserRole();
+    var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
+    var cycleEndDate = new Date(moment(apprCycle.endate).format('DD-MMM-YY'));
+    cycleEndDate.addDays(1);
+    //$("#commentBoxDiv").ready(function() {
+        if((((teamMemberId == null||teamMemberId=="")&&(CurrentDate>cycleEndDate)))||((teamMemberId == null||teamMemberId=="")&&(userrole=="Appraiser"||userrole=="Reviewer")))
+            {
+        	    
+                $("#appr_dropdown").val("0");
+                $("#rev_dropdown").val("0");
+                $("#appr_remarks").val("");
+                $("#rev_remarks").val("");
+            }
+        
+    //});
+}*/
+
 function checkSelfFormOrAppraiserForm(employeeId){
-	
+	debugger
 	$("#fullContentDiv").show();
 	var userRole = getUserRole();
 	if(employeeId != "" && teamMemberId == null){
@@ -904,7 +928,7 @@ function getQuestionPerSection(section){
 
 
 function getQuestionAnsweredPerSection(section){
-	
+	debugger
 		var countAsSave = 0;
 	    var countAsSaveAsDraft=0
 		var answeredSectionMap = competencyCache.questionSectionStorageMap ;
@@ -948,7 +972,7 @@ function setNewPhaseId(currentPhase){
 	}
 
 function prepareBodyForCompetency(){
-	
+	debugger
 	var bodyContainer = $('<div class="col-sm-12" id="competencyBodyDiv" style="padding-left:0px !important;padding-right:0px !important;">');
     var finalScoreMap = competencyCache.getFinalScoreMap();
     setNewPhaseId(currentPhase);
@@ -1018,7 +1042,7 @@ function prepareBodyForCompetency(){
 }
 
 function renderCompetencyQuestions(section){
-	
+	debugger
 	this.qIdForModal=null;
 	$('#fullContentDiv').html('');
 	navigationIndex = null;
@@ -1067,6 +1091,7 @@ function renderCompetencyQuestions(section){
 
 
 function fillTotalScore(section){
+	debugger
 	var finalScoreMap = competencyCache.getFinalScoreMap();
 	var ratingContainer = finalScoreMap[section];
 	var RevApprEndDate = new Date(moment(apprCycle.revApprEndDate).format('DD-MMM-YY'));
@@ -1098,6 +1123,7 @@ function fillTotalScore(section){
 }
 
 function appendSubmitButtonOnTop(){
+	debugger
 	$('#headerOfFullContentDiv').html('');
 	var leftDiv = $('<div class="col-sm-6" style="background:#FFFFFF;padding-bottom:11px;padding-top:20px;">');
 	var empId = ""; 
@@ -1129,6 +1155,7 @@ function highlightInformationLabel(){
 
 
 function prepareBodyForQuestions(section){
+	debugger
 	competencyCache.sequentialQuestionsMap = {};
 	var bodyContainer = $('<div class="col-sm-12" style="padding-left:0%;padding-right:4%;">');
 	var sectionMap =  competencyCache.getSectionAndQuestions();
@@ -1251,7 +1278,7 @@ function prepareBodyForQuestions(section){
 }
 
 function appendButtonTOLastQuestioPersection(qId){
-	
+	debugger
 	spanDivForButton=$("#divForSaveAndContinue");
 	if(lastQuestion.includes(qId)){
 		$("#divForSaveAndContinue").show()
@@ -1266,7 +1293,7 @@ function checkValidationOnFirstQuestion(qId){
 }
 
 function firstAndLastQuestion(){
-	
+	debugger
 	 var sectionMap = competencyCache.getSectionAndQuestions();
 	 var lengthOfSectionMap = Object.keys(sectionMap).length;
 	 for(var i=0; i<lengthOfSectionMap; i++){
@@ -1277,6 +1304,7 @@ function firstAndLastQuestion(){
 }
 
 function alignModalBox(){
+	debugger
 	var bodyWidth = $(window).outerWidth();
 	var bodyHeight = $(window).height();
 	var widthPercentage = (bodyWidth * 10) / 100;
@@ -1286,7 +1314,7 @@ function alignModalBox(){
 }
 
 function raterSetup(){
-	
+	debugger
 	$(".rate-select-layer").css("width","20%");
 	$(".rate-hover-layer").css("width","20%");
 	$("#emp_dropdown").attr("disabled","true");
@@ -1301,7 +1329,7 @@ function raterSetup(){
 }
 
 function starTwoWayDataBinding() {
-	
+	debugger
     var empVal= $("#emp_dropdown").val();
     var apprVal = $("#appr_dropdown").val();
     var revVal = $("#rev_dropdown").val();
@@ -1312,7 +1340,7 @@ function starTwoWayDataBinding() {
 }
 
 function openModalBox(qId,empId,section,question,isRatingEnable,questionTitle){
-	
+	debugger
 	appendButtonTOLastQuestioPersection(qId);
 	saveAndContinue1(qId,empId,section,question,isRatingEnable,questionTitle);
 
@@ -1360,7 +1388,7 @@ function openModalBox(qId,empId,section,question,isRatingEnable,questionTitle){
 
 	
 function saveAndContinue1(qId,empId,section,question,isRatingEnable,questionTitle){
-	
+	debugger
 	 var status = getStatusOfTeamMember(empId);
 	if(validationNumber != null){
 		var allValidationsVerified = checkCredibiltyOfValidationsOnModalBox(validationNumber); 
@@ -1586,7 +1614,7 @@ function saveAndContinue1(qId,empId,section,question,isRatingEnable,questionTitl
 		
 function onEmpScoreDropdown()
 {
-	
+	debugger
     var flag ;
     if(currentPhase=="1")
     {
@@ -1630,7 +1658,7 @@ function onEmpScoreDropdown()
    }
 }
 function hideAndShowPI(isInformation){
-	
+	debugger	
 	if(isInformation){
 		viewFlag = true;
 		viewAndHidePI();
@@ -1641,6 +1669,7 @@ function hideAndShowPI(isInformation){
 }
 
 function saveAndViewMultipleRemarks(){
+	debugger
 	var storageUnit = competencyCache.getDataStorageMap();
 	var questionRatingStatus = competencyCache.getMapOfQuestionIsRatedOrNot();
 	if(storageUnit.size > 0){
@@ -1684,6 +1713,7 @@ function saveAndViewMultipleRemarks(){
 }
 
 function changeBoxAccordingInformation(questionTitle,question){
+	debugger
 	$('#questionLabel').html(questionTitle);
 	$('#emp_score_dd_div').hide();
 	$('#emp_commentLabel > img').hide();
@@ -1695,6 +1725,7 @@ function changeBoxAccordingInformation(questionTitle,question){
 }
 
 function changeBoxAccordingCompetence(){
+	debugger
 	$('#emp_score_dd_div').show();
 	$('#emp_commentLabel').html('<img src="images/comment.png" style="width:2%;margin-right:0.5%;"></img>Comment');
 	$('#appr_score_dd_div').show();
@@ -1703,7 +1734,7 @@ function changeBoxAccordingCompetence(){
 }
 
 function setPerformnaceIndicators(qId){
-	
+	debugger
 	var piMap = competencyCache.getPerformanceIndicatorsMap();
 	if(piMap != undefined && piMap != null && !jQuery.isEmptyObject(piMap)){
 		var piArray = piMap[qId];
@@ -1813,7 +1844,7 @@ function setPerformnaceIndicators(qId){
 
 
 function checkAndFillValuesInElements(qId,empId){
-	
+	debugger
 	var storageUnit = competencyCache.dataStorageMap; //cached map
 	var status = getStatusOfTeamMember();
 	var returnValues = [];
@@ -2012,7 +2043,7 @@ function checkAndFillValuesInElements(qId,empId){
 }
 
 function emptyAllValueInModalBox(){
-	
+	debugger
 	$('#emp_remarks').val("");
 	$('#appr_remarks').val("");
 	$('#rev_remarks').val("");
@@ -2025,13 +2056,14 @@ function emptyAllValueInModalBox(){
 }
 
 function emptyAllContainers(){
+	debugger
 	$("#emp_dropdown").select("val","");
 	$("#appr_dropdown").select("val","");
 	$("#rev_dropdown").select("val","");
 }
 
 function fillScoreBox(){
-	
+	debugger
 	var empScoreDropDown = $("#emp_dropdown");
 	var apprScoreDropdwon = $("#appr_dropdown");
 	var revScoreDropdown = $("#rev_dropdown");
@@ -2046,7 +2078,7 @@ function fillScoreBox(){
 }
 
 function getQuestionAndRemarksMap(qId){
-	
+	debugger
 	var sectionMap = competencyCache.getSectionAndQuestions();
 	if(sectionMap != undefined && sectionMap != null && !jQuery.isEmptyObject(sectionMap)){
 		for(var section in sectionMap){
@@ -2061,7 +2093,7 @@ function getQuestionAndRemarksMap(qId){
 }
 
 function viewAndHidePI(){
-	
+	debugger
 	var sectionMap = competencyCache.getSectionAndQuestions();
     var strOverview = Object.keys(sectionMap.Overview);
     
@@ -2098,6 +2130,7 @@ function viewAndHidePI(){
 
 var navigationIndex = null;
 function fetchNextQuestion(qId,question,empId){
+	debugger
 	$('#previousQuestionIcon').css({"color":"#00000"});
 	hasBackAndForth = true;
 	var sequencialQuestionMap = competencyCache.sequentialQuestionsMap;
@@ -2125,7 +2158,7 @@ function fetchNextQuestion(qId,question,empId){
 }
 
 function bindRemarksLabelsWithModalValues(qId,empId){
-	
+	debugger
 	var storageUnit = competencyCache.getDataStorageMap();
 	var dualValueArray = [];
 	if(currentPhase == "1"){
@@ -2155,6 +2188,7 @@ function bindRemarksLabelsWithModalValues(qId,empId){
 }
 
 function performActionOnNextButton(swapPositionMap,questionMap,empId,currentQuestionId){
+	debugger
 	bindRemarksLabelsWithModalValues(currentQuestionId,empId);
 	$('#emp_remarks').val("");
 	$("#emp_dropdown").val("");
@@ -2202,6 +2236,7 @@ function setInfoCurrentQuestionTitle(questionTitle)
 
 function questionForInformationPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle)
 {
+	debugger
 setInfoCurrentqId(qId);
 setInfoCurrentQuestionTitle(questionTitle)
 $('#questionPerSection').html('');
@@ -2229,7 +2264,7 @@ informationDiv.append(headerdiv);
    $("#"+currentInfoqId+"LabelDiv").css("border-bottom","2.5px solid #3a97d3");
 }
 function questionPerSectionSlider(qId,empId,section,question,isRatingEnable,questionTitle){
-	
+	debugger
 	setCurrentqId(qId);
 	setCurrentQuestion(question)
 	$('#questionPerSection').html('');
@@ -2268,6 +2303,7 @@ function questionPerSectionSlider(qId,empId,section,question,isRatingEnable,ques
 }
 
 function getReverseSequenceMap(sequencialQuestionMap){
+	debugger
 	var revereseSequenceMap = {};
 	if(sequencialQuestionMap != undefined && sequencialQuestionMap != null && !jQuery.isEmptyObject(sequencialQuestionMap)){
 		for(var key in sequencialQuestionMap){
@@ -2279,6 +2315,7 @@ function getReverseSequenceMap(sequencialQuestionMap){
 }
 
 function fetchPreviousQuestion(qId,question,empId){
+	debugger
 	$('#nextQuestionIcon').css({"color":"#000000"});
 	hasBackAndForth = true;
 	var sequencialQuestionMap = competencyCache.sequentialQuestionsMap;
@@ -2305,6 +2342,7 @@ function fetchPreviousQuestion(qId,question,empId){
 }
 
 function performActionOnPreviousButton(swapPositionMap,questionMap,empId,currentQuestionId){
+	debugger
 	bindRemarksLabelsWithModalValues(currentQuestionId,empId);
 	$('#emp_remarks').val("");
 	$("#emp_dropdown").val("");
@@ -2332,7 +2370,7 @@ function performActionOnPreviousButton(swapPositionMap,questionMap,empId,current
 /********************************************************Information Screen UI***********************************************************************/
 
 function showInformation(){
-	
+	debugger
 	$('#headerOfFullContentDiv').html('');
 	$('#fullContentDiv').html('');
 	if(this.isDriectorFlag==true){
@@ -2368,6 +2406,7 @@ function showInformation(){
 
 
 function prepareBodyForInformation(section){
+	debugger
 	var bodyContainer = $('<div class="col-sm-12">');
 	var sectionMap =  competencyCache.getSectionAndQuestions();
 	var questionIdMap = competencyCache.getQuestionFromId();
@@ -2457,7 +2496,7 @@ function prepareBodyForInformation(section){
 }
 
 function createStrengthLabel(empId,element){
-	
+	debugger
 	var strengthDiv = $('<div class="col-sm-12" style="height: auto;font-weight:500;padding:0.5%;">');
 	var label1 = $('<label class="col-sm-12" style="width:100%;padding-left:2%;cursor:pointer;color: #3A97D3;margin-top:1%;font-weight:500;height:30px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Strengths\')">Strength</label>');
     var pencilDiv = $('<img class="pull-right" src="images/Edit.svg" onclick="openSWBox(\''+empId+'\',\'Strengths\')" style="cursor:pointer;">')
@@ -2467,7 +2506,7 @@ function createStrengthLabel(empId,element){
 }
 
 function createWeaknessLabel(empId,element){
-	
+	debugger
 	var weaknessDiv = $('<div class="col-sm-12" style="height: auto;font-weight:500;padding:0.5%;">');
 	var label1 = $('<label class="col-sm-12" style="width:100%;padding-left:2%;cursor:pointer;color: #3A97D3;margin-top:1%;font-weight:500;height:30px;overflow-y:auto;" onclick="openSWBox(\''+empId+'\',\'Weaknesses\')">Weakness</label>');
     var pencilDiv = $('<img class="pull-right" src="images/Edit.svg" onclick="openSWBox(\''+empId+'\',\'Weaknesses\')" style="cursor:pointer;">')
@@ -2478,6 +2517,7 @@ function createWeaknessLabel(empId,element){
 
 
 function showAllStrengthView(empId,element){
+	debugger
 	var employeeRemarkDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
 	var empRemarksLabel = $('<label  id="strengths_'+empId+'" style="padding-top:3%;padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
 	var managerRemarksDiv = $('<div class="col-sm-4"  style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
@@ -2491,6 +2531,7 @@ function showAllStrengthView(empId,element){
 }
 
 function renderStrengthsOnInformationScreen(empStrength,apprStrength,strengthArray){
+	debugger
 	if((currentPhase == 2 || currentPhase == 1) && strengthArray.length > 0){
 		for(var i=0; i < strengthArray.length; i++){
 			var li = $('<li style="list-style-position: outside;">').html(strengthArray[i]);
@@ -2511,6 +2552,7 @@ function renderStrengthsOnInformationScreen(empStrength,apprStrength,strengthArr
 }
 
 function showAllWeaknessView(empId,element){
+	debugger
 	var employeeRemarkDiv = $('<div class="col-sm-4" style="border-bottom:1px solid #d3d5d3;height: auto;font-weight:500;padding:0.5%;">');
 	var empRemarksLabel = $('<label id="weaknesses_'+empId+'" style="padding-left:5%;cursor:pointer;margin-top:1%;font-weight:200;height:80px;overflow-y:auto;">');
 	var weaknessArray = fetchSWFromCache(empId,'Weaknesses');
@@ -2524,6 +2566,7 @@ function showAllWeaknessView(empId,element){
 }
 
 function openSWBox(empId,question){
+	debugger
 	alignSWBox();
 	emptyAllValuesInSWBox();
 	$('#questionLabelSW').html(question);
@@ -2562,6 +2605,7 @@ function openSWBox(empId,question){
 }
 
 function emptySWInInformationUI(empId,cp,question){
+	debugger
 	if(question == "Strengths" && cp == 1){
 		$('#strengths_'+empId).html('');
 	}if(question == "Weaknesses" && cp == 1){
@@ -2576,6 +2620,7 @@ function emptySWInInformationUI(empId,cp,question){
 }
 
 function appendSWInInformationView(){
+	debugger
 	var empId = getUserId(); 
 	var question = $('#questionLabelSW').text();
 	emptySWInInformationUI(empId,currentPhase,question);
@@ -2607,6 +2652,7 @@ function appendSWInInformationView(){
 }
 
 function emptyAllValuesInSWBox(){
+	debugger
 	$('#emp_SW1').val('');
 	$('#emp_SW2').val('');
 	$('#emp_SW3').val('');
@@ -2616,6 +2662,7 @@ function emptyAllValuesInSWBox(){
 }
 
 function fetchSWFromCache(empId,question){
+	debugger
 	var storageUnit = competencyCache.getStrengthAndWeaknessMap();
 	var swMap = competencyCache.getStrengthAndWeaknessServerDataMap();
 	var returnValuesArray = [];
@@ -2672,6 +2719,7 @@ function fetchSWFromCache(empId,question){
 
 
 function pushSWInFinalDataArray(empSWArray,empApprSWArray,returnValuesArray){
+	debugger
 	returnValuesArray.push(empSWArray[0]);
 	returnValuesArray.push(empSWArray[1]);
 	returnValuesArray.push(empSWArray[2]);
@@ -2681,6 +2729,7 @@ function pushSWInFinalDataArray(empSWArray,empApprSWArray,returnValuesArray){
 }
 
 function alignSWBox(){
+	debugger
 	var bodyWidth = $(window).outerWidth();
 	var bodyHeight = $(window).height();
 	var widthPercentage = (bodyWidth * 10) / 100;
@@ -2692,7 +2741,7 @@ function alignSWBox(){
 /************************************************************************************ AJAX ***************************************************************************************/
 
 function getCompetencyDataFromServer(){
-	
+	debugger
 	var empId = "";
 	if(teamMemberId != null && teamMemberId != ""){
 		empId = teamMemberId
@@ -2738,7 +2787,7 @@ function getCompetencyDataFromServer(){
 }
 
 function updateCompetencies(status){
-	
+	debugger
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2795,7 +2844,7 @@ function updateCompetencies(status){
 }
 
 function saveCompetencies(status){
-	
+	debugger
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2846,7 +2895,7 @@ function saveCompetencies(status){
 }
 
 function saveBeforeUpdate(){
-	
+	debugger
 	var res = null;
 	var cachedDataMap = competencyCache.getDataStorageMap();
 	var map = JSON.stringify([...cachedDataMap]);
@@ -2891,7 +2940,7 @@ function saveBeforeUpdate(){
 	return res;
 }
 function sendMailToAppraiser(){
-	
+	debugger
 	var empId = getUserId();
 	var date = new Date();
 	var CurrentDate = date.toDateString();
@@ -2927,7 +2976,7 @@ function sendMailToAppraiser(){
 	}
 
 function getReviewerFinalRating(){
-	
+	debugger
 	var res = null;
 	$.ajax({
 		type : "POST",
@@ -2957,7 +3006,7 @@ Date.prototype.addDays = function(days) {
 	};
 var validationNumber = null;
 function setValidations(){
-	
+	debugger
 	var userrole = getUserRole();
 	var isFinalized = apprCycle.isFinalized;
 	var CurrentDate = new Date();
@@ -3075,6 +3124,7 @@ function setValidations(){
 
 
 function checkCredibiltyOfValidationsOnModalBox(validationNumber){
+	debugger
    var isVerifiedFlag = null;
    if(validationNumber == "0"){
 	   isVerifiedFlag = reverifyAllTheValidationForEmployee();
@@ -3092,6 +3142,7 @@ function checkCredibiltyOfValidationsOnModalBox(validationNumber){
 }
 
 function reverifyAllTheValidationForEmployee(){
+	debugger
 	var verifiedFlag = false;
 	var cond1 = $('#appr_dropdown').prop('disabled');
 	var cond2 = $('#appr_remarks').prop('disabled');
@@ -3104,6 +3155,7 @@ function reverifyAllTheValidationForEmployee(){
 }
 
 function reverifyAllTheValidationForAppraiser(){
+	debugger
 	var verifiedFlag = false;
 	var cond1 = $('#emp_dropdown').prop('disabled');
 	var cond2 = $('#emp_remarks').prop('disabled');
@@ -3117,6 +3169,7 @@ function reverifyAllTheValidationForAppraiser(){
 
 
 function reverifyAllTheValidationForReviewer(){
+	debugger
 	var verifiedFlag = false;
 	var cond1 = $('#appr_dropdown').prop('disabled');
 	var cond2 = $('#appr_remarks').prop('disabled');
@@ -3129,6 +3182,7 @@ function reverifyAllTheValidationForReviewer(){
 }
 
 function reverifyAllTheValidationForAll(){
+	debugger
 	var verifiedFlag = false;
 	var cond1 = $('#appr_dropdown').prop('disabled');
 	var cond2 = $('#appr_remarks').prop('disabled');
@@ -3143,6 +3197,7 @@ function reverifyAllTheValidationForAll(){
 }
 
 function enableEmployeeFields(){
+	debugger
 	$('#appr_dropdown').prop('disabled','true');
 	$('#appr_remarks').prop('disabled','true');
 	$('#rev_remarks').prop('disabled','true');
@@ -3156,6 +3211,7 @@ function enableEmployeeFields(){
 }
 
 function enableAppraiserFields(){
+	debugger
 	$('#emp_dropdown').prop('disabled','true');
 	$('#emp_remarks').prop('disabled','true');
 	$('#rev_remarks').prop('disabled','true');
@@ -3169,6 +3225,7 @@ function enableAppraiserFields(){
 }
 
 function enableReviewerFields(){
+	debugger
 	$('#appr_dropdown').prop('disabled','true');
 	$('#appr_remarks').prop('disabled','true');
 	$('#emp_dropdown').prop('disabled','true');
@@ -3182,6 +3239,7 @@ function enableReviewerFields(){
 }
 
 function disableAllFields(){
+	debugger
 	$('#appr_dropdown').prop('disabled','true');
 	$('#appr_remarks').prop('disabled','true');
 	$('#emp_dropdown').prop('disabled','true');
@@ -3201,6 +3259,7 @@ function disableAllFields(){
 
 
 function enableAllFields(){
+	debugger
 	$('#appr_dropdown').prop('disabled',true);
 	$('#appr_remarks').prop('disabled',false);
 	$('#emp_dropdown').prop('disabled',true);
@@ -3219,6 +3278,7 @@ function enableAllFields(){
 }
 
 function validationsOnSubmit(){
+	debugger
 	
 	var userrole = getUserRole();
 	var status = getStatusOfTeamMember();
@@ -3250,6 +3310,7 @@ function validationsOnSubmit(){
 }
 
 function removeSubmitButton(){
+	debugger
 	if(currentPhase="3"){$("#submitCompetenciesBtn").hide();
 	$("#saveCompetenciesBtn").html('submit')}
 	}
@@ -3266,6 +3327,7 @@ function saveAsDraft(){
 }
 
 function submitCompetencies(){
+	debugger
 		var response = confirm('Are you sure you want to submit?');
 	saveBeforeUpdate();
 	var status = getStatusOfTeamMember();
@@ -3371,6 +3433,7 @@ function submitCompetencies(){
 		}
 	
 function setValidationsForSWBox(){
+	debugger
 	enableAllSW();
 	var isFinalized = apprCycle.isFinalized;
 	var userrole = getUserRole();
@@ -3388,6 +3451,7 @@ function setValidationsForSWBox(){
 }
 
 function disableSWForAppraiser(){
+	debugger
 	$('#appr_SW1').prop("disabled","true");
 	$('#appr_SW1').css({"cursor":"not-allowed"});
 	$('#appr_SW2').prop("disabled","true");
@@ -3397,6 +3461,7 @@ function disableSWForAppraiser(){
 	$('#modal_appr_sec_sw').css({"color":"#999"});
 }
 function disableSWForEmployee(){
+	debugger
 	$('#emp_SW1').prop("disabled","true");
 	$('#emp_SW1').css({"cursor":"not-allowed"});
 	$('#emp_SW2').prop("disabled","true");
@@ -3406,6 +3471,7 @@ function disableSWForEmployee(){
 	$('#modal_emp_sec_sw').css({"color":"#999"});
 }
 function enableAllSW(){
+	debugger
 	$('#modal_appr_sec_sw').css({"color":"#000000"});
 	$('#modal_emp_sec_sw').css({"color":"#000000"});
 	$('#emp_SW1').removeAttr('disabled');
@@ -3424,6 +3490,7 @@ function enableAllSW(){
 
 function readMoreFunction(empRemarksLabel,mngRemarksLabel,empRemarks,mngRemarks)
 {
+	debugger
   if(empRemarks != ""&&empRemarks!=null)
   {
 	  if(empRemarks.length>=20)
@@ -3455,7 +3522,7 @@ function readMoreFunction(empRemarksLabel,mngRemarksLabel,empRemarks,mngRemarks)
 	}
 
 function getStatusOfTeamMember(){
-	
+	debugger	
 	if(myTeamDataMap != undefined && myTeamDataMap != null && !jQuery.isEmptyObject(myTeamDataMap)){
 	for(var empId in myTeamDataMap){
 	var teamDataJson = myTeamDataMap[empId];
@@ -3470,10 +3537,12 @@ function getStatusOfTeamMember(){
 }
 
 function tosterValidation(boolean){
+	debugger
 	  this.booleanForToster = boolean;
 	}
 
 function checkSelfFormIsFilled(){
+	debugger
 	var checkSelfFormIsFilledFlag = null;
 	if(empStatusObject.self=="Self Assessment - pending"&&isDriectorFlag!=true){
 	checkSelfFormIsFilledFlag = true;
@@ -3486,6 +3555,7 @@ function checkSelfFormIsFilled(){
 
 	
 function removeSubmitButton(teamDataJson){
+	debugger
 	  if((currentPhase=="3"))
 	  {
 	     $("#submitCompetenciesBtn").hide();
