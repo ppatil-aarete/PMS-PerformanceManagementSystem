@@ -70,7 +70,6 @@ textarea {
     outline: none;
     -webkit-box-shadow: none;
 }
-
 #saveSW
 {
 background-color: white; /* Green */
@@ -86,9 +85,7 @@ background-color: white; /* Green */
   transition-duration: 0.6s;
   cursor: pointer;
    border: 1px solid #3A97D3;
-
 }
-
 #saveSW:hover{
  background-color:#3A97D3;
  color: white;
@@ -108,13 +105,11 @@ background-color: white; /* Green */
   cursor: pointer;
    border: 1px solid #3A97D3;
 }
-
 #saveAndContinueBtn:hover{
  background-color:#3A97D3;
  color: white;
 }
 </style>
-
 <style>
 @media (min-width: 992px) {
  .container-scroll {
@@ -125,7 +120,6 @@ background-color: white; /* Green */
  }
 }</style>
 <body style="font-family:Segoe UI !important;height:100% !important;background:#F6F6F6;">
-
 	<div class="row" style="background:#f8f8f8;margin-left:0px;margin-right:0px;">
 		 <div class="col-sm-7">	
 			<img src="images/third-i-logo-color.png"  style="padding: 2.2% 1.2% 2% 3%; width:20%;height:auto;" alt="ThirdI Logo">
@@ -187,7 +181,6 @@ background-color: white; /* Green */
 			<div class="col-sm-12" id="fullContentDiv" style="margin-bottom: 5%;"></div>
 			<div class="modal fade" id="myModal" role="dialog" >
 				<div class="modal-dialog" style="width:350px">
-
 					<!-- Modal content-->
 					<div class="modal-content">
 						<div class="">
@@ -202,13 +195,11 @@ background-color: white; /* Green */
 								data-dismiss="modal">Close</button>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 <div id="adminDashboard" class="col-sm-12" style="margin-top:0%;background:#f7f7f7;display:none;">
 		<div class="col-sm-12" style="margin-top:1%;margin-bottom:2%;">
 			    <div id="crossAndBack" class="row" style="margin-bottom:1%;">
@@ -485,11 +476,7 @@ background-color: white; /* Green */
 				<div class="row" id="adminDashboardContentArea" style="background:#fff;margin-top:3px;display:none;padding-top:1%;padding-bottom:1%;"></div>
 		</div>
 </div>
-
 <!------------------------------------------------------------- Admin panel view ends --------------------------------------------------------------->
-
-
-
 <!------------------------------------------------------------ Competence modal box starts ------------------------------------------------------------->
  
  
@@ -542,7 +529,6 @@ background-color: white; /* Green */
 						<div class="col-sm-12" style="margin-top:0%;padding-top:2%;padding-bottom:2%;padding-left:0% !important;" id="modal_appr_sec">
 							<div class="col-sm-6">
 								<label class="pull-left" id="appraiserName" style="font-weight:bold;font-family:Nunito Sans;color: #4A4A4A;">Appraiser</label>
-
 							</div>	
 							<div id="appr_score_dd_div" class="col-sm-6" style="text-align:center;">
 								<div class='col-sm-7'>
@@ -602,14 +588,8 @@ background-color: white; /* Green */
         	</div>
       	</div>
 </div>
-
-
 <!------------------------------------------------------------------ competence modal box end---------------------------------------------------------------------------------->
-
-
 <!------------------------------------------------------------- strength and weakness modal box starts----------------------------------------------------------------------------->
-
-
 <div id="strengthAndWeaknessBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="padding-left: 0px !important;display:none; width:80% !important;height:499px !important;overflow-y:inherit !important;">
         <div class="modal-content clearfix" style="padding-bottom:1%;">
         	<div class="modal-header" style="border-bottom:2px solid #d3d5d3 !important;padding:1% !important;">
@@ -633,7 +613,6 @@ background-color: white; /* Green */
 	            	<!-- <div class="col-sm-3" style="padding-right:1% !important;padding-top:0.5%;">
 	            		            	
 	            </div> -->
-
         	</div>
 	        <div class="modal-body" style="padding-bottom:0px;">
 					<div class="col-sm-12" style="padding-left:0% !important;">
@@ -702,19 +681,14 @@ background-color: white; /* Green */
         </div>
     </div>    
 </div>
-
 <!-------------------------------------------------Email box ends --------------------------------------------------------->
-
-
 <!------------------------------------------------------------- strength and weakness modal box starts------------------------------------------->
-
 <!-- confirm box starts here -->
 <div id="dialog-confirm" title="Submit Competence" style="display:none;">
   		<p><i class="fa fa-times" style="float:left; margin:12px 12px 20px 0;"></i>Are you sure you want to submit ? <br>You can not edit the form after this action.</p>
 </div>
 <!-- confirm box ends here -->
 <script type='text/javascript'>
-
 var logoutURL = '<c:url value="/login/logout.do"/>';
 var getMyFormDataURL =  '<c:url value="/competency/getcompetencies.do"/>';
 var updateCompetenciesURL = '<c:url value="/competency/updatecompetencies.do"/>';
@@ -734,14 +708,11 @@ var sendMailToAppraiserURL = '<c:url value="/competency/sendmailtoappr.do"/>';
 var getreviewerfinalratingURL = '<c:url value="/competency/getreviewerfinalrating.do"/>';
 var getSameApprRevDataURL = '<c:url value="/competency/getSameApprRevData.do"/>';
 var generateExportedDataURL = '<c:url value="/admin/dataExport.do"/>';
-
 var user = ${user};
-
 var apprCycle = ${apprCycle};
 var userGeneralInfo = ${userGeneralInfo};
 var myTeamDataMap = ${myTeamData};
 var totalCycles = ${totalCycles};
-
 $(document).ready(function(event){
 	$('[data-toggle="tooltip"]').tooltip({container: 'body',trigger : 'hover'});
 	renderMenuBasedOnRole();
@@ -756,7 +727,6 @@ $(document).ready(function(event){
 	setCycleDatesOnHeader();
 	setCycleLablerOnHeader();
 });
-
 function initializeDatePickers(){
 	/* $("#cycle_startdate").datepicker().on("changeDate", function(ev) {
 		$("#cycle_startdate").datepicker('hide');
@@ -783,7 +753,6 @@ function initializeDatePickers(){
 		$("#rev_ap_enddate").datepicker('hide');
 	});
  */}
-
 function setUserName(){
 		var username = (user.username).split('.')[0];
 		username = username.toLowerCase().replace(/\b[a-z]/g, function(letter) {
@@ -791,14 +760,12 @@ function setUserName(){
 		});
 		document.getElementById('username').innerHTML = username;	
 }
-
 function logout(){
   	window.location = logoutURL;
   	alert("wrong password");
   	sessionStorage.setItem('id',"");
 	sessionStorage.invalidate();
 }
-
 function renderMenuBasedOnRole(){
 	debugger
 	var userrole = user.roleStatus; 
@@ -812,8 +779,6 @@ function renderMenuBasedOnRole(){
 			 }
 	}
 }
-
-
 function showToster(title, msg, time, status) {
 	toastr.options = {
 		"closeButton" : true,
@@ -834,9 +799,7 @@ function showToster(title, msg, time, status) {
 	var $toast = toastr[status](msg, title);
 	$("#toast-container").attr('style','margin-top:10px');
 }
-
 function displayError(response, error, thrownError) {
-
 	if (response.status == 0) {
 		showToster(thrownError + "!",
 				'You are offline!!\n Please Check Your Network.', 10, 'error');
@@ -851,13 +814,11 @@ function displayError(response, error, thrownError) {
 	} else if (error == 'timeout') {
 		showToster(thrownError + "!", 'Request Time out.',10, 'error');
 	} else if (response.status == 000) {
-
 	} else {
 		showToster(thrownError + "!", 'Unknow Error.', 10, 'error');
 		alert('Unknow Error.\n' + response.responseText);
 	}
 }
-
 // custom confirm box.
 $( function() {
     $( "#dialog-confirm" ).dialog({
@@ -877,12 +838,10 @@ $( function() {
       }
     });
  } );
-
 $('body').on("click",function(){
 	var heightOfWindow = $(document).height();
 	$('#sideDiv').css({"height": heightOfWindow});
 });
-
 $('.collapse-link').on('click', function (e) {
     e.preventDefault();
     var ibox = $(this).closest('div.ibox');
@@ -896,7 +855,6 @@ $('.collapse-link').on('click', function (e) {
         ibox.find('[id^=map-]').resize();
     }, 50);
 });
-
 function showAdminDashboard(){
 	debugger
 	var userrole = user.roleStatus; 
@@ -926,18 +884,15 @@ function showAdminDashboard(){
 	setCycleDetailsInHeaders();
 	checkBackButton();
 }
-
 /* function showAdminDashboard(){
 	$('#adminDashboard').show();
 	$('#userDashboard').hide();
 	setCycleDetailsInHeaders();
 } */
-
 function showUserDashboard(){
 	$('#adminDashboard').hide();
 	$('#userDashboard').show();
 }
-
 function setCycleDatesOnHeader(){
 	$('#selfAssessmentED').html('<span style="height: 23px;	width: 153px;color: #4A4A4A;font-family:Nunito Sans;font-size: 16px;	font-weight: bold;line-height: 23px;">'+ moment(apprCycle.selfApprStartDate).format('DD-MMM ')+'<span>To</span>'+moment(apprCycle.selfApprEndDate).format(' DD-MMM-YY')+'<span>');
 	
@@ -945,7 +900,6 @@ function setCycleDatesOnHeader(){
 	
 	$('#revAssessmentED').html('<span style="height: 23px;	width: 153px;color: #4A4A4A;font-family:Nunito Sans;font-size: 16px;	font-weight: bold;line-height: 23px;">'+ moment(apprCycle.revApprStartDate).format('DD-MMM ')+'<span>To</span>'+moment(apprCycle.revApprEndDate).format(' DD-MMM-YY')+'<span>');
 }
-
 function checkBackButton(){
 	if($("#actionContainer").css('display')=="block"){
 	$("#crossAndBack").children()[1].remove()
@@ -984,8 +938,6 @@ function setCycleLablerOnHeader(){
 		 
 	}
 }
-
-
  document.getElementById('CheckMandatoryFields').onclick = function() {
 	if((!mandatoryField(cycle_title, "Cycle Title"))||(!mandatoryField(cycleStartDate, "Cycle Start Date")) ||(!mandatoryField(cycleEndDate, "Cycle End Date"))||(!mandatoryField(selfApprStartDate, "Self Start Date"))||(!mandatoryField(selfApprEndDate, "Self End Date"))||(!mandatoryField(mngApprStartDate, "Appraiser Start Date"))||(!mandatoryField(mngApprEndDate, "Appraiser End Date"))||(!mandatoryField(revApprStartDate, "Reviewer Start Date"))||(!mandatoryField(revApprEndDate, "Reviewer End Date"))){
 	return false;
@@ -1005,7 +957,6 @@ $(function() {
 });
  
 </script>
-
   
 </body>
 </html>
