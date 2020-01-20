@@ -52,6 +52,7 @@
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterappr.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/raterrev.js'/>"></script>
   <script type="text/javascript" src="<c:url value='/lib/rater/customraterrev.js'/>"></script>
+  <script type="text/javascript" src="<c:url value='/lib/Export/table2excel.js'/>"></script>
   <%-- <script type="text/javascript" src="<c:url value='/lib/chart/canvasjs.min.js'/>"></script>
    --%>
   <style><%@include file="/WEB-INF/login/css/masterpagestyle.css"%></style>
@@ -158,7 +159,7 @@ background-color: white; /* Green */
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">
 						Self Assessment </span> <span id="selfAssessmentED" class="col-sm-12"></span>
 				</div>
-				<div class="col-sm-3" style="width: 20%";>
+				<!-- <div class="col-sm-3" style="width: 20%";>
 					<span class="col-sm-12 apprAssess"
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">Appraiser
 						Assessment</span> <span id="apprAssessmentED" class="col-sm-12">
@@ -169,18 +170,18 @@ background-color: white; /* Green */
 						style="margin-top: 1%; color: #9A9A9A; font-family:" NunitoSans";">Reviewer
 						Assessment</span> <span id="revAssessmentED" class="col-sm-12"></span>
 				</div>
-			</div>
+ -->			</div>
 			<div class="col-sm-12">
 				<span><br></span>
 			</div>
-			<div class='col-sm-12' style="margin-left: 1%">
+			<!-- <div class='col-sm-12' style="margin-left: 1%">
 				<span id="ball1" class="col-sm-1 balldot"></span>
 				<hr id="line1" class="col-sm-3">
 				<span id="ball2" class="col-sm-1 balldot"></span>
 				<hr id="line2" class="col-sm-3">
 				<span id="ball3" class="col-sm-1 balldot"></span>
 				<hr id="line3" class="col-sm-3">
-			</div>
+			</div> -->
 			<div class="col-sm-12" id="headerOfFullContentDiv"
 				style="padding-top: 1%; padding-bottom: 0.5%;"></div>
 			<div class="col-sm-12" id="fullContentDiv" style="margin-bottom: 5%;"></div>
@@ -281,6 +282,18 @@ background-color: white; /* Green */
 								</div>
 								<div class="col-sm-10">
 									<label style="cursor:pointer;width:100%;float:none;font-size:14px; font-weight:600;">Assign Admin</label>
+									 <label style="cursor:pointer;width:100%;float:none;font-size:12px; font-weight:500;color:#999999;">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</label>
+								</div>
+								<div class="col-sm-1" style="text-align:right;padding:1% 0 1% 0;">
+									 <i class="fa fa-arrow-right fa-2x" style="color:#18A689;cursor:pointer;"></i>
+								</div>
+						</div>	
+						<div class="col-sm-12" id="exportdata" onclick="exportdata()" style="cursor:pointer;padding-top:1%;padding-bottom:2%;border-bottom:1px solid #eeeeee;background:white">
+								<div class="col-sm-1" style="width:5% !important;">
+									<i class="fa fa-user fa-2x" style="color:#18A689;"></i>
+								</div>
+								<div class="col-sm-10">
+									<label style="cursor:pointer;width:100%;float:none;font-size:14px; font-weight:600;"> Export Data</label>
 									 <label style="cursor:pointer;width:100%;float:none;font-size:12px; font-weight:500;color:#999999;">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</label>
 								</div>
 								<div class="col-sm-1" style="text-align:right;padding:1% 0 1% 0;">
@@ -720,6 +733,7 @@ var mapEmployeeWithReviewerURL = '<c:url value="/admin/mapreviewerwithemployees.
 var sendMailToAppraiserURL = '<c:url value="/competency/sendmailtoappr.do"/>';
 var getreviewerfinalratingURL = '<c:url value="/competency/getreviewerfinalrating.do"/>';
 var getSameApprRevDataURL = '<c:url value="/competency/getSameApprRevData.do"/>';
+var generateExportedDataURL = '<c:url value="/admin/dataExport.do"/>';
 
 var user = ${user};
 

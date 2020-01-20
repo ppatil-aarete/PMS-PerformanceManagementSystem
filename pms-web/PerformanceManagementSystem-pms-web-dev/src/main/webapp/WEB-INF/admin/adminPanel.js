@@ -54,6 +54,7 @@ function prepareAdminPanelCache(){
 				}
 		 },
 		 
+		 
 		 getAboveConsulantEmployee : function(){
 			 	var cachedDataMap = cache.aboveConsultantEmployeeMap;
 				if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
@@ -83,6 +84,15 @@ function prepareAdminPanelCache(){
 					return cache.hrAdminMap; 
 				}
 		 },
+		 getExporteddataMap : function(){
+			 	var cachedDataMap = cache.exportDataMap;
+				if(cachedDataMap != undefined && cachedDataMap != null && !jQuery.isEmptyObject(cachedDataMap)){
+					return cachedDataMap;
+				}else{
+					getExportDataAjax();
+					return cache.exportDataMap; 
+				}
+		 },
 		 
 		 getMappingContainer : function(){
 			 	var cachedDataMap = cache.mappingContainer;
@@ -92,7 +102,9 @@ function prepareAdminPanelCache(){
 				}
 				return cachedDataMap;
 		 }
+		 
 	};
+	
 	return cache;
 }
 
@@ -156,8 +168,42 @@ function backToDashboard(){
 }
 
 function viewProgressStatusDropdown(){
-	debugger
+	
 	$('#tableId').DataTable( {
+	"bStateSave": true,
+	   	initComplete: function () {
+	   	this.api().columns([3]).every( function () {
+	               var column = this;
+	               var select = $('<select style="margin-right: 19px;"><option value="">Show all</option></select>')
+	               .appendTo( $(column.header()) )
+	                   .on( 'change', function () {
+	                       var val = $.fn.dataTable.util.escapeRegex(
+	                           $(this).val()
+	                       );
+	                     column
+	                           .search( val ? '^'+val+'$' : '', true, false )
+	                           .draw();
+	                   } );
+
+	               column.cells('', column[0]).render('display').sort().unique().each( function ( d, j ) {
+	                   if(column.search() === '^'+d+'$'){
+	                       select.append( '<option value="'+d+'" selected="selected">'+d+'</option>' )
+	                   } else {
+	                   	var val = $('<div/>').html(d).text();
+	                   	select.append( '<option value="' + val + '">' + val + '</option>' );
+	                   }
+	               } );
+	           } );
+	   	
+	       }
+
+	   } );
+
+	}
+
+function exportdataDropdown(){
+	
+	$('#exportTableId').DataTable( {
 	"bStateSave": true,
 	   	initComplete: function () {
 	   	this.api().columns([3]).every( function () {
@@ -189,6 +235,7 @@ function viewProgressStatusDropdown(){
 
 
 	}
+
 function showEmployeeProgressView(){
 	$('#adminDashboardContentArea').show();
 	$('#adminDashboardContentArea').html('');
@@ -227,7 +274,7 @@ function showEmployeeProgressView(){
 	}
 
 function prepareBodyOfEmployeeProgress(){
-	debugger
+	
 	var progressDataMap = adminCache.getEmpProgressDataMap();
 	var tbody = $('<tbody>');
 	if(progressDataMap != undefined && progressDataMap != null && !jQuery.isEmptyObject(progressDataMap)){
@@ -316,7 +363,7 @@ function generateEmployeeMetricSheet(){
 }
 
 function prepareBodyOfEmployeeMetricSheet(){
-	debugger
+	
 	var revId = user.empid;
 	var cycleId = apprCycle.cycleId;
 	var metricSheetDataMap = adminCache.getMetricSheetDataMap();
@@ -374,10 +421,103 @@ function prepareBodyOfEmployeeMetricSheet(){
 	return tbody;
 }
 
+function exportdata(){
+	$('#adminDashboardContentArea').show();
+	$('#adminDashboardContentArea').html('');
+	$('#actionContainer').hide();
+	$('#createNewCycelContainer').hide();
+	var title = "Export Employee Data";
+	var icon = $('<i class="fa fa-file-text" style="color:#18A689;margin-right:1%;"></i>');
+	var exportButton =  $('<a href="#"><button onclick="exportDataAjax()" style="margin-left: 500px;" class="btn btn-outline-green btn-success" > Export Data </button></a>');
+	var titleDiv = setHeaderOfAvailActionExport(title,icon,exportButton);
+	var exportDataContainer = $('<div class="col-sm-12">');
+	var tableContainer = $('<div class="table-responsive">');
+	var table = $('<table class="table" id="exportTableId">');
+	var thead = $('<thead>');
+	var tr = $('<tr>');
+    var no = $('<th style="text-align:left;">').html('#');
+    var employeeName = $('<th style="text-align:left;">').html('Employee Name');
+    var DesignationName = $('<th style="text-align:left;width: 110px;">').html('Designation');
+    var StatusName = $('<th style="text-align:left;width: 262px;">').html('Status');
+    var AppraiserName = $('<th style="text-align:left;">').html('Appraiser Name');
+    var ManagerName = $('<th style="text-align:left;">').html('Manager Name');
+	var SelfScore = $('<th style="text-align:center;">').html('Self Rating');
+	var ApprScore = $('<th style="text-align:center;">').html('Appraiser Rating');
+	var RevScore = $('<th style="text-align:center;">').html('Reviewer Rating');
+	tr.append(no);
+	tr.append(employeeName);
+	tr.append(DesignationName);
+	tr.append(StatusName);
+	tr.append(AppraiserName);
+	tr.append(ManagerName);
+	tr.append(SelfScore);
+	tr.append(ApprScore);
+	tr.append(RevScore);
+	thead.append(tr);
+	var tbody = prepareBodyOfExportDataSheet();
+	table.append(thead);
+	table.append(tbody);
+	exportDataContainer.append(table);
+	$('#adminDashboardContentArea').append(titleDiv);
+	$('#adminDashboardContentArea').append(exportDataContainer);
+	exportdataDropdown();
+	checkBackButton();
+}
 
+
+function prepareBodyOfExportDataSheet(){
+	
+	var revId = user.empid;
+	var cycleId = apprCycle.cycleId;
+	var exportDataMap = adminCache.getExporteddataMap();
+	var tbody = $('<tbody>');
+	if(exportDataMap != undefined && exportDataMap != null && !jQuery.isEmptyObject(exportDataMap)){
+		var count = 1;
+		for(var empId in exportDataMap){
+			var tr = $('<tr>');
+			var empDataJson = exportDataMap[empId];
+			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
+			var noTd = $('<td style="text-align:left;">').append(noLabel);
+			var empNameTd = $('<td style="text-align:left;">').html(empDataJson["employeeName"]);
+			var designationNameId = $('<td style="text-align:left;">').html(empDataJson["designationName"]);
+			var apprStatus = empDataJson["status"];
+			var apprStatusTd = $('<td style="text-align:center;">');
+			var label = $('<label style="text-align:center;width:100%;">');
+			label.html(apprStatus);
+			if(apprStatus == "Self Assessment - pending"){
+			label.append('<i class="custom-icon icon-warning fa fa-level-down" style="color:#fff;margin-left:3%;"></i>');
+			}else if(apprStatus == "Appraiser Assessment - pending"){
+			label.append('<i class="custom-icon icon-primary fa fa-level-up" style="color:#fff;margin-left:3%;"></i>');
+			}else if(apprStatus == "Reviewer Assessment - pending"){
+			label.append('<i class="custom-icon label-deafult fa fa-level-up label label-custom" style="color:#fff;margin-left:3%;"></i>');
+			}
+			apprStatusTd.append(label);
+			var appraiserNameTd = $('<td style="text-align:left;">').html(empDataJson["appraiserName"]);
+			var reviewerName = $('<td style="text-align:left;">').html(empDataJson["reviewerName"]);
+			var seldRatingTd = $('<td id='+empId+"self"+' style="text-align:center;">').html(empDataJson["selfScore"]);
+			var apprRatingTd = $('<td id='+empId+"appr"+' style="text-align:center;">').html(empDataJson["mngScore"]);
+			var revRatingTd =  $('<td id='+empId+"rev"+' style="text-align:center;">').html(empDataJson["revScore"]);
+		    tr.append(noTd);
+		    tr.append(empNameTd);
+		    tr.append(designationNameId);
+		    tr.append(apprStatusTd);
+		    tr.append(appraiserNameTd);
+		    tr.append(reviewerName);
+		    tr.append(seldRatingTd);
+		    tr.append(apprRatingTd);
+		    tr.append(revRatingTd);
+		    tbody.append(tr);
+		    count++;
+		}
+	}else{
+		var tr = $('<tr>').html('No Data Available');
+		tbody.append(tr);
+	}
+	return tbody;
+}
 
 function InlineEditRevRatings(empId,element,currentValue,revId,cycleId){
-	debugger
+	
 	var value = $(element).html();
 	$(element).removeAttr('onclick');
 	$(element).hide();
@@ -547,21 +687,18 @@ function prepareBodyForRevMappingView(){
 	if(aboveConsultantDataMap != undefined && aboveConsultantDataMap != null && !jQuery.isEmptyObject(aboveConsultantDataMap) && 
 			allEmployeeDataMap != undefined && allEmployeeDataMap != null && !jQuery.isEmptyObject(allEmployeeDataMap)){
 		var count = "";
-		// for(var consultantEmpId in aboveConsultantDataMap){
 			var tr = $('<tr>');
 			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
 			var noTd = $('<td>').append(noLabel);  
 			var iconTd = $('<td style="text-align:left;width:20%;">');
 			var icon = $('<i class="fa fa-arrows-h fa-2x" style="color:#18A689;">');
 			iconTd.append(icon);
-			// var reviewerName = aboveConsultantDataMap[consultantEmpId];
 			var reviewerTd = $('<td style="width:10%;">');
 			var reviewerDropdown = $('<select id="revDropdown">');
 			var employeeTd = $('<td style="width:40%; text-align:center">');
 		    var empDropdown = $('<select multiple="multiple" id="empDropdown" class="input-box">');
 			var mapButtonTd = $('<td style="width:40%;text-align:center">');
 			var mapButton = $('<button onclick="mapSelectedEmpwithReviewerAjax()" class="btn btn-outline-green btn-success" > Map </button>');
-							
 			employeeTd.append(empDropdown);
 			reviewerTd.append(reviewerDropdown);
 			mapButtonTd.append(mapButton);
@@ -581,7 +718,7 @@ function prepareBodyForRevMappingView(){
 
 
 function prepareBodyForHRrevMappingView(){
-	debugger
+	
 	var aboveConsultantDataMap = adminCache.getAboveConsulantEmployee();
 	var HRAdminDataMap = adminCache.getHRAdminMembers();
 	var tbody = $('<tbody>');
@@ -749,7 +886,7 @@ function getListOfActiveReviewer(aboveConsultantDataMap){
 }
 
 function getListOfHRAdmin(HRAdminDataMap){
-	debugger
+	
 	var activeHRAdminList = [];
 	if(HRAdminDataMap != undefined && HRAdminDataMap != null && !jQuery.isEmptyObject(HRAdminDataMap)){
 		 for(var activeRevId in HRAdminDataMap){
@@ -769,6 +906,17 @@ function setHeaderOfAvailAction(title,icon){
     headerDiv.append(label);
     return headerDiv;
 }
+
+function setHeaderOfAvailActionExport(title,icon,exportButtonTd){
+	var headerDiv = $('<div class="col-sm-12" style="padding-left:2%;font-size:20px;margin-bottom:1%;margin-top:0%;border-bottom:solid 3px #eee;padding-bottom:0.5%;">');
+    var label = $('<label style="width:50%;color:#18A689;">');
+    label.html(title);
+    headerDiv.append(icon);
+    headerDiv.append(label);
+    headerDiv.append(exportButtonTd);
+    return headerDiv;
+}
+
 function setHeaderOfAvailActionProgress(title,icon,button){
 	var headerDiv = $('<div class="col-sm-12" style="padding-left:2%;font-size:20px;margin-bottom:1%;margin-top:0%;border-bottom:solid 3px #eee;padding-bottom:0.5%;">');
 	   var label = $('<label style="width:50%;color:#18A689;">');
@@ -780,7 +928,7 @@ function setHeaderOfAvailActionProgress(title,icon,button){
 	}
 
 function showEmailBox(empId){
-	debugger;
+	
     $('#emailSubject').val('');
     $('#configMailtext').html('');
     $('#empId').val(empId);
@@ -862,7 +1010,7 @@ function createNewCycleAjax(){
 					 showAdminDashboard();
 					 showToster('info !', " Start sending emails", 5, "success");
 					 clearCycleForm();
-					 sendEmailToAll();
+					 //sendEmailToAll();   // TODO mail send to all at the time of cycle creation.
 			} else {
 				showToster('Error !',"Oops ! Something went wrong.", 5, "error");
 				console.log('Error Cause :' + res.errorMessage);
@@ -874,7 +1022,7 @@ function createNewCycleAjax(){
 
 
 function fetchEmpMetricSheetDataAjax(){
-	debugger;
+	
 	var res = null;
 	$.ajax({
 		type : "POST",
@@ -905,6 +1053,37 @@ function fetchEmpMetricSheetDataAjax(){
 	return res;
 }
 
+function getExportDataAjax(){
+	
+	var res = null;
+	$.ajax({
+		type : "POST",
+		url : generateExportedDataURL,
+		async : false,
+		data : {},
+		beforeSend : function() {
+			$("body").showLoading();
+		},
+		complete : function() {
+			$("body").hideLoading();
+		},
+		error : function(response, error, thrownError) {
+			displayError(response, error, thrownError);
+		},
+		success : function success(response) {
+			res = eval(response);
+			if (res.status) {
+				 showToster('Success !', "Data sheet Exported successfully!", 5, "success");
+			     data = eval(res);
+			     adminCache.exportDataMap = data.exportDataMap; 
+			} else {
+				showToster('Error !',"Oops! Something went wrong.", 5, "error");
+				console.log('Error Cause :' + res.errorMessage);
+			}
+		}
+	});
+	return res;
+}
 
 function sendEmailToAll(){
 	var res = null;
@@ -930,7 +1109,7 @@ function sendEmailToAll(){
 }
 
 function sendMailToSpecificEmp(){
-	debugger;
+	
 	var data =  $('.configMailSummerNote').code()
 	   $('#configMailtext').html(data);
 	var empIdForMail = $("#empId").val();
@@ -969,19 +1148,7 @@ function sendMailToSpecificEmp(){
 	}
 
 
-/*
- * function sendMailToSpecificEmp(){ debugger $('#configMailtext').html(
- * $('.configMailSummerNote').code()); //save HTML If you need(aHTML: array).
- * $.ajax({ type : "POST", url : sendEmailToSingleEmpURL, data :
- * $('#configMailform').serialize(), beforeSend : function() {
- * $("body").showLoading(); }, complete : function() { $("body").hideLoading(); },
- * error : function(response, error, thrownError) { displayError(response,
- * error, thrownError); }, success : function success(response) { var res =
- * eval(response); if (res.status) { showToster("Success", "Email has been sent
- * successfully.", 5, 'success'); $('.configMailSummerNote').destroy();
- * $('#configMailModal').modal('hide'); } else { showToster('Error !',
- * res.errorMessage, 5, "error"); } } }); }
- */
+
 
 function updateRevScoreOrRemarks(empId,flag,value,revId,cycleId){
 	var res = null;
@@ -1132,10 +1299,7 @@ function mapSelectedRevWithHRAdminAjax(){
 			hrAdminID : hrAdminID,
 			revIdList : JSON.stringify(revIdList)	
 		},
-		/*
-		 * beforeSend : function() { $("body").showLoading(); }, complete :
-		 * function() { $("body").hideLoading(); },
-		 */
+		
 		error : function(response, error, thrownError) {
 			displayError(response, error, thrownError);
 		},
@@ -1156,7 +1320,7 @@ function mapSelectedRevWithHRAdminAjax(){
 }
 
 function fetchCheckedEmpListFromViewPogress(checks){
-	debugger
+	
 	var list = JSON.stringify([...checks]);
 	   $.ajax({
 	       type : "POST",
@@ -1296,63 +1460,7 @@ function cycleDatesValidations() {
 	
 }
 
-/*
- * function cycleDatesValidations() {
- * 
- * var date = new Date(); var startDate = new Date(); var endDate=new Date();
- * date.setDate(date.getDate());
- * 
- * $('#cycleStartDate').datepicker({ autoclose : true, todayHighlight : true,
- * format : 'dd-mm-yyyy', startDate : date }).on('changeDate', function(){ var
- * temp = $(this).datepicker('getDate'); var d = new Date(temp);
- * d.setDate(d.getDate()+1);
- * 
- * $('#cycleEndDate').datepicker({ autoclose : true, todayHighlight : true,
- * format : 'dd-mm-yyyy', startDate : d
- * 
- * }).on('changeDate', function() { var temp1 = $(this).datepicker('getDate');
- * endDate=new Date(temp1); }) });
- * 
- * 
- * $('#cycleStartDate').datepicker().on('changeDate', function() { var temp =
- * $(this).datepicker('getDate'); var d = new Date(temp);
- * d.setDate(d.getDate());
- * 
- * $('#selfApprStartDate').datepicker({ autoclose : true, format : 'dd-mm-yyyy',
- * startDate : d //endDate:endDate });
- * 
- * $('#selfApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate() + 1);
- * 
- * $('#selfApprEndDate').datepicker({
- * 
- * autoclose : true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * 
- * $('#selfApprEndDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate()); $('#mngApprStartDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * $('#mngApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d3 = new Date(temp1);
- * d3.setDate(d3.getDate() + 1); $('#mngApprEndDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d3, endDate:endDate });
- * 
- * 
- * $('#mngApprEndDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d1 = new Date(temp1);
- * d1.setDate(d1.getDate()); $('#revApprStartDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d1, endDate:endDate });
- * $('#revApprStartDate').datepicker().on('changeDate', function() { var temp1 =
- * $(this).datepicker('getDate'); var d5 = new Date(temp1);
- * d5.setDate(d5.getDate() + 1); $('#revApprEndDate').datepicker({ autoclose :
- * true, format : 'dd-mm-yyyy', startDate : d5, endDate:endDate }); });
- * 
- * });
- * 
- * }); }); }); });
- *  }
- */
+
 
 function mandatoryField(fieldObject, fieldName) {
 	if ("" == fieldObject.value) {
@@ -1404,8 +1512,6 @@ function mandatoryField(fieldObject, fieldName) {
 
 
 function SubmitCheckedEmpID(){
-debugger
-// var $empId=$('#checkedEmpId').html();
 var checks = $('input[type="checkbox"]:checked').map(function(){
        return $(this).val();
    }).get()
@@ -1433,3 +1539,10 @@ function clearCheckBox(){
 	    this.checked = item.defaultChecked; 
 	  }); 
 	}
+
+function exportDataAjax(){
+	
+	$("#exportTableId").table2excel({
+        filename: "EmployeeRatingSheet.xls"
+    });
+}
