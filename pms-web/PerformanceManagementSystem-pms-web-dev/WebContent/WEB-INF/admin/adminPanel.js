@@ -8,6 +8,7 @@ function prepareAdminPanelCache(){
 	var cache = {
 		 empProgressMap : {},
 		 cycleDataMap : null,
+		 extendedCycleDataMap : null,
 		 metricSheetDataMap : {},
 		 metricSheetRevApprMap : {},
 		 revScoreFromMetricSheetMap : null,
@@ -21,6 +22,14 @@ function prepareAdminPanelCache(){
 				if(cachedDataMap == undefined && cachedDataMap == null){
 					cache.cycleDataMap = new Map();
 					return cache.cycleDataMap;
+				}
+				return cachedDataMap;
+		 },
+		 getUpdateCycleDataMap : function(){
+			 var cachedDataMap = cache.extendedCycleDataMap;
+				if(cachedDataMap == undefined && cachedDataMap == null){
+					cache.extendedCycleDataMap = new Map();
+					return cache.extendedCycleDataMap;
 				}
 				return cachedDataMap;
 		 },
@@ -121,9 +130,23 @@ function createNewCycle(){
 	$('#adminDashboardContentArea').html();
 	$('#actionContainer').hide();
 	$('#createNewCycelContainer').show();
+	$('#extendDates').hide();
+	$('#CheckMandatoryFieldsForExtendDates').hide();
 	cycleDatesValidations();
 	checkBackButton();
 }
+
+function extendDates(){
+	debugger;
+	$('#adminDashboardContentArea').hide();
+	$('#adminDashboardContentArea').html();
+	$('#actionContainer').hide();
+	$('#extendDates').show();
+	$('#CheckMandatoryFieldsForExtendDates').show();
+	cycleDatesValidationsForExtendDates();
+	checkBackButton();
+}
+
 
 function emptyAllFieldsOfCreateCycle(){
 	$('#cycle_title').val('');
@@ -146,6 +169,15 @@ function setCycleDetailsInHeaders(){
 
 
 
+function getDataOfExtendedCycle(){
+	var extendedCycleDataMap = adminCache.getUpdateCycleDataMap();
+	extendedCycleDataMap.set("cycle_extend_ed",$('#extendCycleEndDate').val());
+	extendedCycleDataMap.set("self_extend_ed",$('#extendSelfApprEndDate').val());
+	extendedCycleDataMap.set("appr_extend_ed",$('#extendMngApprEndDate').val());
+	extendedCycleDataMap.set("rev_extend_ed",$('#extendRevApprEndDate').val());
+	return extendedCycleDataMap;
+}
+
 function getDataOfNewCycle(){
 	var cycleDataMap = adminCache.getCreateCycleDataMap();
 	cycleDataMap.set("title",$('#cycle_title').val());
@@ -164,6 +196,7 @@ function backToDashboard(){
 	$('#adminDashboardContentArea').html('');
 	$('#actionContainer').show();
 	$('#createNewCycelContainer').hide();
+	$('#extendDates').hide();
 	checkBackButton();
 }
 
@@ -1010,7 +1043,51 @@ function createNewCycleAjax(){
 					 showAdminDashboard();
 					 showToster('info !', " Start sending emails", 5, "success");
 					 clearCycleForm();
-					 //sendEmailToAll();   // TODO mail send to all at the time of cycle creation.
+					 // sendEmailToAll(); // TODO mail send to all at the
+						// time of cycle creation.
+			} else {
+				showToster('Error !',"Oops ! Something went wrong.", 5, "error");
+				console.log('Error Cause :' + res.errorMessage);
+			}
+		}
+	});
+	return res;
+}
+
+function updateCycleAjax(){
+	var res = null;
+	var extendedCycleDataMap = getDataOfExtendedCycle();
+	var map = JSON.stringify([...extendedCycleDataMap]);
+	var cycleId = apprCycle.cycleId;
+	$.ajax({
+		type : "POST",
+		url : updateCycleURL,
+		async : false,
+		data : {
+			extendedCycleDataMap : map,
+			cycleId : cycleId
+			
+ 		},
+		beforeSend : function() {
+			$("body").showLoading();
+		},
+		complete : function() { 
+			$("body").hideLoading();
+		},
+		error : function(response, error, thrownError) {
+			displayError(response, error, thrownError);
+		},
+		success : function success(response) {
+			res = eval(response);
+			if (res.status) {
+					 showToster('Success !', " Dates Extended Successfully!", 5, "success");
+					 data = eval(res);
+					 apprCycle = data.runningCycel; 
+					 totalCycles = data.totalCycles;
+					 showAdminDashboard();
+					 // showToster('info !', " Start sending emails", 5,
+						// "success");
+					 ClearExtendedDatesForm();
 			} else {
 				showToster('Error !',"Oops ! Something went wrong.", 5, "error");
 				console.log('Error Cause :' + res.errorMessage);
@@ -1356,6 +1433,7 @@ function fetchCheckedEmpListFromViewPogress(checks){
  * AJAX
  * *************************************************************************************
  */
+
 function cycleDatesValidations() {
 	
 	var date = new Date();
@@ -1461,6 +1539,85 @@ function cycleDatesValidations() {
 }
 
 
+function cycleDatesValidationsForExtendDates() {
+	
+	var date = new Date();
+	var startDate = new Date();
+	var endDate=new Date();
+	date.setDate(date.getDate());
+	
+	$('#extendCycleEndDate').datepicker({
+		autoclose : true,
+		todayHighlight : true,
+		format : 'dd-mm-yyyy',
+		startDate : date	
+	}).on('changeDate', function(){
+		var temp = $(this).datepicker('getDate');
+		var d = new Date(temp);
+		d.setDate(d.getDate()+1);
+	});	
+	$('#extendSelfApprEndDate').datepicker({
+		autoclose : true,
+		todayHighlight : true,
+		format : 'dd-mm-yyyy',
+		startDate : date,
+	}).on('changeDate', function(){
+		var temp = $(this).datepicker('getDate');
+		var d = new Date(temp);
+		d.setDate(d.getDate()+1);
+
+	});	
+	
+	$('#extendMngApprEndDate').datepicker({
+		autoclose : true,
+		todayHighlight : true,
+		format : 'dd-mm-yyyy',
+		startDate : date,
+	}).on('changeDate', function(){
+		var temp = $(this).datepicker('getDate');
+		var d = new Date(temp);
+		d.setDate(d.getDate()+1);
+
+	});	
+	$('#extendRevApprEndDate').datepicker({
+		autoclose : true,
+		todayHighlight : true,
+		format : 'dd-mm-yyyy',
+		startDate : date,
+	}).on('changeDate', function(){
+		var temp = $(this).datepicker('getDate');
+		var d = new Date(temp);
+		d.setDate(d.getDate()+1);
+
+	});	
+	
+	/*$('#extendSelfApprEndDate').datepicker().on('changeDate', function() {
+		var temp = $(this).datepicker('getDate');
+		var d = new Date(temp);
+		d.setDate(d.getDate()+1);
+			
+	$('#extendMngApprEndDate').datepicker({
+			autoclose : true,
+			format : 'dd-mm-yyyy',
+			startDate : d,
+	}).on('changeDate', function() {
+		var temp1 = $(this).datepicker('getDate');
+		var d1 = new Date(temp1);
+		d1.setDate(d1.getDate() + 1);
+		
+		$('#extendRevApprEndDate').datepicker({
+			
+			autoclose : true,
+			format : 'dd-mm-yyyy',
+			startDate : d1,
+		})
+	})
+	
+	});*/
+	
+}
+
+
 
 function mandatoryField(fieldObject, fieldName) {
 	if ("" == fieldObject.value) {
@@ -1483,7 +1640,6 @@ function clearCycleForm() {
 
 	
 }
-
 function ClearDates() {
 	$('#cycleStartDate').val('').datepicker('remove');
 	$('#cycleEndDate').val('').datepicker('remove');
@@ -1494,6 +1650,23 @@ function ClearDates() {
 	$('#revApprStartDate').val('').datepicker('remove');
 	$('#revApprEndDate').val('').datepicker('remove');
 	cycleDatesValidations(); 
+	}
+
+
+function ClearExtendedDates() {
+	$('#extendCycleEndDate').val('').datepicker('remove');
+	$('#extendSelfApprEndDate').val('').datepicker('remove');
+	$('#extendMngApprEndDate').val('').datepicker('remove');
+	$('#extendRevApprEndDate').val('').datepicker('remove');
+	cycleDatesValidationsForExtendDates(); 
+	}
+
+function ClearExtendedDatesForm() {
+	$('#extendCycleEndDate').val('').datepicker('remove');
+	$('#extendSelfApprEndDate').val('').datepicker('remove');
+	$('#extendMngApprEndDate').val('').datepicker('remove');
+	$('#extendRevApprEndDate').val('').datepicker('remove');
+	cycleDatesValidationsForExtendDates(); 
 	}
 
 

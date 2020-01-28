@@ -35,5 +35,7 @@ public interface AdminDao {
 
 	public List<Recipient> fetchAllRecipientsForReviewerReminder();
 
+	public Boolean updateCycle(Map<String, String> updateCycleDataMap, int cycleId);
+
 
 }
