@@ -461,4 +461,13 @@ public class AdminServiceImpl implements AdminService {
 		return exportDataMap;
 	}
 
+
+	public Boolean updateCycle(Map<String, String> updateCycleDataMap, int cycleId) {
+		Boolean returnedValue = null;
+		if (updateCycleDataMap != null && updateCycleDataMap.size() > 0) {
+			returnedValue = adminDao.updateCycle(updateCycleDataMap,cycleId);
+			adminDao.fillData();
+		}
+		return returnedValue;
+	}
 }

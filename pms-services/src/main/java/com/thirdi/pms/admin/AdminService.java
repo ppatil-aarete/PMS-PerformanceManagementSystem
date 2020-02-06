@@ -46,6 +46,8 @@ public interface AdminService {
 	
 	public Map<Integer, JsonObject> exportData(Integer cycleId);
 
+	public Boolean updateCycle(Map<String, String> updateCycleDataMap, int cycleId);
+
 	
 	
 }
