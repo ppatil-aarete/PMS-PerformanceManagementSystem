@@ -374,7 +374,8 @@ background-color: white; /* Green */
 				                      		<label class="label label-success" style="margin-right:2%;background-color:#18A689">2</label>
 				                      		Set duration of appraisal cycle
 				                      	</label>
-				                      	 <i class="fa fa-refresh" id =clearExtendedDates style="margin-left: -401px;" aria-hidden="true"  onclick="ClearExtendedDates();"></i>
+				                      		 <i class="fa fa-refresh" id =clearDates style="margin-left: -401px;" aria-hidden="true"  onclick="ClearDates();"></i>
+				                      	
 				                      </a>
 				                      <div class="ibox-tools col-sm-2 pull-right" style="text-align:right;">
 				                          <a class="collapse-link" href="">
@@ -507,12 +508,9 @@ background-color: white; /* Green */
 					<div class="col-sm-12" style="padding:0.5% 0 0% 0;">
 						     
 				                  <div class="ibox-content" style="">
-				                          
-				                          
-										  
 										  <div class="form-group">
 												<label class="font-normal">Set End Date :</label>
-												<div data-date="" data-date-format="dd-mm-yyyy" id="extend_cycle_enddate" class="input-group date">
+												<div data-date="" data-date-format="dd-mm-yyyy" id="extend_cycle_enddate"   class="input-group date">
 													<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 													<input type="text" readonly placeholder="DD-MM-YYYY" name="extendCycleEndDate" id="extendCycleEndDate" size="16" class="form-control" style="width:20%;" required> 
 												</div>
@@ -526,7 +524,7 @@ background-color: white; /* Green */
 				                      		<label class="label label-success" style="margin-right:2%;background-color:#18A689">3</label> 
 				                      		Set duration for self assessment	
 				                      	</label>
-				                      	 <i class="fa fa-refresh" id =clearDates style="margin-left: -401px;" aria-hidden="true"  onclick="ClearDates();"></i>
+				                      	 <i class="fa fa-refresh" id ="clearExtendedDates" style="margin-left: -401px;" aria-hidden="true"  onclick="ClearExtendedDates();"></i>
 				                      </a>
 				                      <div class="ibox-tools col-sm-2 pull-right" style="text-align:right;">
 				                          <a class="collapse-link" href="">
@@ -593,7 +591,7 @@ background-color: white; /* Green */
 				                </div>  
 							</div>
 							<div class="row">
-								<button  onclick="updateCycleAjax();" id ="CheckMandatoryFieldsForExtendDates" class="btn btn-outline-green btn-success" style="border-radius:0px !important;margin-left:1%;padding-left:2%;padding-right:2%;">Extend Dates</button>
+								<button  onclick="extendDatesValidations();"  id ="CheckMandatoryFieldsForExtendDates" class="btn btn-outline-green btn-success" style="border-radius:0px !important;margin-left:1%;padding-left:2%;padding-right:2%;">Extend Dates</button>
 							</div>
 							
 				</div>
@@ -1108,6 +1106,7 @@ function setCycleLablerOnHeader(){
 }
 
 
+
  document.getElementById('CheckMandatoryFields').onclick = function() {
 	if((!mandatoryField(cycle_title, "Cycle Title"))||(!mandatoryField(cycleStartDate, "Cycle Start Date")) ||(!mandatoryField(cycleEndDate, "Cycle End Date"))||(!mandatoryField(selfApprStartDate, "Self Start Date"))||(!mandatoryField(selfApprEndDate, "Self End Date"))||(!mandatoryField(mngApprStartDate, "Appraiser Start Date"))||(!mandatoryField(mngApprEndDate, "Appraiser End Date"))||(!mandatoryField(revApprStartDate, "Reviewer Start Date"))||(!mandatoryField(revApprEndDate, "Reviewer End Date"))){
 	return false;
@@ -1125,21 +1124,38 @@ function setCycleLablerOnHeader(){
 $(function() {
 	    $("a#print").click(nWin);
 });
- 
-/* document.getElementById('CheckMandatoryFieldsForExtendDates').onclick = function() {
-	if((!mandatoryField(extendCycleEndDate, "Cycle End Date"))||(!mandatoryField(extendSelfApprEndDate, "Self End Date"))||(!mandatoryField(extendMngApprEndDate, "Appraiser End Date"))||(!mandatoryField(extendRevApprEndDate, "Reviewer End Date"))){
-	return false;
+
+function extendDatesValidations() {
+	debugger;
+	var cycleEndDate = $('#extendCycleEndDate').val();
+	var selfEndDate = $('#extendSelfApprEndDate').val();
+	var apprEndDate = $('#extendMngApprEndDate').val();
+	var revEndDate = $('#extendRevApprEndDate').val();
+	if(selfEndDate>cycleEndDate){
+		showToster('Warning !',  selfEndDate + " should be less than " + cycleEndDate, 5, "warning");
+	}
+	else if(apprEndDate>cycleEndDate){
+		showToster('Warning !',apprEndDate + " should be less than " + cycleEndDate, 5, "warning");
+	}
+	else if(revEndDate>cycleEndDate){
+		showToster('Warning !', revEndDate + " should be less than " + cycleEndDate, 5, "warning");
+	}
+	else if(selfEndDate>apprEndDate){
+		showToster('Warning !', selfEndDate + " should be less than " + apprEndDate, 5, "warning");
+	}
+	else if(selfEndDate>revEndDate){
+		showToster('Warning !', selfEndDate + " should be less than " + revEndDate, 5, "warning");
+	}
+	else if(apprEndDate>revEndDate){
+		showToster('Warning !', apprEndDate + " should be less than " + revEndDate, 5, "warning");
 	}
 	else {
 		updateCycleAjax();
-		//createNewCycleAjax();
     }
-    return true;
-}  */
-
-
+}
+/* document.getElementById('CheckMandatoryFieldsForExtendDates').onclick = function() {
+		updateCycleAjax();
+} */
 </script>
-
-  
 </body>
 </html>

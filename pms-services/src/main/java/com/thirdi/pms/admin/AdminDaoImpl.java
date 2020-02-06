@@ -343,25 +343,59 @@ public class AdminDaoImpl implements AdminDao {
 
 	private Map<String, String> reformatExtendCycleMapDatesAccordingSqlSupport(Map<String, String> updateCycleDataMap) {
 		Map<String, String> reformattedMap = new HashMap<String, String>();
-		reformattedMap.put("cycle_extend_ed", convertStringDateFormat(updateCycleDataMap.get("cycle_extend_ed")));
-		reformattedMap.put("self_extend_ed", convertStringDateFormat(updateCycleDataMap.get("self_extend_ed")));
-		reformattedMap.put("appr_extend_ed", convertStringDateFormat(updateCycleDataMap.get("appr_extend_ed")));
-		reformattedMap.put("rev_extend_ed", convertStringDateFormat(updateCycleDataMap.get("rev_extend_ed")));
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("cycle_extend_ed"))) {
+			reformattedMap.put("cycle_extend_ed", convertStringDateFormat(updateCycleDataMap.get("cycle_extend_ed")));
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("self_extend_ed"))) {
+			reformattedMap.put("self_extend_ed", convertStringDateFormat(updateCycleDataMap.get("self_extend_ed")));
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("appr_extend_ed"))) {
+			reformattedMap.put("appr_extend_ed", convertStringDateFormat(updateCycleDataMap.get("appr_extend_ed")));
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("rev_extend_ed"))) {
+			reformattedMap.put("rev_extend_ed", convertStringDateFormat(updateCycleDataMap.get("rev_extend_ed")));
+		}
 		return reformattedMap;
 	}
 
+
 	public Boolean updateCycle(Map<String, String> updateCycleDataMap, int cycleId) {
-		String updateSQL = "update lu_appr_cycle  set EndDate=?,SelfApprEndDate = ?,MgrApprEndDate=?,RevApprEndDate = ?,Create_date=? where ApprCycleId ="
-				+ cycleId;
+		StringBuilder updateSQL = new StringBuilder("update lu_appr_cycle  set ");
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("cycle_extend_ed"))) {
+			updateSQL.append("EndDate=?, ");
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("self_extend_ed"))) {
+			updateSQL.append("SelfApprEndDate=?, ");
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("appr_extend_ed"))) {
+			updateSQL.append("MgrApprEndDate=?, ");
+		}
+		if (!StringUtils.isEmpty(updateCycleDataMap.get("rev_extend_ed"))) {
+			updateSQL.append("RevApprEndDate=?, ");
+		}
+		updateSQL.append("Create_date=? where ApprCycleId = " + cycleId);
+
+		String sql = updateSQL.toString();
+
+		System.out.println(sql);
 
 		final Map<String, String> cycleDataMap = reformatExtendCycleMapDatesAccordingSqlSupport(updateCycleDataMap);
-		return template.execute(updateSQL, new PreparedStatementCallback<Boolean>() {
+		return template.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-				ps.setString(1, cycleDataMap.get("cycle_extend_ed").toString());
-				ps.setString(2, cycleDataMap.get("self_extend_ed").toString());
-				ps.setString(3, cycleDataMap.get("appr_extend_ed").toString());
-				ps.setString(4, cycleDataMap.get("rev_extend_ed").toString());
-				ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+				int i = 0;
+				if (!StringUtils.isEmpty(cycleDataMap.get("cycle_extend_ed"))) {
+					ps.setString(++i, cycleDataMap.get("cycle_extend_ed").toString());
+				}
+				if (!StringUtils.isEmpty(cycleDataMap.get("self_extend_ed"))) {
+					ps.setString(++i, cycleDataMap.get("self_extend_ed").toString());
+				}
+				if (!StringUtils.isEmpty(cycleDataMap.get("appr_extend_ed"))) {
+					ps.setString(++i, cycleDataMap.get("appr_extend_ed").toString());
+				}
+				if (!StringUtils.isEmpty(cycleDataMap.get("rev_extend_ed"))) {
+					ps.setString(++i, cycleDataMap.get("rev_extend_ed").toString());
+				}
+				ps.setTimestamp(++i, new Timestamp(System.currentTimeMillis()));
 				return ps.execute();
 			}
 		});

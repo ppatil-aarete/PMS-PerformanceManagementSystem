@@ -137,7 +137,6 @@ function createNewCycle(){
 }
 
 function extendDates(){
-	debugger;
 	$('#adminDashboardContentArea').hide();
 	$('#adminDashboardContentArea').html();
 	$('#actionContainer').hide();
@@ -145,6 +144,10 @@ function extendDates(){
 	$('#CheckMandatoryFieldsForExtendDates').show();
 	cycleDatesValidationsForExtendDates();
 	checkBackButton();
+	$("#extendCycleEndDate:text").val(apprCycle.endate);
+	$("#extendSelfApprEndDate:text").val(apprCycle.selfApprEndDate);
+	$("#extendMngApprEndDate:text").val(apprCycle.mngApprEndDate);
+	$("#extendRevApprEndDate:text").val(apprCycle.revApprEndDate);
 }
 
 
@@ -307,7 +310,6 @@ function showEmployeeProgressView(){
 	}
 
 function prepareBodyOfEmployeeProgress(){
-	
 	var progressDataMap = adminCache.getEmpProgressDataMap();
 	var tbody = $('<tbody>');
 	if(progressDataMap != undefined && progressDataMap != null && !jQuery.isEmptyObject(progressDataMap)){
@@ -455,6 +457,7 @@ function prepareBodyOfEmployeeMetricSheet(){
 }
 
 function exportdata(){
+	debugger;
 	$('#adminDashboardContentArea').show();
 	$('#adminDashboardContentArea').html('');
 	$('#actionContainer').hide();
@@ -499,7 +502,7 @@ function exportdata(){
 
 
 function prepareBodyOfExportDataSheet(){
-	
+	debugger;
 	var revId = user.empid;
 	var cycleId = apprCycle.cycleId;
 	var exportDataMap = adminCache.getExporteddataMap();
@@ -512,6 +515,7 @@ function prepareBodyOfExportDataSheet(){
 			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
 			var noTd = $('<td style="text-align:left;">').append(noLabel);
 			var empNameTd = $('<td style="text-align:left;">').html(empDataJson["employeeName"]);
+			//var empTd = $('<td style="text-align:center;">').html(empDataJson["empId"]);
 			var designationNameId = $('<td style="text-align:left;">').html(empDataJson["designationName"]);
 			var apprStatus = empDataJson["status"];
 			var apprStatusTd = $('<td style="text-align:center;">');
@@ -1637,8 +1641,6 @@ function clearCycleForm() {
 	$("#mngApprEndDate").val("");
 	$("#revApprStartDate").val("");
 	$("#revApprEndDate").val("");
-
-	
 }
 function ClearDates() {
 	$('#cycleStartDate').val('').datepicker('remove');
