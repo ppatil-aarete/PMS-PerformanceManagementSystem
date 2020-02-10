@@ -344,21 +344,33 @@ public class AdminDaoImpl implements AdminDao {
 	private Map<String, String> reformatExtendCycleMapDatesAccordingSqlSupport(Map<String, String> updateCycleDataMap) {
 		Map<String, String> reformattedMap = new HashMap<String, String>();
 		if (!StringUtils.isEmpty(updateCycleDataMap.get("cycle_extend_ed"))) {
-			reformattedMap.put("cycle_extend_ed", convertStringDateFormat(updateCycleDataMap.get("cycle_extend_ed")));
+			reformattedMap.put("cycle_extend_ed", convertStringExtendDateFormat(updateCycleDataMap.get("cycle_extend_ed")));
 		}
 		if (!StringUtils.isEmpty(updateCycleDataMap.get("self_extend_ed"))) {
-			reformattedMap.put("self_extend_ed", convertStringDateFormat(updateCycleDataMap.get("self_extend_ed")));
+			reformattedMap.put("self_extend_ed", convertStringExtendDateFormat(updateCycleDataMap.get("self_extend_ed")));
 		}
 		if (!StringUtils.isEmpty(updateCycleDataMap.get("appr_extend_ed"))) {
-			reformattedMap.put("appr_extend_ed", convertStringDateFormat(updateCycleDataMap.get("appr_extend_ed")));
+			reformattedMap.put("appr_extend_ed", convertStringExtendDateFormat(updateCycleDataMap.get("appr_extend_ed")));
 		}
 		if (!StringUtils.isEmpty(updateCycleDataMap.get("rev_extend_ed"))) {
-			reformattedMap.put("rev_extend_ed", convertStringDateFormat(updateCycleDataMap.get("rev_extend_ed")));
+			reformattedMap.put("rev_extend_ed", convertStringExtendDateFormat(updateCycleDataMap.get("rev_extend_ed")));
 		}
 		return reformattedMap;
 	}
 
+	private String convertStringExtendDateFormat(String date) {
+		try {
+			SimpleDateFormat src_sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dest_sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date utildate = src_sdf.parse(date);
+			date = dest_sdf.format(utildate);
+			return date;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 
+	}
 	public Boolean updateCycle(Map<String, String> updateCycleDataMap, int cycleId) {
 		StringBuilder updateSQL = new StringBuilder("update lu_appr_cycle  set ");
 		if (!StringUtils.isEmpty(updateCycleDataMap.get("cycle_extend_ed"))) {

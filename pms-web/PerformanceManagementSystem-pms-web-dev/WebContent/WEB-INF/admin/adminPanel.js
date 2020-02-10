@@ -1553,7 +1553,7 @@ function cycleDatesValidationsForExtendDates() {
 	$('#extendCycleEndDate').datepicker({
 		autoclose : true,
 		todayHighlight : true,
-		format : 'dd-mm-yyyy',
+		format : 'yyyy-mm-dd',
 		startDate : date	
 	}).on('changeDate', function(){
 		var temp = $(this).datepicker('getDate');
@@ -1563,7 +1563,7 @@ function cycleDatesValidationsForExtendDates() {
 	$('#extendSelfApprEndDate').datepicker({
 		autoclose : true,
 		todayHighlight : true,
-		format : 'dd-mm-yyyy',
+		format : 'yyyy-mm-dd',
 		startDate : date,
 	}).on('changeDate', function(){
 		var temp = $(this).datepicker('getDate');
@@ -1575,7 +1575,7 @@ function cycleDatesValidationsForExtendDates() {
 	$('#extendMngApprEndDate').datepicker({
 		autoclose : true,
 		todayHighlight : true,
-		format : 'dd-mm-yyyy',
+		format : 'yyyy-mm-dd',
 		startDate : date,
 	}).on('changeDate', function(){
 		var temp = $(this).datepicker('getDate');
@@ -1586,7 +1586,7 @@ function cycleDatesValidationsForExtendDates() {
 	$('#extendRevApprEndDate').datepicker({
 		autoclose : true,
 		todayHighlight : true,
-		format : 'dd-mm-yyyy',
+		format : 'yyyy-mm-dd',
 		startDate : date,
 	}).on('changeDate', function(){
 		var temp = $(this).datepicker('getDate');
@@ -1594,30 +1594,6 @@ function cycleDatesValidationsForExtendDates() {
 		d.setDate(d.getDate()+1);
 
 	});	
-	
-	/*$('#extendSelfApprEndDate').datepicker().on('changeDate', function() {
-		var temp = $(this).datepicker('getDate');
-		var d = new Date(temp);
-		d.setDate(d.getDate()+1);
-			
-	$('#extendMngApprEndDate').datepicker({
-			autoclose : true,
-			format : 'dd-mm-yyyy',
-			startDate : d,
-	}).on('changeDate', function() {
-		var temp1 = $(this).datepicker('getDate');
-		var d1 = new Date(temp1);
-		d1.setDate(d1.getDate() + 1);
-		
-		$('#extendRevApprEndDate').datepicker({
-			
-			autoclose : true,
-			format : 'dd-mm-yyyy',
-			startDate : d1,
-		})
-	})
-	
-	});*/
 	
 }
 

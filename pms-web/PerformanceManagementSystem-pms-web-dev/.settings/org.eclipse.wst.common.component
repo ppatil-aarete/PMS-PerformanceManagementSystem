@@ -4,7 +4,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
-        <dependent-module archiveName="pms-services-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/thirdi-pms-services/thirdi-pms-services">
+        <dependent-module archiveName="pms-services-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/pms-services/pms-services">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="pms-web"/>
