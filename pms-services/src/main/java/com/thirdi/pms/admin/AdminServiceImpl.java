@@ -466,7 +466,7 @@ public class AdminServiceImpl implements AdminService {
 		Boolean returnedValue = null;
 		if (updateCycleDataMap != null && updateCycleDataMap.size() > 0) {
 			returnedValue = adminDao.updateCycle(updateCycleDataMap,cycleId);
-			adminDao.fillData();
+			//adminDao.fillData();
 		}
 		return returnedValue;
 	}
