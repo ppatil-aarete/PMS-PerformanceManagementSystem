@@ -324,7 +324,7 @@ public class AdminDaoImpl implements AdminDao {
 
 	public List<Recipient> fetchAllRecipientsForReviewerReminder() {
 		String sql = "";
-		sql = "SELECT [emp_lastname],[emp_firstname],[emp_work_email] FROM [PMS].[dbo].[stg_tx_hs_hr_employee] where employee_id in (SELECT distinct [hs_hr_employee_id] FROM [PMS].[dbo].[tx_appr_empl_flow] where phaseid =3 and emp_lastname IN ('Kumari','Sabde'))";
+		sql = "SELECT [emp_lastname],[emp_firstname],[emp_work_email] FROM [HRMS_Copy].[dbo].[stg_tx_hs_hr_employee] where employee_id in (SELECT distinct [hs_hr_employee_id] FROM [HRMS_Copy].[dbo].[tx_appr_empl_flow] where phaseid =3 and emp_lastname IN ('Kumari','Sabde'))";
 		return template.query(sql, new ResultSetExtractor<List<Recipient>>() {
 			public List<Recipient> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				List<Recipient> recipients = new ArrayList<Recipient>();

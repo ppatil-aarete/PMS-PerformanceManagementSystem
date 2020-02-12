@@ -54,7 +54,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 					mimeMessageHelper.setSubject(mail.getSubject());
 					mimeMessageHelper.setFrom(prop.getProperty("mail.user"));
+					// mimeMessageHelper.setFrom(prop.getProperty("punam.patil@the3i.com"));
 					mimeMessageHelper.setTo(recipient.getEmail());
+					// mimeMessageHelper.setTo("punam.patil@the3i.com");
 					mail.setMailContent(geContentFromTemplate(prepareParameterMap()));
 					mimeMessageHelper.setText(mail.getMailContent(), true);
 					mailSender.send(mimeMessageHelper.getMimeMessage());
@@ -80,24 +82,24 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		} else {
 			parameterMap.put("cycleEndDate", "NA");
 		}
-		if(activeCycle.getSelfApprEndDate() != null){
-			parameterMap.put("selfAssessmentEndDate",dateConvert(activeCycle.getSelfApprEndDate()));
+		if (activeCycle.getSelfApprEndDate() != null) {
+			parameterMap.put("selfAssessmentEndDate", dateConvert(activeCycle.getSelfApprEndDate()));
 		}
 		if (activeCycle.getSelfApprStartDate() != null && activeCycle.getSelfApprEndDate() != null) {
-			parameterMap.put("selfAssessmentDuration",
-					dateConvert(activeCycle.getSelfApprStartDate()) + " to " + dateConvert(activeCycle.getSelfApprEndDate()));
+			parameterMap.put("selfAssessmentDuration", dateConvert(activeCycle.getSelfApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getSelfApprEndDate()));
 		} else {
 			parameterMap.put("selfAssessmentDuration", "NA");
 		}
 		if (activeCycle.getMngApprStartDate() != null && activeCycle.getMngApprEndDate() != null) {
-			parameterMap.put("appraiserAssessmentDuration",
-					dateConvert(activeCycle.getMngApprStartDate()) + " to " + dateConvert(activeCycle.getMngApprEndDate()));
+			parameterMap.put("appraiserAssessmentDuration", dateConvert(activeCycle.getMngApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getMngApprEndDate()));
 		} else {
 			parameterMap.put("appraiserAssessmentDuration", "NA");
 		}
 		if (activeCycle.getRevApprStartDate() != null && activeCycle.getRevApprEndDate() != null) {
-			parameterMap.put("reviewerAssessmentDuration",
-					dateConvert(activeCycle.getRevApprStartDate()) + " to " + dateConvert(activeCycle.getRevApprEndDate()));
+			parameterMap.put("reviewerAssessmentDuration", dateConvert(activeCycle.getRevApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getRevApprEndDate()));
 		} else {
 			parameterMap.put("reviewerAssessmentDuration", "NA");
 		}
@@ -206,7 +208,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
 		AppraisalCycle activeCycle = loginDao.getCurrentAppraisalCycle();
 		if (activeCycle.getCycleName() != null) {
-			parameterMap.put("cycleMonth",activeCycle.getCycleName());
+			parameterMap.put("cycleMonth", activeCycle.getCycleName());
 		} else {
 			parameterMap.put("cycleMonth", "NA");
 		}
@@ -216,20 +218,20 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			parameterMap.put("cycleEndDate", "NA");
 		}
 		if (activeCycle.getSelfApprStartDate() != null && activeCycle.getSelfApprEndDate() != null) {
-			parameterMap.put("selfAssessmentDuration",
-					dateConvert(activeCycle.getSelfApprStartDate()) + " to " + dateConvert(activeCycle.getSelfApprEndDate()));
+			parameterMap.put("selfAssessmentDuration", dateConvert(activeCycle.getSelfApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getSelfApprEndDate()));
 		} else {
 			parameterMap.put("selfAssessmentDuration", "NA");
 		}
 		if (activeCycle.getMngApprStartDate() != null && activeCycle.getMngApprEndDate() != null) {
-			parameterMap.put("appraiserAssessmentDuration",
-					dateConvert(activeCycle.getMngApprStartDate()) + " to " + dateConvert(activeCycle.getMngApprEndDate()));
+			parameterMap.put("appraiserAssessmentDuration", dateConvert(activeCycle.getMngApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getMngApprEndDate()));
 		} else {
 			parameterMap.put("appraiserAssessmentDuration", "NA");
 		}
 		if (activeCycle.getRevApprStartDate() != null && activeCycle.getRevApprEndDate() != null) {
-			parameterMap.put("reviewerAssessmentDuration",
-					dateConvert(activeCycle.getRevApprStartDate()) + " to " + dateConvert(activeCycle.getRevApprEndDate()));
+			parameterMap.put("reviewerAssessmentDuration", dateConvert(activeCycle.getRevApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getRevApprEndDate()));
 		} else {
 			parameterMap.put("reviewerAssessmentDuration", "NA");
 		}
@@ -253,14 +255,15 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		} else {
 			parameterMap.put("selfCompletionDate", "NA");
 		}
-		//parameterMap.put("url", "http://172.16.17.78:8080/pms");
+		// parameterMap.put("url", "http://172.16.17.78:8080/pms");
 		parameterMap.put("url", Constant.PMS_LINK);
 		return parameterMap;
 	}
 
 	public String emailName(String name) {
-		/*String newname = name.split("@")[0];
-		return newname.replace(".", " ");*/
+		/*
+		 * String newname = name.split("@")[0]; return newname.replace(".", " ");
+		 */
 		String newname = name.split("@")[0];
 		String first = newname.split("\\.")[0];
 		String last = newname.split("\\.")[1];
@@ -336,45 +339,44 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			parameterMap.put("cycleEndDate", "NA");
 		}
 		if (activeCycle.getSelfApprStartDate() != null && activeCycle.getSelfApprEndDate() != null) {
-			parameterMap.put("selfAssessmentDuration",
-					dateConvert(activeCycle.getSelfApprStartDate()) + " to " + dateConvert(activeCycle.getSelfApprEndDate()));
+			parameterMap.put("selfAssessmentDuration", dateConvert(activeCycle.getSelfApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getSelfApprEndDate()));
 		} else {
 			parameterMap.put("selfAssessmentDuration", "NA");
 		}
 		if (activeCycle.getMngApprStartDate() != null && activeCycle.getMngApprEndDate() != null) {
-			parameterMap.put("appraiserAssessmentDuration",
-					dateConvert(activeCycle.getMngApprStartDate()) + " to " + dateConvert(activeCycle.getMngApprEndDate()));
+			parameterMap.put("appraiserAssessmentDuration", dateConvert(activeCycle.getMngApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getMngApprEndDate()));
 		} else {
 			parameterMap.put("appraiserAssessmentDuration", "NA");
 		}
 		if (activeCycle.getRevApprStartDate() != null && activeCycle.getRevApprEndDate() != null) {
-			parameterMap.put("reviewerAssessmentDuration",
-					dateConvert(activeCycle.getRevApprStartDate()) + " to " + dateConvert(activeCycle.getRevApprEndDate()));
+			parameterMap.put("reviewerAssessmentDuration", dateConvert(activeCycle.getRevApprStartDate()) + " to "
+					+ dateConvert(activeCycle.getRevApprEndDate()));
 		} else {
 			parameterMap.put("reviewerAssessmentDuration", "NA");
 		}
 		if (recipient.getFirstName() + " " + recipient.getLastName() != null) {
 			parameterMap.put("selfName", recipient.getFirstName() + " " + recipient.getLastName());
 		}
-		//parameterMap.put("url", "http://172.16.17.78:8080/pms");
+		// parameterMap.put("url", "http://172.16.17.78:8080/pms");
 		parameterMap.put("url", Constant.PMS_LINK);
 		return parameterMap;
 	}
 
-	public String dateConvert(String D){
+	public String dateConvert(String D) {
 
-	       SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-	       SimpleDateFormat format2 = new SimpleDateFormat("dd-MMM-yyyy");
-	       Date date = null;
-	       try {
-	           date = format1.parse(D);
-	       } catch (ParseException e) {
-	           e.printStackTrace();
-	       }
-	       String dateString = format2.format(date);
-	       dateString = dateString.replace("-", " "); 
-	       return ((dateString));
-	   }
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format2 = new SimpleDateFormat("dd-MMM-yyyy");
+		Date date = null;
+		try {
+			date = format1.parse(D);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		String dateString = format2.format(date);
+		dateString = dateString.replace("-", " ");
+		return ((dateString));
+	}
 
-	
 }

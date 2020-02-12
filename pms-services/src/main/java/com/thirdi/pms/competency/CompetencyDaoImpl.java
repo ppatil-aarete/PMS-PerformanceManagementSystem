@@ -378,10 +378,13 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	public List<RecipientMail> fetchMailIdForEmp(Integer empId,Integer cycleId) {
 		String sql = "";
 		if(empId != null){
-			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [PMS].[dbo].[tx_hs_hr_employee] A JOIN [PMS].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [PMS].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [PMS].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [PMS].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id WHERE D.ApprEmpId="+empId+" AND D.cycle_id ="+cycleId+" AND D.appr_phase_id = 3";
+			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [HRMS_Copy].[dbo].[tx_hs_hr_employee] A JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id WHERE D.ApprEmpId="+empId+" AND D.cycle_id ="+cycleId+" AND D.appr_phase_id = 3";
+		System.out.println(sql);
 		}else {
-			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [PMS].[dbo].[tx_hs_hr_employee] A JOIN [PMS].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [PMS].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [PMS].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [PMS].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id";
+			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [HRMS_Copy].[dbo].[tx_hs_hr_employee] A JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id";
+			System.out.println(sql);
 		}
+		
 		return template.query(sql, new ResultSetExtractor<List<RecipientMail>>(){
 		    public List<RecipientMail> extractData(ResultSet rs) throws SQLException,DataAccessException {
 		    	List<RecipientMail> recipientMails= new ArrayList<RecipientMail>();
@@ -398,7 +401,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	}
 	
 	public float getReviewerFinalRating(Integer cycleId, Integer empId) {
-		String sql = "SELECT COALESCE([rating], -1) as rating FROM [PMS].[dbo].[tx_reviewer_remarks] where appr_empid="+empId+" and cycleid="+cycleId;
+		String sql = "SELECT COALESCE([rating], -1) as rating FROM [HRMS_Copy].[dbo].[tx_reviewer_remarks] where appr_empid="+empId+" and cycleid="+cycleId;
 		float finalReviewerRating =  template.queryForObject(sql, Float.class);
 		return finalReviewerRating;
 	}
