@@ -471,7 +471,7 @@ function exportdata(){
 	var table = $('<table class="table" id="exportTableId">');
 	var thead = $('<thead>');
 	var tr = $('<tr>');
-    var no = $('<th style="text-align:left;">').html('empId');
+    var no = $('<th style="text-align:left;">').html('Employee Id');
     var employeeName = $('<th style="text-align:left;">').html('Employee Name');
     var DesignationName = $('<th style="text-align:left;width: 110px;">').html('Designation');
     var StatusName = $('<th style="text-align:left;width: 262px;">').html('Status');
