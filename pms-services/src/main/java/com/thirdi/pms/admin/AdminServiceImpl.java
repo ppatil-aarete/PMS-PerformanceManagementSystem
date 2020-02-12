@@ -377,6 +377,7 @@ public class AdminServiceImpl implements AdminService {
 				String reviewerName = "";
 				String designationName = "";
 				String status = "";
+				int employeeId=0;
 				List<EmployeeDetails> myTeamDataList = loginService
 						.fetchEmployeeRecordAndSortList(myTeamDataListUnsorted, emp_appr_Id);
 				if (myTeamDataList != null && myTeamDataList.size() > 0) {
@@ -386,6 +387,7 @@ public class AdminServiceImpl implements AdminService {
 						Integer apprId = empDetails.getNextUserRoleId();
 						employeeName = userIdNameMap.get(idMap.get(emp_appr_Id));
 						designationName = designationNameMap.get(idMap.get(emp_appr_Id));
+						employeeId=idMap.get(emp_appr_Id);
 						/*if (empDetails.getCompletionDate() != null) {
 							completionDate = empDetails.getCompletionDate();
 						}*/
@@ -420,6 +422,7 @@ public class AdminServiceImpl implements AdminService {
 						}
 					
 						if (appraiserName.equals("") || reviewerName.equals("")) {
+							detailsContainer.addProperty("employeeId", employeeId);
 							detailsContainer.addProperty("appraiserName", "-");
 							detailsContainer.addProperty("employeeName", employeeName);
 							detailsContainer.addProperty("reviewerName", "-");
@@ -427,6 +430,7 @@ public class AdminServiceImpl implements AdminService {
 							detailsContainer.addProperty("status", status);
 							
 						} else {
+							detailsContainer.addProperty("employeeId", employeeId);
 							detailsContainer.addProperty("appraiserName", appraiserName);
 							detailsContainer.addProperty("employeeName", employeeName);
 							detailsContainer.addProperty("reviewerName", reviewerName);
