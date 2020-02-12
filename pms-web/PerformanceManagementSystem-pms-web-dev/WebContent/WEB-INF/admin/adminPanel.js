@@ -471,7 +471,7 @@ function exportdata(){
 	var table = $('<table class="table" id="exportTableId">');
 	var thead = $('<thead>');
 	var tr = $('<tr>');
-    var no = $('<th style="text-align:left;">').html('#');
+    var no = $('<th style="text-align:left;">').html('empId');
     var employeeName = $('<th style="text-align:left;">').html('Employee Name');
     var DesignationName = $('<th style="text-align:left;width: 110px;">').html('Designation');
     var StatusName = $('<th style="text-align:left;width: 262px;">').html('Status');
@@ -512,7 +512,7 @@ function prepareBodyOfExportDataSheet(){
 		for(var empId in exportDataMap){
 			var tr = $('<tr>');
 			var empDataJson = exportDataMap[empId];
-			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(count);
+			var noLabel = $('<label class="label label-success" style="background:#18A689;">').html(empDataJson["employeeId"]);
 			var noTd = $('<td style="text-align:left;">').append(noLabel);
 			var empNameTd = $('<td style="text-align:left;">').html(empDataJson["employeeName"]);
 			//var empTd = $('<td style="text-align:center;">').html(empDataJson["empId"]);
