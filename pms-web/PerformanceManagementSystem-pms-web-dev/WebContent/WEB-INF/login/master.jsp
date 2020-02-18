@@ -912,7 +912,7 @@ function logout(){
 }
 
 function renderMenuBasedOnRole(){
-	debugger
+	
 	var userrole = user.roleStatus; 
 	if(userrole != undefined && userrole != null && userrole != ""){
 		 if(userrole == "hrAdmin"|| userrole =="admin"){
@@ -1010,7 +1010,7 @@ $('.collapse-link').on('click', function (e) {
 });
 
 function showAdminDashboard(){
-	debugger
+	
 	var userrole = user.roleStatus; 
 	if(userrole != undefined && userrole != null && userrole != ""){
 		 if(userrole == "hrAdmin"){
@@ -1077,7 +1077,7 @@ function checkBackButton(){
 	}
 	
 function setCycleLablerOnHeader(){
-	debugger
+	
 	var userstatus = userGeneralInfo.status; 
 	if(userstatus != undefined && userstatus != null && userstatus != ""){
 		/*  if(userstatus == "Self Assessment - pending"){
@@ -1126,7 +1126,6 @@ $(function() {
 });
 
 function extendDatesValidations() {
-	debugger;
 	var cycleEndDate = $('#extendCycleEndDate').val();
 	var selfEndDate = $('#extendSelfApprEndDate').val();
 	var apprEndDate = $('#extendMngApprEndDate').val();

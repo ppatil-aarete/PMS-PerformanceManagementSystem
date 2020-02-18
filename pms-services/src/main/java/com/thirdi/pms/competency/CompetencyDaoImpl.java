@@ -3,7 +3,6 @@ package com.thirdi.pms.competency;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +19,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.thirdi.pms.admin.Recipient;
 import com.thirdi.pms.admin.RecipientMail;
 
 @Repository
@@ -48,6 +46,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 
 	public Boolean updateMappingsInEployeeTable(final Map<Integer, Integer> idMapper) {
 		String updateSQL = "UPDATE tx_appr_empl_flow SET rep_hs_hr_employee_id = ? where ApprEmpId = ?";
+		System.out.println(updateSQL);
 		if (idMapper != null && idMapper.size() > 0) {
 			for (final Integer id : idMapper.keySet()) {
 				template.execute(updateSQL, new PreparedStatementCallback<Boolean>() {
@@ -66,6 +65,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	public Boolean updateRemarksForCompetencies(final Integer phaseId, final Integer empId, final Integer questionId,
 			final String remarks) {
 		String query = "update tx_appr_empl_rating SET remarks = ? where appr_phase_id = ? and ApprEmpId = ? and ApprQuestionId = ?";
+		System.out.println(query);
 		return template.execute(query, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
 				ps.setString(1, remarks);
@@ -80,6 +80,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	public Boolean updateRatingsForCompetencies(final Integer phaseId, final Integer empId, final Integer questionId,
 			final Integer remarks) {
 		String query = "update tx_appr_empl_rating SET remarks = ? where appr_phase_id = ? and ApprEmpId = ? and ApprQuestionId = ?";
+		System.out.println(query);
 		return template.execute(query, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
 				ps.setInt(1, remarks);
@@ -93,12 +94,14 @@ public class CompetencyDaoImpl implements CompetencyDao {
 
 	public Integer getCurrentPhaseOfEmployee(Integer empId) {
 		String query = "select curr_phase_id from tx_appr_empl where ApprEmpId=" + empId;
+		System.out.println(query);
 		Integer current_phase = template.queryForObject(query, Integer.class);
 		return current_phase;
 	}
 
 	public Boolean updateCurrentPhaseOfEmployee(Integer empId) {
 		String query = "update tx_appr_empl SET curr_phase_id = ? where ApprEmpId = ?";
+		System.out.println(query);
 		return template.execute(query, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
 				return ps.execute();
@@ -148,7 +151,6 @@ public class CompetencyDaoImpl implements CompetencyDao {
 				});
 	}
 
-
 	public Boolean updatePhaseOfEmployeeEntity(final Integer empId, final Integer cycleId,
 			final PhaseStatus currentPhase) {
 		String query = "update tx_appr_empl SET curr_phase_id = ? where ApprEmpId = ? and ApprCycleId = ?";
@@ -165,6 +167,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	public Boolean updatePhaseStatusOfEmplFlowEntity(final Integer empId, Integer cycleId,
 			final PhaseStatus currentPhase) {
 		String query = "update tx_appr_empl_flow SET status = 1, Completion_date = ? where phaseid = ? and ApprEmpId = ?";
+		System.out.println(query);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		final String currentDate = sdf.format(date);
@@ -193,9 +196,9 @@ public class CompetencyDaoImpl implements CompetencyDao {
 				});
 	}
 
-	
 	public Boolean updateStrengthAndWeakness(final Map<Integer, List<StrengthWeakness>> strWeakContainerMap) {
 		String updateSQL = "insert into tx_appr_emp_strength(ApprEmpId,Description,Strength_weakness,phase_id,nextRoleId) values (?,?,?,?,?)";
+		System.out.println(updateSQL);
 		if (strWeakContainerMap != null && strWeakContainerMap.size() > 0) {
 			Map.Entry<Integer, List<StrengthWeakness>> swEntryObject = strWeakContainerMap.entrySet().iterator().next();
 			final List<StrengthWeakness> swContainerList = swEntryObject.getValue();
@@ -217,8 +220,6 @@ public class CompetencyDaoImpl implements CompetencyDao {
 		return null;
 	}
 
-	
-	
 	public List<StrengthWeakness> getStrengthsAndWeaknesses(Integer empId) {
 		// TODO Auto-generated method stub
 		return template.query("select * from tx_appr_emp_strength where ApprEmpId=" + empId,
@@ -236,6 +237,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 
 	public Map<Integer, Double[]> getMapOfFinalScore(Integer cycleId) {
 		String sql = "select * from view_appraisalscore where ApprCycleId=" + cycleId;
+		System.out.println(sql);
 		return template.query(sql, new ResultSetExtractor<Map<Integer, Double[]>>() {
 			public Map<Integer, Double[]> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				Map<Integer, Double[]> finalScoreMapAllEmp = new HashMap<Integer, Double[]>();
@@ -267,21 +269,25 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	}
 
 	public Boolean updateReviewerRatings(final Integer empId, final Float ratings, Integer revId, Integer cycleId) {
-		String sql1 = " select ApprEmpId from tx_appr_empl where hs_hr_employee_id =" +revId+" and ApprCycleId= "+cycleId;
+		String sql1 = " select ApprEmpId from tx_appr_empl where hs_hr_employee_id =" + revId + " and ApprCycleId= "
+				+ cycleId;
 		Integer revID = template.queryForObject(sql1, Integer.class);
-		String sql = "update tx_reviewer_remarks set rating = "+ratings+", reviewer_id=" +revID+", status = 1 where appr_empid = "+empId+"  and cycleId =" + cycleId;
-		
+		String sql = "update tx_reviewer_remarks set rating = " + ratings + ", reviewer_id=" + revID
+				+ ", status = 1 where appr_empid = " + empId + "  and cycleId =" + cycleId;
+
 		return template.execute(sql, new PreparedStatementCallback<Boolean>() {
 			public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
 				return ps.execute();
-		
+
 			}
 		});
 	}
 
 	public Boolean updateReviewerRemarks(final Integer empId, final String remarks, Integer revId, Integer cycleId) {
 
-		String sql1 = " select ApprEmpId from tx_appr_empl where hs_hr_employee_id =" + revId+" and ApprCycleId= "+cycleId;;
+		String sql1 = " select ApprEmpId from tx_appr_empl where hs_hr_employee_id =" + revId + " and ApprCycleId= "
+				+ cycleId;
+		;
 		Integer revID = template.queryForObject(sql1, Integer.class);
 		String sql2 = "update tx_reviewer_remarks set remarks = ?, reviewer_id= " + revID
 				+ ", status= 1 where appr_empid = ? and cycleId =" + cycleId;
@@ -297,6 +303,7 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	public Map<Integer, String> getRemarkOfUser(Integer cycleId) {
 
 		String sql = "select * from view_appraisalscore where ApprCycleId=" + cycleId;
+		System.out.println(sql);
 		return template.query(sql, new ResultSetExtractor<Map<Integer, String>>() {
 			public Map<Integer, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				Map<Integer, String> finalRemark = new HashMap<Integer, String>();
@@ -311,40 +318,41 @@ public class CompetencyDaoImpl implements CompetencyDao {
 	}
 
 	public Boolean updateCompetenciesOfEmployee(final Integer empId, final PhaseStatus phaseId,
-			final Map<Integer, Object[]> questionAndResponseMap, Integer cycleId, final String statusOfMember) throws Exception {
-		if(statusOfMember=="")
-		{
-		String updateSQL = "UPDATE tx_appr_empl_rating SET Rating = ?,remarks = ? WHERE ApprEmpId = ? and ApprQuestionId = ? and appr_phase_id = ?";
-		if (questionAndResponseMap != null && questionAndResponseMap.size() > 0) {
-			for (final Integer questionId : questionAndResponseMap.keySet()) {
-				template.execute(updateSQL, new PreparedStatementCallback<Boolean>() {
-					public Boolean doInPreparedStatement(PreparedStatement ps)
-							throws SQLException, DataAccessException {
-						Object[] dataArray = questionAndResponseMap.get(questionId);
-						if (StringUtils.hasText(dataArray[1].toString())) {
-							Integer ratings = Integer.valueOf(dataArray[1].toString());
-							ps.setInt(1, Integer.valueOf(dataArray[1].toString()));
-						} else {
-							ps.setInt(1, 0);
+			final Map<Integer, Object[]> questionAndResponseMap, Integer cycleId, final String statusOfMember)
+			throws Exception {
+		if (statusOfMember == "") {
+			String updateSQL = "UPDATE tx_appr_empl_rating SET Rating = ?,remarks = ? WHERE ApprEmpId = ? and ApprQuestionId = ? and appr_phase_id = ?";
+			System.out.println(updateSQL);
+			if (questionAndResponseMap != null && questionAndResponseMap.size() > 0) {
+				for (final Integer questionId : questionAndResponseMap.keySet()) {
+					template.execute(updateSQL, new PreparedStatementCallback<Boolean>() {
+						public Boolean doInPreparedStatement(PreparedStatement ps)
+								throws SQLException, DataAccessException {
+							Object[] dataArray = questionAndResponseMap.get(questionId);
+							if (StringUtils.hasText(dataArray[1].toString())) {
+								Integer ratings = Integer.valueOf(dataArray[1].toString());
+								ps.setInt(1, Integer.valueOf(dataArray[1].toString()));
+							} else {
+								ps.setInt(1, 0);
+							}
+							if (StringUtils.hasText(dataArray[0].toString())) {
+								ps.setString(2, (String) dataArray[0]);
+							} else {
+								ps.setString(2, "");
+							}
+							ps.setInt(3, empId);
+							ps.setInt(4, questionId);
+							ps.setInt(5, 2);
+							return ps.execute();
 						}
-						if (StringUtils.hasText(dataArray[0].toString())) {
-							ps.setString(2, (String) dataArray[0]);
-						} else {
-							ps.setString(2, "");
-						}
-						ps.setInt(3, empId);
-						ps.setInt(4, questionId);
-						ps.setInt(5, 2);
-						return ps.execute();
-					}
-				});
+					});
+				}
 			}
-		}
-		return true;
-		}
-		else{
+			return true;
+		} else {
 
 			String updateSQL = "UPDATE tx_appr_empl_rating SET Rating = ?,remarks = ? WHERE ApprEmpId = ? and ApprQuestionId = ? and appr_phase_id = ?";
+			System.out.println(updateSQL);
 			if (questionAndResponseMap != null && questionAndResponseMap.size() > 0) {
 				for (final Integer questionId : questionAndResponseMap.keySet()) {
 					template.execute(updateSQL, new PreparedStatementCallback<Boolean>() {
@@ -371,36 +379,38 @@ public class CompetencyDaoImpl implements CompetencyDao {
 				}
 			}
 			return true;
-			
+
 		}
 	}
-	
-	public List<RecipientMail> fetchMailIdForEmp(Integer empId,Integer cycleId) {
+
+	public List<RecipientMail> fetchMailIdForEmp(Integer empId, Integer cycleId) {
 		String sql = "";
-		if(empId != null){
-			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [PMS].[dbo].[tx_hs_hr_employee] A JOIN [PMS].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [PMS].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [PMS].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [PMS].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id WHERE D.ApprEmpId="+empId+" AND D.cycle_id ="+cycleId+" AND D.appr_phase_id = 3";
-		}else {
-			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [PMS].[dbo].[tx_hs_hr_employee] A JOIN [PMS].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [PMS].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [PMS].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [PMS].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id";
+		if (empId != null) {
+			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [HRMS_Copy].[dbo].[tx_hs_hr_employee] A JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id WHERE D.ApprEmpId="
+					+ empId + " AND D.cycle_id =" + cycleId + " AND D.appr_phase_id = 3";
+		} else {
+			sql = "SELECT DISTINCT A.EMP_WORK_EMAIL AS SELF_EMAIL,B.EMP_WORK_EMAIL AS MANAGER_EMAIL,E.EMP_WORK_EMAIL AS REVIEWER_EMAIL FROM [HRMS_Copy].[dbo].[tx_hs_hr_employee] A JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] B ON A.report_to = B.employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl] C ON A.employee_id = C.hs_hr_employee_id JOIN [HRMS_Copy].[dbo].[tx_appr_empl_rating] D ON C.ApprEmpId = D.ApprEmpId JOIN [HRMS_Copy].[dbo].[tx_hs_hr_employee] E ON D.hs_hr_employee_id = E.employee_id";
 		}
-		return template.query(sql, new ResultSetExtractor<List<RecipientMail>>(){
-		    public List<RecipientMail> extractData(ResultSet rs) throws SQLException,DataAccessException {
-		    	List<RecipientMail> recipientMails= new ArrayList<RecipientMail>();
-		        while(rs.next()){
-		            RecipientMail rc = new RecipientMail();
-		            rc.setSelfEmail(rs.getString("SELF_EMAIL"));
-		        	rc.setApprEmail(rs.getString("MANAGER_EMAIL"));
-		        	rc.setRevEmail(rs.getString("REVIEWER_EMAIL"));
-		            recipientMails.add(rc);
-		        }
-		        return recipientMails;
-		    }                 
+		return template.query(sql, new ResultSetExtractor<List<RecipientMail>>() {
+			public List<RecipientMail> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<RecipientMail> recipientMails = new ArrayList<RecipientMail>();
+				while (rs.next()) {
+					RecipientMail rc = new RecipientMail();
+					rc.setSelfEmail(rs.getString("SELF_EMAIL"));
+					rc.setApprEmail(rs.getString("MANAGER_EMAIL"));
+					rc.setRevEmail(rs.getString("REVIEWER_EMAIL"));
+					recipientMails.add(rc);
+				}
+				return recipientMails;
+			}
 		});
 	}
-	
+
 	public float getReviewerFinalRating(Integer cycleId, Integer empId) {
-		String sql = "SELECT COALESCE([rating], -1) as rating FROM [PMS].[dbo].[tx_reviewer_remarks] where appr_empid="+empId+" and cycleid="+cycleId;
-		float finalReviewerRating =  template.queryForObject(sql, Float.class);
+		String sql = "SELECT COALESCE([rating], -1) as rating FROM [HRMS_Copy].[dbo].[tx_reviewer_remarks] where appr_empid="
+				+ empId + " and cycleid=" + cycleId;
+		float finalReviewerRating = template.queryForObject(sql, Float.class);
 		return finalReviewerRating;
 	}
-	
+
 }

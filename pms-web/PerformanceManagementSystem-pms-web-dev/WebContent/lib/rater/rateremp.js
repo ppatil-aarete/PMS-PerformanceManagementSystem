@@ -5,7 +5,6 @@
 ;(function ($, window){
     $.fn.textWidth = function()
     {
-    	debugger;
         var html_calc = $('<span>' + $(this).html() + '</span>');
         html_calc.css('font-size',$(this).css('font-size')).hide();
         html_calc.prependTo('body');
@@ -25,7 +24,6 @@
 
     $.fn.textHeight = function()
     {
-    	debugger;
         var html_calc = $('<span>' + $(this).html() + '</span>');
         html_calc.css('font-size',$(this).css('font-size')).hide();
         html_calc.prependTo('body');

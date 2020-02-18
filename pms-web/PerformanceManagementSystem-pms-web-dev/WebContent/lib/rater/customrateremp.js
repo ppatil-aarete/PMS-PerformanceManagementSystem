@@ -1,5 +1,4 @@
  $(document).ready(function(){
-	 debugger;
             var options = {
                 max_value: 5,
                 step_size: 1,

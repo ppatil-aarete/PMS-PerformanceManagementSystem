@@ -6,7 +6,6 @@
                 initial_value: 0,
                 update_input_field_name: $("#appr_dropdown"),
             }
-            debugger;
             $(".rateappr").rate(options);
 
             $(".rateappr").on("change", function(ev, data){
