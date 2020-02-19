@@ -35,7 +35,7 @@ td {
     <br>
    <p> Please feel free to reach out @<a href="https://mail.google.com/mail/?view=cm&fs=1&to=pms.support@the3i.com">PMS-Support team. </a>for any further assistance</p>
   
-   <p> P.S. The Associates who are working remotely or are working from home need to complete the assessment by logging to Third I VPN through <b>“Forticlient”</b>. This application is already installed on your machine.</p>
+   <p> P.S. The Associates who are working remotely or are working from home need to complete the assessment by logging to Third I VPN through “Forticlient”. This application is already installed on your machine.</p>
     
    <p><b>Note : </b>Please do <b>"Save as Draft"</b> each time when you will fill the sections of competencies otherwise you will lose your data.</p>
    
