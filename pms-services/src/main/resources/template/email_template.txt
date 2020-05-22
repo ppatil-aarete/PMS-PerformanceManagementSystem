@@ -20,7 +20,7 @@ td {
 
     <p>Hello Everyone,</p>
     
-    <p>Please note that we are initiating the Performance Review Cycle- October 2019. Kindly complete your Self Assessment latest by<b> ${selfAssessmentEndDate}</b></p>
+    <p>Please note that we are initiating the Performance Review Cycle- April 2020. Kindly complete your Self Assessment latest by<b> ${selfAssessmentEndDate}.</b></p>
     
     <p>Click on this <a href="http://172.16.17.78:8080/pms"> link </a>to complete your self assessment. Provide sufficient instances/ data to support your deliverables and achievements.</p>
     
@@ -35,9 +35,9 @@ td {
     <br>
    <p> Please feel free to reach out @<a href="https://mail.google.com/mail/?view=cm&fs=1&to=pms.support@the3i.com">India_PMS.Support@aarete.com </a>for any further assistance</p>
   
-   <p> P.S. The Associates who are working remotely or are working from home need to complete the assessment by logging to Third I VPN through “Forticlient”. This application is already installed on your machine.</p>
+   <p> P.S. The Associates who are working remotely or are working from home need to complete the assessment by logging to Third I VPN through Forticlient. This application is already installed on your machine.</p>
     
-	<p><b>Note : </b>Please do <b>"Save as Draft"</b> each time when you will fill the sections under competencies otherwise you will lose your data.</p>
+	<p><b>Note : </b>Please don't forget to click on <b>"Save as Draft"</b> every time you fill the sections under your competencies, this will help to save your data.</p>
 	 
     Best Regards,<br>
     PMS Team<br>
